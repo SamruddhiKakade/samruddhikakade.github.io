@@ -9,28 +9,43 @@ const items = await publishedItems();
 <Base title="Overview" current="overview" wide description="Everything Samruddhi Kakade has worked on since 2019, by section.">
   <h1>Overview</h1>
   <p class="lead">Everything I have worked on since 2019, by section. Click a section for more, or an item for its full page.</p>
+  <nav class="jump small" aria-label="Sections on this page">
+    <span class="muted">Jump to</span>
+    <ul>
+      {sections.map((s) => <li><a href={`#${s.key}`}>{s.label}</a></li>)}
+      <li><a href="#timeline">Timeline</a></li>
+    </ul>
+  </nav>
 
   {sections.map((s) => {
-    const list = items.filter((i) => i.data.section === s.key);
+    let list = items.filter((i) => i.data.section === s.key);
+    // University: the degree always leads; the course pieces follow as a muted sub-list.
+    const courseWork = s.key === 'university' ? list.filter((i) => i.data.course) : [];
+    if (courseWork.length > 0) list = list.filter((i) => !i.data.course);
+    const row = (i: (typeof items)[number]) => (
+      <li>
+        <a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a>
+        <span class="muted small"> · {i.data.context} · {i.data.when}</span>
+        <p>{i.data.oneLine}</p>
+      </li>
+    );
     return (
-      <section class="block">
-        <h2><a href={s.href}>{s.label}</a>{list.length > 0 && <span class="count muted"> ({list.length})</span>}</h2>
+      <section class="block" id={s.key}>
+        <h2><a href={s.href}>{s.label}</a>{list.length > 0 && <span class="count muted"> ({list.length + courseWork.length})</span>}</h2>
         {list.length === 0 ? <p class="muted">{s.line}</p> : (
-          <ul class="items">
-            {list.map((i) => (
-              <li>
-                <a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a>
-                <span class="muted small"> · {i.data.context} · {i.data.when}</span>
-                <p>{i.data.oneLine}</p>
-              </li>
-            ))}
-          </ul>
+          <ul class="items">{list.map(row)}</ul>
+        )}
+        {courseWork.length > 0 && (
+          <>
+            <h3 class="sub muted">Course writing</h3>
+            <ul class="items minor">{courseWork.map(row)}</ul>
+          </>
         )}
       </section>
     );
   })}
 
-  <section class="block">
+  <section class="block" id="timeline">
     <h2>Timeline</h2>
     <p class="muted small">Hover or tap a mark for its title; click to open it. The gold line is today.</p>
     <Timeline items={items} />
@@ -40,6 +55,44 @@ const items = await publishedItems();
 <style>
   .lead {
     max-width: var(--measure);
+  }
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    margin-top: 12px;
+  }
+  .jump ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .block {
+    scroll-margin-top: 16px;
+  }
+  @media (max-width: 1023px) {
+    .block {
+      scroll-margin-top: 64px;
+    }
+  }
+  .sub {
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 20px 0 0;
+  }
+  .minor a {
+    font-weight: 400;
+  }
+  .minor p {
+    color: var(--muted);
+    font-size: 0.95rem;
   }
   .block h2 {
     margin: 40px 0 8px;
