@@ -5,8 +5,12 @@ import photo from '../assets/photo.png';
 import { person } from '../data/site';
 import { publishedItems } from '../data/items';
 
+const all = await publishedItems();
 // "Latest" appears only once a research paper is published on the site (from the arXiv day).
-const latest = (await publishedItems()).find((i) => i.data.section === 'research');
+const latest = all.find((i) => i.data.section === 'research');
+// Proof row: the current job, research, and the project count, each one click from Home.
+const now = all.find((i) => i.data.section === 'experience' && i.data.end === 'present');
+const projectCount = all.filter((i) => i.data.section === 'projects').length;
 ---
 <Base current="home">
   <div class="sky" aria-hidden="true"></div>
@@ -25,6 +29,11 @@ const latest = (await publishedItems()).find((i) => i.data.section === 'research
       LLM agents fail, by reading what an agent says it sees, what it says it will do, and what it actually
       does, turn by turn.
     </p>
+    <ul class="proof">
+      {now && <li><span class="muted">Now:</span> <a href={`/experience/${now.id}/`}>{now.data.role}, {now.data.context.replace(/ \(.*\)$/, '')}</a></li>}
+      <li><a href="/research/">Research</a></li>
+      <li><a href="/projects/">{projectCount} projects</a></li>
+    </ul>
     {latest && (
       <p class="latest"><span class="muted">Latest:</span> <a href={`/research/${latest.id}/`}>{latest.data.title}</a></p>
     )}
@@ -106,6 +115,20 @@ const latest = (await publishedItems()).find((i) => i.data.section === 'research
   .intro {
     font-size: 1.15rem;
     max-width: 62ch;
+  }
+  .proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    font-size: 1.05rem;
+  }
+  .proof li:not(:last-child)::after {
+    content: '·';
+    color: var(--muted);
+    margin: 0 10px;
   }
   .onward-link {
     font-size: 1.15rem;
