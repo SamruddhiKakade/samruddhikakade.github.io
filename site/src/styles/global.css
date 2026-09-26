@@ -255,3 +255,31 @@ img {
     font-size: 0.8em;
   }
 }
+
+/* A row of small charts with one shared legend. */
+.chart-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+  margin: 8px 0 20px;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+.legend .swatch {
+  display: inline-block;
+  width: 22px;
+  height: 0;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-top: 3px solid var(--chart-1);
+}
+.legend .swatch.dashed {
+  border-top: 3px dashed var(--chart-2);
+}

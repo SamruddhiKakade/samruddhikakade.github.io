@@ -12,6 +12,8 @@ myPart: I analysed the course-provided trial data and designed and wrote the pos
 skills: [Research posters, Statistics, Technical writing]
 ---
 import More from '../../components/More.astro';
+import Lines from '../../components/Lines.astro';
+import Bars from '../../components/Bars.astro';
 
 ## Question
 
@@ -30,7 +32,52 @@ composition of the two bars.
 
 ## Results
 
-The bar with added fibre gave a lower glucose and insulin response than the bar without it.
+The bar with added fibre gave a lower glucose and insulin response than the bar without it. Both curves peaked at
+30 minutes, and the peaks were lower with fibre.
+
+<ul class="legend" aria-hidden="true">
+  <li><span class="swatch"></span>Bar without fibre</li>
+  <li><span class="swatch dashed"></span>Bar with added fibre</li>
+</ul>
+<div class="chart-row">
+  <Lines
+    title="Blood glucose"
+    unit="mg/dL"
+    x={[0, 30, 60, 120]}
+    xLabel="Minutes after eating"
+    ticks={[80, 100, 120, 140, 160]}
+    series={[
+      { name: 'Bar without fibre', values: [92.3, 149.1, 135.6, 91.5] },
+      { name: 'Bar with added fibre', values: [92.4, 122.5, 117.8, 89.6] },
+    ]}
+  />
+  <Lines
+    title="Blood insulin"
+    unit="µIU/mL"
+    x={[0, 30, 60, 120]}
+    xLabel="Minutes after eating"
+    ticks={[0, 40, 80, 120]}
+    series={[
+      { name: 'Bar without fibre', values: [8.7, 113.8, 91.5, 12.8] },
+      { name: 'Bar with added fibre', values: [9.7, 70.8, 67.5, 18.8] },
+    ]}
+  />
+</div>
+
+Over the full two hours, measured as the area under each curve, fibre lowered the glucose response by 11% and the
+insulin response by 27%. In a paired t-test across the ten participants, both differences were significant (glucose
+p = 0.002, insulin p < 0.001).
+
+<Bars
+  caption="Area under the curve over two hours, as a percentage of the bar without fibre (mean of ten participants)."
+  series={['Bar without fibre', 'Bar with added fibre']}
+  digits={0}
+  max={100}
+  rows={[
+    { label: 'Glucose', values: [100, 89] },
+    { label: 'Insulin', values: [100, 73] },
+  ]}
+/>
 
 The comparison is within each person (a crossover design), which controls for differences between people and makes
 a small trial more informative.

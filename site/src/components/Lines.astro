@@ -1,0 +1,70 @@
+---
+// Small line chart drawn as inline SVG at build time; a hidden table carries the same numbers for screen readers.
+interface Series { name: string; values: number[] }
+interface Props { title: string; unit: string; x: number[]; xLabel: string; series: Series[]; ticks: number[] }
+const { title, unit, x, xLabel, series, ticks } = Astro.props;
+
+const W = 320, H = 190, L = 44, R = 12, T = 12, B = 34;
+const xMax = Math.max(...x), yMin = ticks[0], yMax = ticks[ticks.length - 1];
+const px = (v: number) => L + (v / xMax) * (W - L - R);
+const py = (v: number) => T + (1 - (v - yMin) / (yMax - yMin)) * (H - T - B);
+---
+<figure class="lines">
+  <p class="title small">{title} <span class="muted">({unit})</span></p>
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${title}, ${series.map((s) => s.name).join(' and ')}`}>
+    {ticks.map((t) => (
+      <g>
+        <line class="grid" x1={L} x2={W - R} y1={py(t)} y2={py(t)} />
+        <text class="tick" x={L - 6} y={py(t) + 4} text-anchor="end">{t}</text>
+      </g>
+    ))}
+    {x.map((v) => <text class="tick" x={px(v)} y={H - B + 16} text-anchor="middle">{v}</text>)}
+    <text class="tick" x={(L + W - R) / 2} y={H - 2} text-anchor="middle">{xLabel}</text>
+    {series.map((s, i) => (
+      <g class={`s${i}`}>
+        <polyline points={s.values.map((v, j) => `${px(x[j])},${py(v)}`).join(' ')} />
+        {s.values.map((v, j) => <circle cx={px(x[j])} cy={py(v)} r="3" />)}
+      </g>
+    ))}
+  </svg>
+  <table class="sr-only">
+    <caption>{title} ({unit})</caption>
+    <thead><tr><th scope="col">{xLabel}</th>{series.map((s) => <th scope="col">{s.name}</th>)}</tr></thead>
+    <tbody>{x.map((v, j) => <tr><th scope="row">{v}</th>{series.map((s) => <td>{s.values[j]}</td>)}</tr>)}</tbody>
+  </table>
+</figure>
+
+<style>
+  .lines {
+    margin: 0;
+    flex: 1 1 280px;
+    max-width: 420px;
+  }
+  .title {
+    margin: 0 0 4px;
+    font-weight: 500;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .grid {
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+  .tick {
+    fill: var(--muted);
+    font-size: 11px;
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+  polyline {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linejoin: round;
+  }
+  .s0 polyline { stroke: var(--chart-1); }
+  .s0 circle { fill: var(--chart-1); }
+  .s1 polyline { stroke: var(--chart-2); stroke-dasharray: 6 4; }
+  .s1 circle { fill: var(--chart-2); }
+</style>
