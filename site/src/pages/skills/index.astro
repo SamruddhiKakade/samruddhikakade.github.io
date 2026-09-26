@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import { publishedItems } from '../../data/items';
+import { slugify } from '../../data/site';
+import { skillGroups } from '../../data/skills';
+
+const items = await publishedItems();
+const bySkill = new Map<string, typeof items>();
+for (const i of items) for (const s of i.data.skills) bySkill.set(s, [...(bySkill.get(s) ?? []), i]);
+const grouped = new Set(skillGroups.flatMap((g) => g.skills));
+const other = [...bySkill.keys()].filter((s) => !grouped.has(s)).sort();
+const groups = [...skillGroups, { name: 'Other', skills: other }]
+  .map((g) => ({ ...g, skills: g.skills.filter((s) => bySkill.has(s)) }))
+  .filter((g) => g.skills.length > 0);
+---
+<Base title="Skills" current="skills" wide description="Samruddhi Kakade's skills, each linked to the work that shows it.">
+  <h1>Skills</h1>
+  <p class="lead">Every skill, with links to the work that shows it.</p>
+  {groups.map((g) => (
+    <section>
+      <h2>{g.name}</h2>
+      <dl class="skills">
+        {g.skills.map((s) => (
+          <div class="skill" id={slugify(s)}>
+            <dt>{s}</dt>
+            <dd>
+              <ul>
+                {bySkill.get(s)!.map((i) => (
+                  <li><a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a>{i.data.section === 'experience' && <span class="small">, {i.data.context}</span>} <span class="muted small">{i.data.when}</span></li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  ))}
+</Base>
+<style>
+  .lead { max-width: var(--measure); }
+  .skills { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px 28px; margin: 0; }
+  .skill { padding: 10px 0; border-top: 1px solid var(--border); }
+  .skill:target { background: var(--accent-soft); outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+  dt { font-weight: 600; margin-bottom: 4px; }
+  dd { margin: 0; }
+  dd ul { list-style: none; padding: 0; margin: 0; }
+  dd li { margin: 2px 0; font-size: 0.95rem; }
+</style>

@@ -1,0 +1,63 @@
+---
+title: Database engine in C
+section: projects
+start: '2023-10'
+when: Fall 2023
+context: CS 525 Advanced Database Organization
+course: CS 525
+oneLine: The storage, buffer-pool and record layers of a database engine, written in C; I wrote most of the code.
+summary: A database engine in C, built layer by layer, with page files on disk, a buffer pool with FIFO and LRU replacement, and a record manager with conditional scans. I wrote most of the code.
+role: Main developer, team of 3
+myPart: Wrote most of the storage, buffer and record managers (50 of the team's 73 commits, merges excluded), fixed memory leaks and made the engine run on Linux.
+skills: [C, Systems programming, Database internals, Memory management, Git, Teamwork]
+areas: [Software]
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+import Bars from '../../components/Bars.astro';
+
+## Problem
+
+A database has to move fixed-size pages between disk and memory, and store records inside those pages. We built those
+layers from scratch in C, each using only the layer below it.
+
+## Approach
+
+<Flow
+  label="The layers of the engine, bottom to top"
+  steps={['Storage manager: page files on disk', 'Buffer manager: a pool of pages in memory', 'Record manager: tables in slotted pages', 'Scans filtered by a condition']}
+/>
+
+<More>
+- **Storage manager.** Page files of a fixed page size, with create, open, close and destroy, and reading and writing
+  by block.
+- **Buffer manager.** Each frame tracks how many clients are using it, whether it has changed, and when it was last
+  used. When the pool is full, FIFO or LRU replacement picks a page to evict, and changed pages are written back to
+  disk first. The pool also counts its disk reads and writes.
+- **Record manager.** Each page starts with a header (total slots, occupied slots, the next page with free space),
+  followed by a bitmap of used slots and the fixed-size record slots. Pages with free space are chained together, and
+  the table's schema is stored on its first page. Records can be inserted, updated, deleted and read, and scans return
+  only the records that match a condition.
+- Everything runs against the course's test programs, and memory leaks count as failures.
+</More>
+
+## My part
+
+I wrote most of the code: 50 of the team's 73 commits (merges excluded), covering the core of the buffer manager, nearly all of the
+record manager and the storage manager's file handling.
+
+<Bars
+  caption="My commits in each of the three layers, out of the team's commits there (merges excluded). The team's other commits, and three of mine, went to the B+-tree index and shared setup."
+  series={['My commits', 'Team total']}
+  rows={[
+    { label: 'Storage manager', values: [14, 20] },
+    { label: 'Buffer manager', values: [19, 28] },
+    { label: 'Record manager', values: [14, 16] },
+  ]}
+  digits={0}
+/>
+
+<More>
+I also tracked down and fixed memory leaks in the buffer manager's handling of changed pages, and made the engine
+build and run on Linux. The team went on to add a B+-tree index in the final assignment.
+</More>

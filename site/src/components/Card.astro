@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Chips from './Chips.astro';
+interface Props { item: CollectionEntry<'items'> }
+const { item } = Astro.props;
+const d = item.data;
+const href = `/${d.section}/${item.id}/`;
+const tag = (d.course ?? d.context.split(/[,(]/)[0]).replace(/ \(.*\)$/, '');
+const code = d.links.find((l) => l.url.includes('github.com'));
+---
+<article class="card" data-areas={d.areas.join('|')} data-year={d.start.slice(0, 4)}>
+  <div class="visual" aria-hidden="true"><span>{tag}</span></div>
+  <h3><a class="stretch" href={href}>{d.title}</a></h3>
+  <p class="meta muted small">{d.context} · {d.when}</p>
+  <p class="role small">{d.role}</p>
+  <p class="summary">{d.summary}</p>
+  <div class="above">
+    {d.skills.length > 0 && <p class="skills-label muted small">Skills</p>}
+    <Chips skills={d.skills.slice(0, 5)} />
+    {code && <p class="small code"><a href={code.url}>Code on GitHub</a></p>}
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px 18px;
+    transition: transform 200ms var(--ease);
+  }
+  .card:hover {
+    transform: translateY(-2px);
+  }
+  .card:focus-within {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .visual {
+    aspect-ratio: 16 / 6;
+    border-radius: var(--radius-s);
+    background: var(--accent-soft);
+    display: grid;
+    place-items: center;
+    margin-bottom: 14px;
+  }
+  .visual span {
+    font-family: var(--font-heading), Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--accent);
+  }
+  h3 {
+    margin: 0 0 4px;
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  h3 a {
+    text-decoration: none;
+  }
+  .stretch::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .stretch:focus-visible {
+    outline: none;
+  }
+  .meta,
+  .role {
+    margin: 0 0 6px;
+  }
+  .role {
+    font-weight: 500;
+  }
+  .summary {
+    margin: 8px 0 0;
+  }
+  .above {
+    position: relative;
+    z-index: 1;
+  }
+  .skills-label {
+    margin: 12px 0 -6px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .code {
+    margin: 10px 0 0;
+  }
+</style>

@@ -1,0 +1,134 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import photo from '../assets/photo.png';
+import { person } from '../data/site';
+import { publishedItems } from '../data/items';
+
+// "Latest" appears only once a research paper is published on the site (from the arXiv day).
+const latest = (await publishedItems()).find((i) => i.data.section === 'research');
+---
+<Base current="home">
+  <div class="sky" aria-hidden="true"></div>
+  <section class="hero">
+    <div class="who">
+      <div class="glow"><Image src={photo} alt={person.name} width={320} height={320} class="photo" loading="eager" /></div>
+      <div>
+        <h1>{person.name}</h1>
+        <p class="role">{person.role}</p>
+        <p class="muted place">{person.location}</p>
+      </div>
+    </div>
+    <p class="intro">
+      I build and evaluate systems around large language models. At Johnson &amp; Johnson I build the data
+      pipelines behind retrieval-augmented chatbots for healthcare knowledge. In my own research I study how
+      LLM agents fail, by reading what an agent says it sees, what it says it will do, and what it actually
+      does, turn by turn.
+    </p>
+    {latest && (
+      <p class="latest"><span class="muted">Latest:</span> <a href={`/research/${latest.id}/`}>{latest.data.title}</a></p>
+    )}
+    <p class="onward"><a class="onward-link" href="/overview/">Overview of my work, 2019 to now</a></p>
+    <ul class="contact-row">
+      <li><a href={`mailto:${person.email}`}>Email</a></li>
+      <li><a href={person.github}>GitHub</a></li>
+      <li><a href={person.linkedin}>LinkedIn</a></li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  /* Dark mode: a faint static starfield above the content, never behind text (flagged decision FL1).
+     Light mode: a soft amethyst glow behind the photo only. */
+  .sky {
+    height: 72px;
+    margin: -24px 0 24px;
+    opacity: 0;
+    background-image:
+      radial-gradient(1.2px 1.2px at 6% 30%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 17% 70%, #cbbcf0 60%, transparent),
+      radial-gradient(1.4px 1.4px at 29% 20%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 41% 60%, #fff 60%, transparent),
+      radial-gradient(1.2px 1.2px at 53% 35%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 64% 80%, #fff 60%, transparent),
+      radial-gradient(1.4px 1.4px at 76% 25%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 88% 55%, #cbbcf0 60%, transparent),
+      radial-gradient(1.2px 1.2px at 96% 15%, #fff 60%, transparent);
+  }
+  :global(:root[data-theme='dark']) .sky {
+    opacity: 0.55;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme])) .sky {
+      opacity: 0.55;
+    }
+  }
+  .hero {
+    padding-top: 24px;
+  }
+  .who {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .glow {
+    flex: 0 0 auto;
+    border-radius: 50%;
+    padding: 4px;
+    background: var(--gold);
+    box-shadow: 0 0 0 0 transparent;
+  }
+  :global(:root[data-theme='light']) .glow,
+  :global(:root:not([data-theme])) .glow {
+    box-shadow: 0 0 60px 18px rgba(107, 74, 160, 0.14);
+  }
+  .photo {
+    display: block;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+  }
+  h1 {
+    font-size: 3.2rem;
+    margin: 0 0 6px;
+    padding-bottom: 10px;
+    background: linear-gradient(var(--gold), var(--gold)) left bottom / 56px 2px no-repeat;
+  }
+  .role {
+    font-size: 1.2rem;
+    margin: 0 0 2px;
+  }
+  .place {
+    margin: 0;
+  }
+  .intro {
+    font-size: 1.15rem;
+    max-width: 62ch;
+  }
+  .onward-link {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+  .contact-row {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+  }
+  @media (max-width: 767px) {
+    .who {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .photo {
+      width: 120px;
+      height: 120px;
+    }
+    h1 {
+      font-size: 2.3rem;
+    }
+  }
+</style>

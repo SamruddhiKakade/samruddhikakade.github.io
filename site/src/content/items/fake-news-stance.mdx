@@ -1,0 +1,54 @@
+---
+title: Fake news stance classification
+section: projects
+start: '2023-04'
+when: Spring 2023
+context: CS 579 Online Social Network Analysis
+course: CS 579
+oneLine: Classifying whether a news headline agrees with, disagrees with, or is unrelated to a known fake-news headline.
+summary: Given a known fake-news headline and a new one, decide whether the new one agrees with it, disagrees with it, or is unrelated. We compared four models by cross-validation on 256,442 labelled pairs.
+role: Team of 2
+myPart: Built the text pipeline, the model comparison and the report as a pair.
+skills: [Python, NLTK, scikit-learn, Text classification, Cross-validation, Model selection]
+areas: [Language (NLP), Machine learning]
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+
+## Problem
+
+Fake news spreads through headlines that repeat or contradict each other. Given a headline already known to be fake and
+a new one, can a model tell whether the new headline agrees with it, disagrees with it, or is unrelated?
+
+## Data
+
+256,442 labelled pairs of English news headlines, and 64,110 unlabelled pairs to predict.
+
+<More>
+The labels are very uneven: 175,598 pairs are unrelated, 74,238 agree and only 6,606 disagree. A model can look
+accurate just by predicting "unrelated", so each model had to beat that baseline.
+</More>
+
+## Approach
+
+<Flow
+  label="The classification pipeline"
+  steps={['Clean and lowercase', 'Tokenise and lemmatise (NLTK)', 'Word counts per headline pair', 'Scale features', 'Compare four models by five-fold cross-validation', 'Refit the best on all data and label the test set']}
+/>
+
+We compared logistic regression, a random forest, a decision tree and a linear support vector machine, each scored by
+five-fold cross-validation.
+
+<More>
+The tokeniser runs inside the word-count step, so cleaning and counting stay in one pipeline. The features are scaled
+without centring, which keeps the large word-count matrix sparse and fast to train on.
+</More>
+
+## Results
+
+The random forest was the most accurate and the most stable of the four: 0.761 mean cross-validated accuracy,
+varying by only ±0.002 across the five folds.
+
+## My part
+
+We built the project as a pair, from the text pipeline and the model comparison to the final report and presentation.

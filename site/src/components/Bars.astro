@@ -1,0 +1,68 @@
+---
+// Horizontal bar chart built from a table, so it reads without JavaScript and in screen readers.
+interface Row { label: string; values: number[] }
+interface Props { caption: string; series: string[]; rows: Row[]; digits?: number; max?: number }
+const { caption, series, rows, digits = 3, max } = Astro.props;
+const top = max ?? (Math.max(...rows.flatMap((r) => r.values), 0) || 1);
+---
+<figure class="bars">
+  <div class="table-wrap">
+    <table>
+      <caption class="muted small">{caption}</caption>
+      <thead>
+        <tr><th scope="col">Item</th>{series.map((s, i) => <th scope="col"><span class={`key k${i}`}></span>{s}</th>)}</tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr>
+            <th scope="row">{r.label}</th>
+            {r.values.map((v, i) => (
+              <td class="num">
+                <span class="bar-cell">
+                  <span class={`bar k${i}`} style={`width:${Math.max(2, (v / top) * 100)}%`}></span>
+                  <span class="val">{v.toFixed(digits)}</span>
+                </span>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</figure>
+
+<style>
+  caption {
+    caption-side: bottom;
+    text-align: left;
+    padding-top: 8px;
+  }
+  td.num {
+    min-width: 160px;
+  }
+  .bar-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bar {
+    display: inline-block;
+    height: 12px;
+    border-radius: 2px;
+  }
+  .val {
+    min-width: 3.5em;
+    text-align: right;
+  }
+  .key {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+    border-radius: 2px;
+  }
+  .k0 { background: var(--chart-1); }
+  .k1 { background: var(--chart-2); }
+  .k2 { background: var(--chart-3); }
+  .k3 { background: var(--chart-4); }
+</style>

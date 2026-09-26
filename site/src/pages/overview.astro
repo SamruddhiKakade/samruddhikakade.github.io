@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import Timeline from '../components/Timeline.astro';
+import { sections } from '../data/site';
+import { publishedItems } from '../data/items';
+
+const items = await publishedItems();
+---
+<Base title="Overview" current="overview" wide description="Everything Samruddhi Kakade has worked on since 2019, by section.">
+  <h1>Overview</h1>
+  <p class="lead">Everything I have worked on since 2019, by section. Click a section for more, or an item for its full page.</p>
+
+  {sections.map((s) => {
+    const list = items.filter((i) => i.data.section === s.key);
+    return (
+      <section class="block">
+        <h2><a href={s.href}>{s.label}</a>{list.length > 0 && <span class="count muted"> ({list.length})</span>}</h2>
+        {list.length === 0 ? <p class="muted">{s.line}</p> : (
+          <ul class="items">
+            {list.map((i) => (
+              <li>
+                <a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a>
+                <span class="muted small"> · {i.data.context} · {i.data.when}</span>
+                <p>{i.data.oneLine}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  })}
+
+  <section class="block">
+    <h2>Timeline</h2>
+    <p class="muted small">Hover or tap a mark for its title; click to open it. The gold line is today.</p>
+    <Timeline items={items} />
+  </section>
+</Base>
+
+<style>
+  .lead {
+    max-width: var(--measure);
+  }
+  .block h2 {
+    margin: 40px 0 8px;
+  }
+  .block h2 a {
+    text-decoration: none;
+  }
+  .count {
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-size: 1rem;
+  }
+  .items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: var(--measure);
+  }
+  .items li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .items a {
+    font-weight: 500;
+  }
+  .items p {
+    margin: 2px 0 0;
+  }
+</style>

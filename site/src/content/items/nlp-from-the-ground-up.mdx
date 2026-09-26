@@ -1,0 +1,78 @@
+---
+title: NLP from the ground up
+section: projects
+start: '2023-10'
+when: Fall 2023
+context: CS 585 Natural Language Processing
+course: CS 585
+oneLine: Entropy and KL divergence between corpora, a clickbait classifier, and a bigram language model that classifies sentiment.
+summary: Core natural language processing built from first principles. I measured entropy and KL divergence between two corpora, built a Naive Bayes clickbait detector, and wrote a smoothed bigram language model that classifies sentiment.
+role: Solo
+myPart: I wrote the information-theory measures and the language model myself, and designed the classifier comparisons.
+skills: [Python, Language models, Naive Bayes, Text classification, Information theory, scikit-learn]
+areas: [Language (NLP), Machine learning]
+---
+import More from '../../components/More.astro';
+import Bars from '../../components/Bars.astro';
+
+## Problem
+
+How different are two collections of text, and how far can simple probabilistic models go at classifying text?
+
+## Data
+
+- A sentiment corpus of movie-review sentences (SST) and a question-answering corpus (QNLI), for comparing corpora
+  and for sentiment classification.
+- A set of news headlines labelled as clickbait or not.
+
+## Approach
+
+1. **Comparing corpora.** I wrote entropy and KL divergence from scratch, over the word distributions of the two
+   corpora.
+2. **Clickbait detection.** A Naive Bayes classifier on word counts, tuned by grid search, compared with a rule-based
+   classifier built from the words most indicative of clickbait.
+3. **Sentiment from language models.** A bigram language model with add-α smoothing, written in Python. I trained
+   one model per sentiment class and labelled each sentence with the class whose model found it most likely.
+
+## Calculations
+
+$$
+H(P) = -\sum_{w} P(w)\log_2 P(w)
+\qquad
+D_{\mathrm{KL}}(P\,\Vert\,Q) = \sum_{w} P(w)\log_2\frac{P(w)}{Q(w)}
+$$
+
+<More>
+The bigram model estimates the probability of each word given the one before it, with add-α smoothing so unseen
+pairs are not impossible:
+
+$$
+P(w_i \mid w_{i-1}) = \frac{\text{count}(w_{i-1}, w_i) + \alpha}{\text{count}(w_{i-1}) + \alpha\,|V|}
+$$
+
+I chose α on a validation set: 0.001 fit best of the values I tried (0.001, 0.01 and 0.1).
+</More>
+
+## Results
+
+- The two corpora have similar word entropy (10.28 and 10.42 bits), but KL divergence is clearly asymmetric (0.645
+  one way, 0.531 the other).
+- The bigram language-model classifier labelled 90% of held-out sentences correctly.
+- Naive Bayes found far more of the clickbait than the word rules, at similar precision.
+
+<Bars
+  caption="Clickbait detection on the test set: precision and recall"
+  series={['Precision', 'Recall']}
+  rows={[
+    { label: 'Label everything clickbait', values: [0.36, 1.0] },
+    { label: 'Word rules', values: [0.79, 0.09] },
+    { label: 'Naive Bayes', values: [0.84, 0.68] },
+  ]}
+  digits={2}
+  max={1}
+/>
+
+## My part
+
+I wrote the entropy, KL divergence and bigram model from scratch, and designed the comparison between the learned
+classifier and the word rules.

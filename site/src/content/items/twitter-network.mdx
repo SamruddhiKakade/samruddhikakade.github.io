@@ -1,0 +1,65 @@
+---
+title: Twitter follower-network analysis
+section: projects
+start: '2023-02'
+when: Spring 2023
+context: CS 579 Online Social Network Analysis
+course: CS 579
+oneLine: Wrote a Twitter API crawler that built a 245-account follower network, then measured its structure in Gephi.
+summary: I wrote a Twitter API crawler that collected a 245-account follower network, then measured its structure in Gephi, including degree, PageRank, diameter and path length.
+role: Main developer, team of 2
+myPart: Wrote the crawler, the conversion to a directed edge list and the Gephi files (16 of the project's 17 commits).
+skills: [Python, Tweepy, Gephi, Network analysis, Data cleaning]
+areas: [Data and networks]
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+
+## Problem
+
+Collect real social-network data with our own crawler, and describe the structure of the network it produces.
+
+## Data
+
+245 accounts and 244 follower links, gathered two levels out from one public starting account.
+
+<More>
+The crawler took up to 50 followers for each account and expanded 12 accounts in all. Account names are real people's
+and are not shown here.
+</More>
+
+## Approach
+
+<Flow
+  label="From the Twitter API to network measures"
+  steps={['Crawl followers (tweepy)', 'Save to CSV', 'Build a directed edge list', 'Load into Gephi', 'Measure structure and centrality']}
+/>
+
+The crawler, written with tweepy, pages through each account's followers within the API's rate limits. Its output
+becomes a directed edge list for Gephi.
+
+## Calculations
+
+PageRank scores an account by the importance of the accounts that follow it:
+
+$$
+PR(v) = \frac{1-d}{N} + d \sum_{u \to v} \frac{PR(u)}{\text{out}(u)}
+$$
+
+with damping factor $d = 0.85$, where $N$ is the number of accounts and $\text{out}(u)$ the number of accounts that
+$u$ follows.
+
+## Results
+
+The network is a hub-and-spoke tree: its diameter is 2, the average path between accounts is 1.44 steps, and PageRank
+concentrates on the starting account, with a score of 0.310.
+
+<More>
+Gephi also gave in-degree, out-degree, eccentricity, closeness and betweenness for every account, and I plotted the
+degree distributions with pandas and matplotlib. The clustering coefficient is 0, as expected for a crawl that expands
+outward from one account without following links back.
+</More>
+
+## My part
+
+I wrote the crawler, the edge-list conversion and the Gephi files: 16 of the project's 17 commits.

@@ -1,0 +1,71 @@
+---
+title: Machine learning from scratch
+section: projects
+start: '2023-10'
+when: Fall 2023
+context: CS 584 Machine Learning
+course: CS 584
+oneLine: Logistic regression, softmax regression and a perceptron written from scratch in NumPy.
+summary: Course assignments where I wrote gradient descent, logistic and softmax regression, and a perceptron in NumPy, and studied regularisation in linear models.
+role: Solo
+myPart: I derived and implemented the algorithms myself and ran every experiment.
+skills: [Python, NumPy, Gradient descent, scikit-learn, Machine learning]
+areas: [Machine learning]
+---
+import More from '../../components/More.astro';
+import Bars from '../../components/Bars.astro';
+
+## Problem
+
+Understand machine-learning methods by building them: write the maths as code instead of calling a library's fit.
+
+## Approach
+
+- **Regularisation:** ridge and lasso regression across regularisation strengths, including degree-5 polynomial
+  features, on real car data (with scikit-learn).
+- **Logistic and softmax regression:** sigmoid, softmax, cross-entropy loss, and training by batch gradient descent
+  and mini-batch stochastic gradient descent, written in NumPy.
+- **Perceptron:** a perceptron with three activation functions, trained on handwritten digits, written in NumPy.
+
+## Calculations
+
+Logistic regression predicts $\hat y = \sigma(w^\top x + b)$ with $\sigma(z) = 1/(1+e^{-z})$, and learns by gradient
+descent on the cross-entropy loss:
+
+$$
+L = -\frac{1}{n}\sum_{i=1}^{n}\bigl[y_i \log \hat y_i + (1-y_i)\log(1-\hat y_i)\bigr],
+\qquad
+w \leftarrow w - \eta\,\frac{1}{n}\sum_{i=1}^{n}(\hat y_i - y_i)\,x_i
+$$
+
+<More>
+Softmax regression generalises this to several classes: $\hat y_k = e^{z_k} / \sum_j e^{z_j}$, with the same kind of
+gradient step per class. Mini-batch stochastic gradient descent takes each step on a small random batch instead of the
+whole dataset, which is faster and adds useful noise.
+</More>
+
+## Results
+
+My perceptron reached 94.7% test accuracy on handwritten digits with the ReLU activation.
+
+<Bars
+  caption="Perceptron test accuracy on 8×8 handwritten digits, by activation function"
+  series={['Test accuracy']}
+  rows={[
+    { label: 'Linear', values: [0.886] },
+    { label: 'Sigmoid', values: [0.942] },
+    { label: 'ReLU', values: [0.947] },
+  ]}
+  max={1}
+/>
+
+<More>
+On the regularisation assignment, linear regression predicted city fuel economy from five car features with
+R² = 0.73 on held-out data, and the ridge and lasso sweeps showed how each shrinks the model's coefficients as the
+regularisation grows.
+</More>
+
+## My part
+
+I wrote the gradient descent, the logistic and softmax regression and the perceptron in NumPy, and ran and compared
+every setting myself.

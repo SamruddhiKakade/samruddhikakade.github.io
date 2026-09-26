@@ -1,0 +1,78 @@
+---
+title: AI Engineer
+section: experience
+start: '2025-01'
+end: present
+when: Jan 2025 – present
+context: Johnson & Johnson (via eProSoft America)
+place: New Brunswick, NJ
+oneLine: Data-ingestion pipelines that bring healthcare knowledge into retrieval-augmented enterprise chatbots.
+summary: I build and maintain the data pipelines that bring healthcare knowledge into enterprise chatbots, and work with product, compliance and governance teams so the answers can be trusted in a regulated setting.
+role: AI Engineer
+myPart: I build and maintain the ingestion pipelines, design the metadata and categorisation, and look after data quality, working across product, compliance, governance and engineering teams.
+skills: [Python, Data pipelines, RAG, Metadata design, Data quality, Generative AI, Stakeholder collaboration]
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+
+## Problem
+
+An enterprise chatbot is only as good as the knowledge it draws on. Healthcare knowledge comes from many sources, in
+many shapes, and every answer has to meet regulatory and governance standards.
+
+<More>
+When sources are duplicated, inconsistent or quietly change their structure over time, a retrieval-augmented chatbot
+finds the wrong passage, or several conflicting ones. Its answers become slower, less relevant and harder to trust.
+Much of the quality of such a system is decided before the language model ever sees a question.
+</More>
+
+## Approach
+
+<Flow
+  label="The general pattern of the pipelines I work on"
+  steps={['Knowledge sources', 'Ingestion', 'Cleaning and quality checks', 'Metadata and semantic categories', 'Retrieval index', 'Chatbot answers']}
+/>
+
+I build the stages between the sources and the chatbot, so that each passage arrives clean and labelled.
+
+<More>
+- **Metadata and semantic categories.** Each piece of knowledge is described and grouped by meaning, so retrieval can
+  narrow its search to the right part of the collection before ranking passages.
+- **Quality checks.** Redundancy, inconsistency and schema drift are caught and corrected before they reach the
+  chatbot, with corrective workflows rather than one-off fixes.
+</More>
+
+## My part
+
+- I build and maintain the ingestion pipelines.
+- I design the metadata and semantic categorisation.
+- I diagnose data-quality problems and put corrective workflows in place.
+- I work with product, compliance, governance and engineering teams.
+
+<More>
+- Turning unclear needs into clear functional and data requirements.
+- Explaining technical results to business stakeholders in plain terms.
+- Supporting live use of the chatbots and improving them from user and stakeholder feedback.
+- Working within compliance and governance requirements in a regulated healthcare environment.
+</More>
+
+## What I learned
+
+Working on AI in production has changed how I think about building it:
+
+- **The data decides the answer.** Answers come from what the chatbot retrieves, so clean, well-described sources
+  improve them more reliably than changes made further down the line.
+- **Structure is part of retrieval.** How knowledge is described and grouped decides what the chatbot can find, so
+  I treat metadata and categories as part of the design.
+
+<More>
+- **Fix the cause.** When a data problem appears once, it will appear again, so I build corrective workflows that
+  catch the whole class of problem.
+- **Compliance is a design input.** In a regulated setting, bringing compliance and governance in early, and
+  documenting decisions as I make them, means a solution is ready for production when it is ready technically.
+- **Clear requirements save the most time.** Turning a loosely stated need into precise functional and data
+  requirements, and explaining results to business stakeholders in plain terms, keeps everyone building toward the
+  same thing.
+- **Live use is the real test.** Watching how a system is used and folding feedback into the next change teaches me
+  more than any test run before launch.
+</More>

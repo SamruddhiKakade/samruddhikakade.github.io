@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { itemsIn } from '../../data/items';
+const items = await itemsIn('certifications');
+---
+<Base title="Certifications" current="certifications" wide description="Certifications completed by Samruddhi Kakade.">
+  <h1>Certifications</h1>
+  <p class="lead">Courses I completed alongside and after university, newest first.</p>
+  <div class="grid">{items.map((item) => <Card item={item} />)}</div>
+</Base>
+<style>
+  .lead { max-width: var(--measure); }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
+  @media (max-width: 767px) { .grid { grid-template-columns: 1fr; } }
+</style>

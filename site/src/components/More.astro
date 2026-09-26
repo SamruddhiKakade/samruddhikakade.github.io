@@ -1,0 +1,50 @@
+---
+// L3: detail hidden inside its L2 until the reader asks for it.
+interface Props { label?: string }
+const { label = 'More' } = Astro.props;
+---
+<details class="more">
+  <summary>{label}</summary>
+  <div class="more-body"><slot /></div>
+</details>
+
+<style>
+  .more {
+    margin: 4px 0 24px;
+  }
+  .more > summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: var(--link);
+    font-size: 0.95rem;
+    list-style: none;
+    padding: 2px 0;
+  }
+  .more > summary::-webkit-details-marker {
+    display: none;
+  }
+  .more > summary::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 150ms var(--ease);
+  }
+  .more[open] > summary::before {
+    transform: rotate(45deg);
+  }
+  .more[open] > summary {
+    margin-bottom: 8px;
+  }
+  .more-body {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px 4px;
+  }
+</style>

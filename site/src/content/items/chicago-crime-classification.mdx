@@ -1,0 +1,68 @@
+---
+title: Chicago crime classification
+section: projects
+start: '2023-11'
+when: Fall 2023
+context: CS 584 Machine Learning
+course: CS 584
+oneLine: Predicting crime type from time and place on 656,000 Chicago records; I built the model comparison and rebuilt the cross-validation.
+summary: Predicting the type of a reported crime from when and where it happened, using 656,549 Chicago incidents from 2020 to 2022. I built the comparison of seven model families, rebuilt the cross-validation, and tuned a neural network by grid search.
+role: Modelling and evaluation, team of 4
+myPart: Wrote the model-selection notebook, rebuilt the stratified cross-validation so each fold trains and scores on its own split, and added the neural-network grid search.
+skills: [Python, scikit-learn, Model selection, Cross-validation, Neural networks, Teamwork]
+areas: [Machine learning, Data and networks]
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+import Bars from '../../components/Bars.astro';
+
+## Problem
+
+Can the time and place of a crime report predict what kind of crime it is?
+
+## Data
+
+Chicago's public crime records for 2020 to 2022: 656,549 incidents across 33 crime types, described by community
+area, type of location, day, month and year.
+
+<More>
+<Bars
+  caption="The five most common crime types, 2020 to 2022 (number of incidents)"
+  series={['Incidents']}
+  rows={[
+    { label: 'Theft', values: [136938] },
+    { label: 'Battery', values: [122778] },
+    { label: 'Criminal damage', values: [77179] },
+    { label: 'Assault', values: [59357] },
+    { label: 'Deceptive practice', values: [49170] },
+  ]}
+  digits={0}
+/>
+
+The classes are uneven: a few crime types make up most of the records, and many are rare.
+</More>
+
+## Approach
+
+<Flow
+  label="The modelling pipeline"
+  steps={['Encode and scale features', 'Compare seven model families', 'Stratified k-fold cross-validation', 'Grid search for the neural network']}
+/>
+
+I set up a fair comparison of seven classifiers (logistic regression, decision tree, random forest, naive Bayes,
+k-nearest neighbours, support vector machine and a neural network), each evaluated the same way.
+
+<More>
+- **Stratified folds:** they keep the share of each crime type the same in every fold, so rare types are not missing from
+  some folds.
+- I rebuilt the cross-validation loop so that each fold trains on its own training split and is scored on its own
+  held-out split, and set it up as an 80/20 split with three stratified folds.
+- I added a grid search over the neural network: four layer shapes, two activation functions, two solvers, three
+  regularisation strengths and two learning-rate schedules, 96 configurations in all.
+</More>
+
+## My part
+
+- I wrote the model-selection notebook comparing the seven model families.
+- I rebuilt the stratified cross-validation and added the neural-network grid search.
+- Teammates cleaned and explored the data.

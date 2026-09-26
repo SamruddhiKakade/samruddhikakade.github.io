@@ -1,0 +1,68 @@
+---
+title: Chicago crime data analysis
+section: projects
+start: '2024-04'
+when: Spring 2024
+context: CSP 571 Data Preparation and Analysis
+course: CSP 571
+oneLine: Led a four-person team analysing 877,000 recent Chicago crime records in R.
+summary: I led a four-person team analysing recent Chicago crime records in R. I set up the repository and the analysis plan, and wrote the data preparation and the crime-type analysis.
+role: Team leader, team of 4
+myPart: Led the team, set up the repository and the section-by-section analysis plan, wrote the data preparation and crime-type analysis, and finalised the presentation.
+skills: [R, Data cleaning, Exploratory analysis, Data visualisation, Team leadership, Git]
+areas: [Data and networks]
+links:
+  - label: Code on GitHub
+    url: https://github.com/SamruddhiKakade/CSP_571_Project
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+
+## Problem
+
+Which crimes are most common in Chicago, where do they happen, and how have they changed in recent years?
+
+## Data
+
+The City of Chicago's public crime dataset: 7,930,875 records with 22 columns, which I cut down to 877,453 records
+from 2020 to 2023, with the 9 columns the analysis needed.
+
+<More>
+- Kept 2020 to 2023, so the analysis reflects the city today.
+- Dropped columns the questions did not need, then removed duplicates and incomplete rows.
+- Split each date into day, month and year, and added a time-of-day bucket, so patterns over the day and the year
+  could be studied.
+</More>
+
+## Approach
+
+<Flow
+  label="How the team's analysis was organised"
+  steps={['Prepare and clean the data', 'Rank crime types', 'Top five by district and community area', 'Trends by year and month', 'PCA and simple classifiers']}
+/>
+
+I laid out the analysis section by section in a shared R Markdown document, with each part assigned, so four people
+could work in parallel and the results would fit together.
+
+<More>
+- **My sections:** data preparation, the ranking of crime types by share (with a pie chart and a top-five bar chart),
+  and arrest rates for the top five crime types.
+- **Teammates' sections:** crime by district and community area, trends over the years and months, PCA, and k-nearest
+  neighbours and random-forest classifiers.
+</More>
+
+## Results
+
+Theft, battery, criminal damage, assault and motor vehicle theft were the five most common crimes, and motor vehicle
+theft rose sharply after 2021.
+
+## My part
+
+- I led the team: I set up the repository, wrote the analysis plan that divided the work, and finalised the
+  presentation.
+- I wrote the data preparation and the crime-type analysis.
+
+<More>
+The plan was a skeleton of the whole report, with a section for each question and notes on what each teammate would
+add, set up before any analysis began. The team presented the results on 21 April 2024.
+</More>

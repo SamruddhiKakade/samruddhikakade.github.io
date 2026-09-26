@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { itemsIn } from '../../data/items';
+const items = await itemsIn('experience');
+---
+<Base title="Experience" current="experience" wide description="Where Samruddhi Kakade has worked.">
+  <h1>Experience</h1>
+  <p class="lead">Where I have worked, newest first. Open any role for what I built and how.</p>
+  <div class="grid">{items.map((item) => <Card item={item} />)}</div>
+</Base>
+<style>
+  .lead { max-width: var(--measure); }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
+  @media (max-width: 767px) { .grid { grid-template-columns: 1fr; } }
+</style>

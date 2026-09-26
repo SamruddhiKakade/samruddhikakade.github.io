@@ -1,0 +1,257 @@
+/* Tokens. Light is the default; dark follows the device unless the visitor chose (data-theme). */
+:root {
+  --bg: #fbf7ee;
+  --surface: #ffffff;
+  --surface-2: #f4eee2;
+  --text: #1e2433;
+  --muted: #5a5f6e;
+  --border: #e2d9c6;
+  --link: #0f6e68;
+  --link-hover: #0a524d;
+  --accent: #6b4aa0;
+  --accent-soft: #efe8f8;
+  --gold: #b8860b;
+  --focus: #0f6e68;
+  --chart-1: #2f6db5;
+  --chart-2: #c4661f;
+  --chart-3: #3f8a3a;
+  --chart-4: #9a4f96;
+  --band-w: 240px;
+  --measure: 70ch;
+  --wide: 960px;
+  --radius-s: 6px;
+  --radius: 12px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #0f1b2d;
+  --surface: #16243a;
+  --surface-2: #1b2c46;
+  --text: #e8e6f0;
+  --muted: #a9b0c2;
+  --border: #2a3a55;
+  --link: #3cc7bb;
+  --link-hover: #7ddcd3;
+  --accent: #b39de6;
+  --accent-soft: #2a2350;
+  --gold: #d4a84a;
+  --focus: #3cc7bb;
+  --chart-1: #7fb0ea;
+  --chart-2: #f0a364;
+  --chart-3: #8fcf86;
+  --chart-4: #d59ad1;
+  color-scheme: dark;
+}
+
+/* Without JavaScript, still follow the device setting. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0f1b2d;
+    --surface: #16243a;
+    --surface-2: #1b2c46;
+    --text: #e8e6f0;
+    --muted: #a9b0c2;
+    --border: #2a3a55;
+    --link: #3cc7bb;
+    --link-hover: #7ddcd3;
+    --accent: #b39de6;
+    --accent-soft: #2a2350;
+    --gold: #d4a84a;
+    --focus: #3cc7bb;
+    --chart-1: #7fb0ea;
+    --chart-2: #f0a364;
+    --chart-3: #8fcf86;
+    --chart-4: #d59ad1;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 72px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading), Georgia, serif;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 2.25rem;
+  margin: 0 0 16px;
+}
+
+h2 {
+  font-size: 1.6rem;
+  margin: 56px 0 12px;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin: 32px 0 8px;
+}
+
+p,
+ul,
+ol {
+  margin: 0 0 16px;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.9rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skill chips: links, so teal. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.chip {
+  display: inline-block;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  padding: 3px 10px;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--link);
+  color: var(--link);
+  text-decoration: none;
+}
+
+a.chip:hover {
+  background: var(--link);
+  color: var(--bg);
+}
+
+/* Tables: aligned numbers, sideways scroll on phones. */
+.table-wrap {
+  overflow-x: auto;
+  margin: 0 0 20px;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  min-width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 6px 12px 6px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+td.num,
+th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.katex-display {
+  position: relative; /* keeps KaTeX's hidden MathML copy inside the scroll box */
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media print {
+  .band,
+  .topbar,
+  .skip,
+  .theme-toggle,
+  .more-all {
+    display: none !important;
+  }
+  :root {
+    --bg: #fff;
+    --text: #000;
+    --muted: #333;
+  }
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+  }
+}

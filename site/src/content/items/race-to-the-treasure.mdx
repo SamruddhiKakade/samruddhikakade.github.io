@@ -1,0 +1,69 @@
+---
+title: Race to the Treasure
+section: projects
+start: '2022-10'
+when: Fall 2022
+context: HUM 371 Game Design
+course: HUM 371
+oneLine: A 2 to 4 player board game I designed, playtested, balanced and illustrated myself.
+summary: A race game where players set traps for their rivals and shortcuts for themselves. I designed the rules, balanced four characters through playtesting, and made all the art.
+role: Solo designer
+myPart: I designed the game, ran the playtests, rebalanced it from what they showed, and made the board, cards and rulebook.
+skills: [Game design, Playtesting, Visual design, Technical writing]
+areas: [Games]
+---
+import { Image } from 'astro:assets';
+import More from '../../components/More.astro';
+import board from '../../assets/race-to-the-treasure-board.jpg';
+
+<figure>
+  <Image src={board} alt="The game board: a parchment grid with a dashed path winding from START in the bottom corner to a treasure chest in the top corner." width={480} />
+  <figcaption class="muted small">The board I designed: a winding path from the start to the treasure chest.</figcaption>
+</figure>
+
+## Problem
+
+Make a race-to-the-finish game where strategy matters as much as the roll of a die.
+
+## How it plays
+
+Two to four players race along the path to the treasure. Before the race, players take turns placing trap cards, which
+only hurt their rivals, and shortcut cards, which only help themselves. On each turn a player either rolls the die or
+moves one of their own cards. The first to reach the treasure wins.
+
+<More>
+Each player also has a character that changes how the game plays for them:
+
+- **Trap Designer:** stronger traps.
+- **Map Expert:** stronger shortcuts.
+- **Lucky:** can ignore three traps.
+- **Strategist:** three extra turns, never two in a row.
+
+An optional ending, "The last stretch", asks for an exact roll to land on the treasure.
+</More>
+
+## Approach
+
+I tried three themes before settling on a treasure race, then tested the game with players and changed the design
+after each round.
+
+<More>
+An escape-from-zombies theme felt too dark for a family game, and a capture-the-flag theme became tedious in play. The
+treasure race kept the tension of a race while leaving room for the trap-and-shortcut strategy. The game is aimed at
+families with children over twelve, and I made the art in Canva: an old-scroll map, a parchment rulebook and a themed
+font.
+</More>
+
+## Results
+
+Playtesting showed a problem my first design had missed: when everyone played only traps, the game stalled. I fixed
+it by adding the four characters, each with its own mix of traps and shortcuts, and rebalanced them until each had a
+fair chance of winning.
+
+<More>
+The exact-roll ending came from a playtester's suggestion, and became the "Last stretch" variant in the rulebook.
+</More>
+
+## My part
+
+I designed the rules, ran the playtests and made all the art in Canva.

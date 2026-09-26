@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { itemsIn } from '../../data/items';
+const items = await itemsIn('research');
+---
+<Base title="Research" current="research" description="Samruddhi Kakade's research on how LLM agents fail.">
+  <h1>Research</h1>
+  <p>
+    My independent research looks at how LLM agents fail. Instead of scoring only whether an agent finishes a
+    task, I read each of its turns: the state it describes, the plan it states and the move it makes, and check
+    each one against the rules. Games make a good test bed for this, because the rules are exact and every move can be checked.
+  </p>
+  {items.length > 0 && <div class="list">{items.map((item) => <Card item={item} />)}</div>}
+</Base>
+<style>
+  .list { display: grid; gap: 20px; margin-top: 24px; }
+</style>

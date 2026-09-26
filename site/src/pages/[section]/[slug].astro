@@ -1,0 +1,90 @@
+---
+import 'katex/dist/katex.min.css';
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Chips from '../../components/Chips.astro';
+import { publishedItems } from '../../data/items';
+import { sections } from '../../data/site';
+
+export async function getStaticPaths() {
+  const items = await publishedItems();
+  return items.map((item) => ({ params: { section: item.data.section, slug: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const d = item.data;
+const { Content, headings } = await render(item);
+const toc = [
+  ...headings.filter((h) => h.depth === 2),
+  ...(d.skills.length > 0 ? [{ depth: 2, slug: 'skills', text: 'Skills' }] : []),
+];
+const sec = sections.find((s) => s.key === d.section)!;
+---
+<Base title={d.title} current={d.section} description={d.oneLine}>
+  <nav class="trail small" aria-label="Breadcrumb">
+    <a href="/overview/">Overview</a> / <a href={sec.href}>{sec.label}</a> / <span aria-current="page">{d.title}</span>
+  </nav>
+  <h1>{d.title}</h1>
+
+  <dl class="summary">
+    <div><dt>What</dt><dd>{d.summary}</dd></div>
+    <div><dt>Role</dt><dd>{d.role}</dd></div>
+    <div><dt>When</dt><dd>{d.when}</dd></div>
+    <div><dt>{d.section === 'experience' ? 'Where' : 'Context'}</dt><dd>{d.context}{d.place ? ` · ${d.place}` : ''}</dd></div>
+    {d.links.length > 0 && (
+      <div><dt>Links</dt><dd>{d.links.map((l, i) => <>{i > 0 && ' · '}<a href={l.url}>{l.label}</a></>)}</dd></div>
+    )}
+  </dl>
+
+  {toc.length > 1 && (
+    <details class="contents" open>
+      <summary>Contents</summary>
+      <ul>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
+    </details>
+  )}
+  <p class="more-all" hidden><button type="button" data-open="1">Open all</button> · <button type="button" data-open="0">Close all</button></p>
+
+  <article class="body">
+    <Content />
+  </article>
+  {d.skills.length > 0 && (
+    <section class="skills-block">
+      <h2 id="skills">Skills</h2>
+      <p class="muted small">Each skill links to everything on this site that uses it.</p>
+      <Chips skills={d.skills} />
+    </section>
+  )}
+</Base>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('.more-all');
+  const blocks = document.querySelectorAll<HTMLDetailsElement>('.body details.more');
+  if (bar && blocks.length > 0) {
+    bar.hidden = false;
+    bar.querySelectorAll<HTMLButtonElement>('button').forEach((b) =>
+      b.addEventListener('click', () => blocks.forEach((d) => (d.open = b.dataset.open === '1'))),
+    );
+  }
+  // On phones the contents list starts closed.
+  if (window.matchMedia('(max-width: 1023px)').matches) document.querySelector<HTMLDetailsElement>('.contents')?.removeAttribute('open');
+  window.addEventListener('beforeprint', () => document.querySelectorAll('details').forEach((d) => d.setAttribute('open', '')));
+</script>
+
+<style>
+  .trail { color: var(--muted); margin-bottom: 12px; }
+  .summary {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 20px; margin: 0 0 16px; display: grid; gap: 6px;
+  }
+  .summary div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; }
+  .summary dt { color: var(--muted); font-size: 0.9rem; padding-top: 2px; }
+  .summary dd { margin: 0; }
+  .contents { margin: 0 0 8px; }
+  .contents summary { cursor: pointer; color: var(--link); }
+  .contents ul { display: flex; flex-wrap: wrap; gap: 4px 18px; list-style: none; padding: 6px 0 0; margin: 0; }
+  .more-all { font-size: 0.9rem; margin: 4px 0 0; }
+  .more-all button { font: inherit; color: var(--link); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+  .body :global(h2), .skills-block h2 { margin-top: 48px; }
+  .body :global(figure) { margin-left: 0; margin-right: 0; }
+  @media (max-width: 767px) { .summary div { grid-template-columns: 1fr; gap: 0; } }
+</style>

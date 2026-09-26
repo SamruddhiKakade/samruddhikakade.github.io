@@ -1,0 +1,11 @@
+# Private working files, kept out of this public repository.
+profile/
+# Local assistant instructions.
+CLAUDE.md
+.env
+*token*
+credentials*
+*.key
+*.pem
+# Local tool settings
+.claude/

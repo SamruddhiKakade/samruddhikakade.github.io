@@ -1,0 +1,299 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import { person, sections } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  current?: string; // 'home' | 'overview' | a section key
+  wide?: boolean;
+}
+
+const { title, description = person.description, current = '', wide = false } = Astro.props;
+const pageTitle = title ? `${title} · ${person.name}` : person.name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+const built = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const nav = [
+  { key: 'home', label: 'Home', href: '/' },
+  { key: 'overview', label: 'Overview', href: '/overview/' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      // Set the theme before the page draws: the visitor's choice, else the device setting.
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+        document.documentElement.classList.add('js');
+      })();
+    </script>
+    <Font cssVariable="--font-heading" preload />
+    <Font cssVariable="--font-body" preload />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="topbar">
+      <details class="menu">
+        <summary class="btn">Menu</summary>
+        <nav aria-label="Site">
+          <ul>
+            {nav.map((n) => <li><a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.label}</a></li>)}
+            {sections.map((s) => <li><a href={s.href} aria-current={current === s.key ? 'page' : undefined}>{s.label}</a></li>)}
+          </ul>
+        </nav>
+      </details>
+      <button class="btn theme-toggle" type="button" aria-label="Switch colour theme" aria-pressed="false">Theme</button>
+      <a class="topbar-name" href="/">{person.shortName}</a>
+    </header>
+
+    <div class="frame">
+      <aside class="band">
+        <a class="band-name" href="/">{person.name}</a>
+        <nav aria-label="Site">
+          <ul>
+            {nav.map((n) => <li><a href={n.href} class:list={{ on: current === n.key }} aria-current={current === n.key ? 'page' : undefined}>{n.label}</a></li>)}
+          </ul>
+          <hr />
+          <ul>
+            {sections.map((s) => <li><a href={s.href} class:list={{ on: current === s.key }} aria-current={current === s.key ? 'page' : undefined}>{s.label}</a></li>)}
+          </ul>
+        </nav>
+        <div class="band-foot">
+          <ul class="contact">
+            <li><a href={`mailto:${person.email}`}>Email</a></li>
+            <li><a href={person.github}>GitHub</a></li>
+            <li><a href={person.linkedin}>LinkedIn</a></li>
+          </ul>
+          <button class="btn theme-toggle" type="button" aria-label="Switch colour theme" aria-pressed="false">Theme</button>
+        </div>
+      </aside>
+
+      <main id="main" class:list={['main', { wide }]}>
+        <slot />
+        <footer class="foot muted small">
+          <p>Last updated {built} · © {new Date().getFullYear()} {person.name}</p>
+        </footer>
+      </main>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var buttons = document.querySelectorAll('.theme-toggle');
+        function sync() {
+          var dark = root.getAttribute('data-theme') === 'dark';
+          buttons.forEach(function (b) {
+            b.setAttribute('aria-pressed', String(dark));
+            b.textContent = dark ? 'Light theme' : 'Dark theme';
+          });
+        }
+        buttons.forEach(function (b) {
+          b.addEventListener('click', function () {
+            var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            try { localStorage.setItem('theme', next); } catch (e) {}
+            sync();
+          });
+        });
+        sync();
+      })();
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: -999px;
+    top: 8px;
+    background: var(--surface);
+    padding: 8px 12px;
+    z-index: 10;
+  }
+  .skip:focus {
+    left: 8px;
+  }
+
+  .btn {
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--link);
+    background: transparent;
+    border: 1px solid var(--link);
+    border-radius: var(--radius-s);
+    padding: 4px 10px;
+    cursor: pointer;
+    list-style: none;
+    min-height: 32px;
+  }
+  .btn:hover {
+    background: var(--link);
+    color: var(--bg);
+  }
+  summary.btn::-webkit-details-marker {
+    display: none;
+  }
+  /* The toggle needs JavaScript; hide it without. */
+  :global(html:not(.js)) .theme-toggle {
+    display: none;
+  }
+
+  .frame {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .band {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    width: var(--band-w);
+    flex: 0 0 var(--band-w);
+    display: flex;
+    flex-direction: column;
+    padding: 32px 20px 24px;
+    background: var(--surface-2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+  }
+  .band-name {
+    font-family: var(--font-heading), Georgia, serif;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    color: var(--text);
+    text-decoration: none;
+    margin-bottom: 28px;
+  }
+  .band ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .band nav a {
+    display: block;
+    padding: 5px 10px;
+    margin: 1px -10px;
+    border-radius: var(--radius-s);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .band nav a:hover {
+    color: var(--link);
+  }
+  .band nav a.on {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 500;
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+  .band hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 14px 0;
+  }
+  .band-foot {
+    margin-top: auto;
+    padding-top: 24px;
+  }
+  .contact {
+    margin-bottom: 14px !important;
+  }
+  .contact li {
+    margin: 2px 0;
+  }
+
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 56px 48px 32px;
+    max-width: calc(var(--measure) + 96px);
+  }
+  .main.wide {
+    max-width: calc(var(--wide) + 96px);
+  }
+  .foot {
+    margin-top: 96px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .topbar {
+    display: none;
+  }
+
+  @media (max-width: 1023px) {
+    .band {
+      display: none;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-name {
+      margin-left: auto;
+      font-family: var(--font-heading), Georgia, serif;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .menu nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 16px 16px;
+    }
+    .menu ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .menu a {
+      display: block;
+      padding: 8px 0;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .menu a[aria-current='page'] {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .main {
+      padding: 32px 16px 24px;
+    }
+  }
+</style>

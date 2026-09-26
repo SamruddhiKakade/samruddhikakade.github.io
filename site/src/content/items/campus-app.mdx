@@ -1,0 +1,49 @@
+---
+title: Campus communication app
+section: projects
+start: '2022-06'
+when: Summer 2022
+context: CS 487 Software Engineering
+course: CS 487
+oneLine: A Django campus messaging app; I built the backend, registration and the one-to-one messaging system.
+summary: A campus communication web app for students, faculty and support staff. I wrote the Django backend, covering accounts, finding other users, and one-to-one chat with unread counts.
+role: Backend developer, team of 3
+myPart: Wrote the backend, from registration and login to user search and the messaging system, and suggested the technology the team used.
+skills: [Python, Django, Backend development, Data modelling, Requirements and design, Teamwork]
+areas: [Software]
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+
+## Problem
+
+Students need one place to reach each other, their professors, and support services such as health and wellness or
+campus security.
+
+<More>
+The course brief asked for a "student assist" app. We designed ours for five roles (student, professor, health and
+wellness staff, campus security and administrator). Anonymous messages to health and wellness and to campus security
+were part of the design; the prototype focused on accounts, search and messaging.
+</More>
+
+## Approach
+
+<Flow
+  label="How the team worked"
+  steps={['Requirements', 'Design report: context model, screens, pseudocode, data models', 'Django prototype']}
+/>
+
+We split the work into front end, back end and database, and built a working prototype on Django and SQLite.
+
+## My part
+
+I wrote the backend: registration and login, searching for other users, and the messaging system.
+
+<More>
+- **Data model:** a chat between two users, and messages with a sender, a receiver, a body and a date.
+- **Opening a chat:** the app first looks for an existing conversation between the two users, in either direction, before
+  creating a new one.
+- **Unread counts:** they go up for the other person when a message is sent and reset when a chat is opened.
+- Every messaging page requires login, and I wired up the URL routing.
+- I also suggested the technology the team built on.
+</More>

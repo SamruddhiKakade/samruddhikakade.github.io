@@ -1,0 +1,44 @@
+---
+// A pipeline diagram drawn in HTML: readable by screen readers, themed with the page.
+interface Props { steps: string[]; label: string }
+const { steps, label } = Astro.props;
+---
+<figure class="flow">
+  <ol aria-label={label}>
+    {steps.map((s) => <li>{s}</li>)}
+  </ol>
+  <figcaption class="muted small">{label}</figcaption>
+</figure>
+
+<style>
+  .flow {
+    margin: 16px 0 20px;
+  }
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px 26px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+  }
+  li {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-s);
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    max-width: 200px;
+  }
+  li:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+  }
+</style>

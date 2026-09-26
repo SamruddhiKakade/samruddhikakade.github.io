@@ -1,0 +1,10 @@
+---
+import { slugify } from '../data/site';
+interface Props { skills: string[] }
+const { skills } = Astro.props;
+---
+{skills.length > 0 && (
+  <ul class="chips">
+    {skills.map((s) => <li><a class="chip" href={`/skills/#${slugify(s)}`}>{s}</a></li>)}
+  </ul>
+)}

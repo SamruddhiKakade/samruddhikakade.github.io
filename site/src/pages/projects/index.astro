@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { itemsIn } from '../../data/items';
+import { AREAS } from '../../content.config';
+
+const items = await itemsIn('projects');
+const terms = [...new Set(items.map((i) => i.data.when))];
+const areas = AREAS.filter((a) => items.some((i) => i.data.areas.includes(a)));
+const years = [...new Set(items.map((i) => i.data.start.slice(0, 4)))].sort();
+---
+<Base title="Projects" current="projects" wide description="Samruddhi Kakade's course projects, 2022 to 2024.">
+  <h1>Projects</h1>
+  <p class="lead">Course projects from my degrees, newest first. Open any card for the full project.</p>
+
+  <div class="filters" hidden>
+    <div class="row" role="group" aria-label="Filter by area">
+      <span class="muted small label">Area</span>
+      {areas.map((a) => <button type="button" class="f" data-kind="area" data-value={a} aria-pressed="false">{a}</button>)}
+    </div>
+    <div class="row" role="group" aria-label="Filter by year">
+      <span class="muted small label">Year</span>
+      {years.map((y) => <button type="button" class="f" data-kind="year" data-value={y} aria-pressed="false">{y}</button>)}
+    </div>
+    <p class="small status" aria-live="polite"><span class="shown">Showing {items.length} of {items.length}</span> · <button type="button" class="clear">Clear</button></p>
+  </div>
+
+  {terms.map((t) => (
+    <section class="term">
+      <h2>{t}</h2>
+      <div class="grid">{items.filter((i) => i.data.when === t).map((item) => <Card item={item} />)}</div>
+    </section>
+  ))}
+  <p class="none" hidden>No projects match these filters. <button type="button" class="clear">Clear</button></p>
+</Base>
+
+<script>
+  const box = document.querySelector<HTMLElement>('.filters')!;
+  box.hidden = false;
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('.f')];
+  const cards = [...document.querySelectorAll<HTMLElement>('.card')];
+  const shown = document.querySelector('.shown')!;
+  const none = document.querySelector<HTMLElement>('.none')!;
+
+  function apply() {
+    const on = (kind: string) =>
+      buttons.filter((b) => b.dataset.kind === kind && b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.value!);
+    const areas = on('area');
+    const years = on('year');
+    let n = 0;
+    for (const c of cards) {
+      const okArea = areas.length === 0 || (c.dataset.areas ?? '').split('|').some((a) => areas.includes(a));
+      const okYear = years.length === 0 || years.includes(c.dataset.year!);
+      c.hidden = !(okArea && okYear);
+      if (!c.hidden) n++;
+    }
+    document.querySelectorAll<HTMLElement>('.term').forEach((s) => {
+      s.hidden = [...s.querySelectorAll<HTMLElement>('.card')].every((c) => c.hidden);
+    });
+    shown.textContent = `Showing ${n} of ${cards.length}`;
+    none.hidden = n > 0;
+  }
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+      apply();
+    }),
+  );
+  document.querySelectorAll('.clear').forEach((c) =>
+    c.addEventListener('click', () => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', 'false'));
+      apply();
+    }),
+  );
+</script>
+
+<style>
+  .lead { max-width: var(--measure); }
+  .filters { margin: 24px 0 8px; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .label { width: 40px; }
+  .f, .clear {
+    font: inherit; font-size: 0.9rem; cursor: pointer; border-radius: var(--radius-s);
+    border: 1px solid var(--link); color: var(--link); background: transparent; padding: 3px 10px; min-height: 30px;
+  }
+  .f[aria-pressed='true'] { background: var(--link); color: var(--bg); }
+  .clear { border: 0; text-decoration: underline; padding: 0; min-height: 0; }
+  .term h2 { margin: 36px 0 12px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 767px) { .grid { grid-template-columns: 1fr; } }
+</style>

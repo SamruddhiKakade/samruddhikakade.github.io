@@ -1,0 +1,64 @@
+---
+title: IT Intern
+section: experience
+start: '2022-05'
+end: '2022-08'
+when: Summer 2022 and Fall 2023
+context: V-Square Consulting
+oneLine: Built a search tool over a library of recorded talks that opens and plays the best match.
+summary: A search tool over a library of recorded talks in audio, video and text, built on Azure speech and search services. I owned the project from requirements to final presentation, and returned for a second internship in Fall 2023.
+role: IT Intern
+myPart: Owned the 2022 project end to end, from requirements, design and wireframes to code and the final presentation.
+skills: [Python, Flask, Azure Speech, Azure Cognitive Search, Azure Blob Storage, Requirements and design, Presenting]
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+
+## Problem
+
+Hours of recorded talks, in audio, video and text, with no way to search inside them. A listener looking for one topic
+had to browse whole recordings.
+
+## Approach
+
+<Flow
+  label="From recordings to a searchable library"
+  steps={['Video', 'Audio extracted (moviepy)', 'Speech to text (Azure Speech)', 'Transcripts stored (Azure Blob Storage)', 'Indexes for text, audio and video (Azure Cognitive Search)', 'Search site (Flask, Bootstrap)']}
+/>
+
+The user picks which media to search, types a query, and opens the best match directly.
+
+<More>
+The user flow, from my design document:
+
+<Flow
+  label="The user flow I designed"
+  steps={['Home: search box and media choices', 'Results with descriptions', 'Content page opens the match', 'Back to results']}
+/>
+
+Text, audio and video each have their own search index, so a query can cover one kind of media or all of them.
+</More>
+
+## How I worked
+
+I gathered the requirements with the project's stakeholder and wrote them up. Then I wrote the design document, drew
+wireframes and tested several options before choosing a stack. At the end of the internship I presented the result.
+
+<More>
+Options I tried before settling on a stack:
+
+- **Storage:** local files, Azure Cosmos DB and Azure Blob Storage. I chose Blob Storage with local files.
+- **Services:** Azure Media Services, Video Indexer, Speech-to-Text, Cognitive Search, and a search engine of my
+  own. I chose Speech-to-Text with Cognitive Search.
+
+The final presentation walked through how I learned the services, what I tested, and why I settled on this design.
+</More>
+
+## My part
+
+I took the project through every stage: requirements, design, wireframes, code and the final presentation.
+
+<More>
+The parts I wrote: audio extraction, transcription, uploading transcripts, indexing and search, and the web app that
+opens the matching recording.
+</More>
