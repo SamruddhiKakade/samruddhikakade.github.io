@@ -8,7 +8,7 @@ course: CS 525
 oneLine: The storage, buffer-pool and record layers of a database engine, written in C; I wrote most of the code.
 summary: A database engine in C, built layer by layer, with page files on disk, a buffer pool with FIFO and LRU replacement, and a record manager with conditional scans. I wrote most of the code.
 role: Main developer, team of 3
-myPart: Wrote most of the storage, buffer and record managers (50 of the team's 73 commits, merges excluded), fixed memory leaks and made the engine run on Linux.
+myPart: Wrote most of the storage, buffer and record managers, fixed memory leaks and made the engine run on Linux.
 skills: [C, Systems programming, Database internals, Memory management, Git, Teamwork]
 areas: [Software]
 ---
@@ -43,8 +43,8 @@ layers from scratch in C, each using only the layer below it.
 
 ## My part
 
-I wrote most of the code: 50 of the team's 73 commits (merges excluded), covering the core of the buffer manager, nearly all of the
-record manager and the storage manager's file handling.
+I wrote the core of the buffer manager, nearly all of the record manager and the storage manager's file handling: 50 of
+the team's 73 commits, merges excluded.
 
 <Bars
   caption="My commits in each of the three layers, out of the team's commits there (merges excluded). The team's other commits, and three of mine, went to the B+-tree index and shared setup."
