@@ -283,3 +283,21 @@ img {
 .legend .swatch.dashed {
   border-top: 3px dashed var(--chart-2);
 }
+
+/* Versions of one design side by side, oldest first. */
+.stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  align-items: start;
+  margin: 8px 0 24px;
+}
+.stages figure {
+  margin: 0;
+}
+.stages img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+}

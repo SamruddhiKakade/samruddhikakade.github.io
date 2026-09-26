@@ -15,10 +15,13 @@ areas: [Games]
 import { Image } from 'astro:assets';
 import More from '../../components/More.astro';
 import board from '../../assets/race-to-the-treasure-board.jpg';
+import sketch from '../../assets/race-to-the-treasure-sketch.jpg';
+import map from '../../assets/race-to-the-treasure-map.jpg';
+import cards from '../../assets/race-to-the-treasure-cards.jpg';
 
 <figure>
-  <Image src={board} alt="The game board: a parchment grid with a dashed path winding from START in the bottom corner to a treasure chest in the top corner." width={480} />
-  <figcaption class="muted small">The board I designed: a winding path from the start to the treasure chest.</figcaption>
+  <Image src={map} alt="The final game board: an old scroll with a dotted path of 100 numbered stones winding from START in the bottom corner to a treasure chest at the top." width={560} />
+  <figcaption class="muted small">The final board: an old-scroll map with a 100-step path from the start to the treasure chest.</figcaption>
 </figure>
 
 ## Problem
@@ -30,6 +33,11 @@ Make a race-to-the-finish game where strategy matters as much as the roll of a d
 Two to four players race along the path to the treasure. Before the race, players take turns placing trap cards, which
 only hurt their rivals, and shortcut cards, which only help themselves. On each turn a player either rolls the die or
 moves one of their own cards. The first to reach the treasure wins.
+
+<figure>
+  <Image src={cards} alt="The four character cards: Trap Designer, Map Expert, Just Lucky and The Strategist, each with its ability written on it." width={720} />
+  <figcaption class="muted small">The four character cards I designed, each with its own ability.</figcaption>
+</figure>
 
 <More>
 Each player also has a character that changes how the game plays for them:
@@ -45,7 +53,22 @@ An optional ending, "The last stretch", asks for an exact roll to land on the tr
 ## Approach
 
 I tried three themes before settling on a treasure race, then tested the game with players and changed the design
-after each round.
+after each round. The board went through three versions.
+
+<div class="stages">
+  <figure>
+    <Image src={sketch} alt="A pencil sketch on lined paper: a numbered grid from 1 to 100 with START, REST, RESTART and LOCKED squares and a treasure chest in the top corner." width={300} />
+    <figcaption class="muted small">1. Pencil sketch: the numbered path and special squares.</figcaption>
+  </figure>
+  <figure>
+    <Image src={board} alt="A parchment grid with a dashed path winding from START in the bottom corner to a treasure chest in the top corner." width={300} />
+    <figcaption class="muted small">2. First digital board: a parchment grid with a winding path.</figcaption>
+  </figure>
+  <figure>
+    <Image src={map} alt="The final board: an old scroll with a dotted path of 100 numbered stones." width={300} />
+    <figcaption class="muted small">3. Final board: the old-scroll map, with numbered stones.</figcaption>
+  </figure>
+</div>
 
 <More>
 An escape-from-zombies theme felt too dark for a family game, and a capture-the-flag theme became tedious in play. The
