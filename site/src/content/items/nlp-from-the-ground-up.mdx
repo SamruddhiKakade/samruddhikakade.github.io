@@ -55,10 +55,18 @@ I chose α on a validation set: 0.001 fit best of the values I tried (0.001, 0.0
 
 ## Results
 
-- The two corpora have similar word entropy (10.28 and 10.42 bits), but KL divergence is clearly asymmetric (0.645
-  one way, 0.531 the other).
+- The two corpora have similar word entropy, but KL divergence is clearly asymmetric (table below).
 - The bigram language-model classifier labelled 90% of held-out sentences correctly.
 - Naive Bayes found far more of the clickbait than the word rules, at similar precision.
+
+<div class="table-wrap">
+
+| Corpus | Word entropy (bits) | KL divergence to the other corpus (bits) |
+|---|---|---|
+| Movie reviews (SST) | 10.28 | 0.645 |
+| Questions (QNLI) | 10.42 | 0.531 |
+
+</div>
 
 <Bars
   caption="Clickbait detection on the test set: precision and recall"

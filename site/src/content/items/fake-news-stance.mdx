@@ -14,6 +14,7 @@ areas: [Language (NLP), Machine learning]
 ---
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
+import Bars from '../../components/Bars.astro';
 
 ## Problem
 
@@ -22,11 +23,21 @@ a new one, can a model tell whether the new headline agrees with it, disagrees w
 
 ## Data
 
-256,442 labelled pairs of English news headlines, and 64,110 unlabelled pairs to predict.
+256,442 labelled pairs of English news headlines, and 64,110 unlabelled pairs to predict. The labels are very uneven.
+
+<Bars
+  caption="Labelled headline pairs by stance"
+  series={['Pairs']}
+  rows={[
+    { label: 'Unrelated', values: [175598] },
+    { label: 'Agree', values: [74238] },
+    { label: 'Disagree', values: [6606] },
+  ]}
+  digits={0}
+/>
 
 <More>
-The labels are very uneven: 175,598 pairs are unrelated, 74,238 agree and only 6,606 disagree. A model can look
-accurate just by predicting "unrelated", so each model had to beat that baseline.
+A model can look accurate just by predicting "unrelated", so each model had to beat that baseline.
 </More>
 
 ## Approach

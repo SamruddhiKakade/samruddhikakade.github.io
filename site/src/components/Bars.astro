@@ -20,7 +20,7 @@ const top = max ?? (Math.max(...rows.flatMap((r) => r.values), 0) || 1);
               <td class="num">
                 <span class="bar-cell">
                   <span class={`bar k${i}`} style={`width:${Math.max(2, (v / top) * 100)}%`}></span>
-                  <span class="val">{v.toFixed(digits)}</span>
+                  <span class="val">{v.toLocaleString('en-GB', { minimumFractionDigits: digits, maximumFractionDigits: digits })}</span>
                 </span>
               </td>
             ))}

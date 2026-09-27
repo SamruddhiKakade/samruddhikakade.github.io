@@ -73,19 +73,20 @@ reliable: with half the trace for training, its chosen channel was free 99.3% of
 />
 
 <More>
-<Bars
-  caption="Bandit: share of the remaining trace on which the chosen channel was free, by share of the trace used for training (mean over runs)"
-  series={['Mean success (%)']}
-  rows={[
-    { label: '10% training', values: [96.3] },
-    { label: '20% training', values: [99.2] },
-    { label: '30% training', values: [99.21] },
-    { label: '40% training', values: [99.27] },
-    { label: '50% training', values: [99.33] },
-  ]}
-  digits={2}
-  max={100}
-/>
+Bandit: share of the remaining trace on which the chosen channel was free, by share of the trace used for training
+(mean over runs):
+
+<div class="table-wrap">
+
+| Training share | Mean success |
+| ---: | ---: |
+| 10% | 96.30% |
+| 20% | 99.20% |
+| 30% | 99.21% |
+| 40% | 99.27% |
+| 50% | 99.33% |
+
+</div>
 
 With 10% of the trace for training, the worst run reached 88.9%. With 50%, every run did better than 99%, and the
 bandit settled on the same channel in almost every run.
