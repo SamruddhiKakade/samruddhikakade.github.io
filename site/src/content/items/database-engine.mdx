@@ -15,6 +15,9 @@ areas: [Software]
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 import Bars from '../../components/Bars.astro';
+import { Image } from 'astro:assets';
+import notes1 from '../../assets/database-engine-notes-1.jpg';
+import notes2 from '../../assets/database-engine-notes-2.jpg';
 
 ## Problem
 
@@ -38,8 +41,25 @@ layers from scratch in C, each using only the layer below it.
   followed by a bitmap of used slots and the fixed-size record slots. Pages with free space are chained together, and
   the table's schema is stored on its first page. Records can be inserted, updated, deleted and read, and scans return
   only the records that match a condition.
+
+
 - Everything runs against the course's test programs, and memory leaks count as failures.
 </More>
+
+Before writing the buffer manager I worked the design out on paper. My first sketch left an open question: where
+does each page frame keep its own state, such as whether it has been changed? My answer was an array of pointers,
+one per frame, each to a small structure holding the page number, a dirty flag and a pointer to the page's data.
+
+<div class="stages">
+  <figure>
+    <Image src={notes1} alt="Handwritten notes: memory addresses for a five-page file and a three-frame buffer pool, the order in which the managers start, and a boxed question about where each frame's attributes should be stored." width={420} />
+    <figcaption class="muted small">1. First sketch, with the open question boxed.</figcaption>
+  </figure>
+  <figure>
+    <Image src={notes2} alt="Handwritten notes titled Idea 1 for Issue: the buffer pool's management data as an array of pointers to page-frame structures holding page number, dirty flag and a data pointer." width={420} />
+    <figcaption class="muted small">2. My answer: one page-frame structure per frame.</figcaption>
+  </figure>
+</div>
 
 ## My part
 
