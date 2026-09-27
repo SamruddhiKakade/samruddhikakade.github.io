@@ -7,7 +7,7 @@ export const AREAS = ['Machine learning', 'Language (NLP)', 'Data and networks',
 
 const items = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/items' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string().min(1),
     section: z.enum(SECTIONS),
     // Dates as YYYY-MM; `end` omitted for a single-term item, 'present' for an ongoing one.
@@ -23,6 +23,8 @@ const items = defineCollection({
     myPart: z.string().min(1),
     skills: z.array(z.string()).default([]),
     areas: z.array(z.enum(AREAS)).default([]),
+    // Card image, where a real visual exists; cards without one show a thin area band.
+    cover: image().optional(),
     links: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
     status: z.enum(['published', 'draft']).default('published'),
   }),

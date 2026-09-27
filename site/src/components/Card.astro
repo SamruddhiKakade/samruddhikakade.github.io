@@ -1,16 +1,17 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import Chips from './Chips.astro';
 interface Props { item: CollectionEntry<'items'> }
 const { item } = Astro.props;
 const d = item.data;
 const href = `/${d.section}/${item.id}/`;
-const tag = (d.course ?? d.context.split(/[,(]/)[0]).replace(/ \(.*\)$/, '');
+// A real visual where one exists; otherwise a thin band naming the area (projects and course work only).
 const code = d.links.find((l) => l.url.includes('github.com'));
 const verify = d.links.find((l) => l.label.startsWith('Verify'));
 ---
 <article class="card" data-areas={d.areas.join('|')} data-year={d.start.slice(0, 4)}>
-  <div class="visual" aria-hidden="true"><span>{tag}</span></div>
+  {d.cover ? <Image src={d.cover} alt="" width={560} class="cover" /> : d.areas.length > 0 && <p class="area small">{d.areas.join(' · ')}</p>}
   <h3><a class="stretch" href={href}>{d.title}</a></h3>
   <p class="meta muted small">{d.context} · {d.when}</p>
   <p class="role small">{d.role}</p>
@@ -39,18 +40,24 @@ const verify = d.links.find((l) => l.label.startsWith('Verify'));
     outline: 2px solid var(--focus);
     outline-offset: 2px;
   }
-  .visual {
-    aspect-ratio: 16 / 6;
+  .cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
     border-radius: var(--radius-s);
-    background: var(--accent-soft);
-    display: grid;
-    place-items: center;
     margin-bottom: 14px;
+    background: #fff;
   }
-  .visual span {
-    font-family: var(--font-heading), Georgia, serif;
-    font-size: 1.3rem;
+  .area {
+    margin: -16px -18px 12px;
+    padding: 6px 18px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--accent-soft);
     color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.02em;
   }
   h3 {
     margin: 0 0 4px;
