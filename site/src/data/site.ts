@@ -6,9 +6,9 @@ export const person = {
   email: 'SamruddhiKakade@outlook.com',
   github: 'https://github.com/SamruddhiKakade',
   linkedin: 'https://www.linkedin.com/in/samruddhi-kakade-97a6b5237',
-  description: 'AI engineer and independent researcher working on how LLM agents fail.',
+  description: 'AI engineer and independent researcher working on how to evaluate large language models.',
   // Home's title in the browser tab and in search results.
-  tagline: 'AI engineer and LLM-agent researcher',
+  tagline: 'AI engineer · LLM evaluation',
   university: 'Illinois Institute of Technology',
 };
 
@@ -16,7 +16,7 @@ export const person = {
 export const sections = [
   { key: 'experience', label: 'Experience', href: '/experience/', line: 'Where I have worked, newest first.' },
   { key: 'research', label: 'Research', href: '/research/', line: 'How LLM agents fail, read turn by turn: what they say they see, what they say they will do, and what they do.' },
-  { key: 'university', label: 'University', href: '/university/', line: 'My degrees and the written work from my courses.' },
+  { key: 'education', label: 'Education', href: '/education/', line: 'My degrees and the written work from my courses.' },
   { key: 'certifications', label: 'Certifications', href: '/certifications/', line: 'Courses I completed alongside and after university.' },
   { key: 'projects', label: 'Projects', href: '/projects/', line: 'Course projects from my degrees, newest first.' },
   { key: 'skills', label: 'Skills', href: '/skills/', line: 'Every skill, with links to the work that shows it.' },

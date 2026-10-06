@@ -7,7 +7,7 @@ const { items } = Astro.props;
 const lanes = [
   { key: 'experience', label: 'Work' },
   { key: 'research', label: 'Research' },
-  { key: 'university', label: 'University' },
+  { key: 'education', label: 'Education' },
   { key: 'certifications', label: 'Certifications' },
   { key: 'projects', label: 'Projects' },
 ].filter((l) => items.some((i) => i.data.section === l.key)); // empty lanes are hidden

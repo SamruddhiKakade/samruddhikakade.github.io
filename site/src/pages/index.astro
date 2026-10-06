@@ -2,20 +2,19 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import photo from '../assets/photo.png';
-import { person } from '../data/site';
+import { person, sections } from '../data/site';
 import { publishedItems } from '../data/items';
 
 const all = await publishedItems();
 // "Latest" appears only once a research paper is published on the site (from the arXiv day).
 const latest = all.find((i) => i.data.section === 'research');
-// Proof row: the current job, research, and the project count, each one click from Home.
-const now = all.find((i) => i.data.section === 'experience' && i.data.end === 'present');
-const projectCount = all.filter((i) => i.data.section === 'projects').length;
+// Every menu option, one click from Home (the menu folds away below 1024px).
+const links = [{ label: 'Overview', href: '/overview/' }, ...sections];
 ---
 <Base current="home">
-  <div class="sky" aria-hidden="true"></div>
   <section class="hero">
     <div class="who">
+      <div class="sky" aria-hidden="true"></div>
       <div class="glow"><Image src={photo} alt={person.name} width={320} height={320} class="photo" loading="eager" /></div>
       <div>
         <h1>{person.name}</h1>
@@ -24,20 +23,17 @@ const projectCount = all.filter((i) => i.data.section === 'projects').length;
       </div>
     </div>
     <p class="intro">
-      I build and evaluate systems around large language models. At Johnson &amp; Johnson I build the data
-      pipelines behind retrieval-augmented chatbots for healthcare knowledge. In my own research I study how
-      LLM agents fail, by reading what an agent says it sees, what it says it will do, and what it actually
-      does, turn by turn.
+      As an independent researcher, I study how to evaluate large language models. Since January 2025 I have
+      worked as an AI engineer for the client Johnson &amp; Johnson, building the data-ingestion pipelines behind
+      retrieval-augmented chatbots for healthcare knowledge. I earned a Master of Artificial Intelligence and a
+      B.S. in Computer Science from Illinois Institute of Technology in May 2024.
     </p>
     <ul class="proof">
-      {now && <li><span class="muted">Now:</span> <a href={`/experience/${now.id}/`}>{now.data.role}, {now.data.context.replace(/ \(.*\)$/, '')}</a></li>}
-      <li><a href="/research/">Research</a></li>
-      <li><a href="/projects/">{projectCount} projects</a></li>
+      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
     </ul>
     {latest && (
       <p class="latest"><span class="muted">Latest:</span> <a href={`/research/${latest.id}/`}>{latest.data.title}</a></p>
     )}
-    <p class="onward"><a class="onward-link" href="/overview/">Overview of my work, 2019 to now</a></p>
     <ul class="contact-row">
       <li><a href={`mailto:${person.email}`}>Email</a></li>
       <li><a href={person.github}>GitHub</a></li>
@@ -47,11 +43,13 @@ const projectCount = all.filter((i) => i.data.section === 'projects').length;
 </Base>
 
 <style>
-  /* Dark mode: a faint static starfield above the content, never behind text (flagged decision FL1).
-     Light mode: a soft amethyst glow behind the photo only. */
+  /* Dark mode: a faint static starfield behind the photo, name and title, ending before the intro (her call,
+     2026-10-06). Light mode: a soft amethyst glow behind the photo only. */
   .sky {
-    height: 72px;
-    margin: -24px 0 24px;
+    position: absolute;
+    inset: -24px 0 -12px;
+    z-index: -1;
+    pointer-events: none;
     opacity: 0;
     background-image:
       radial-gradient(1.2px 1.2px at 6% 30%, #fff 60%, transparent),
@@ -76,6 +74,8 @@ const projectCount = all.filter((i) => i.data.section === 'projects').length;
     padding-top: 24px;
   }
   .who {
+    position: relative;
+    isolation: isolate;
     display: flex;
     align-items: center;
     gap: 32px;
@@ -129,10 +129,6 @@ const projectCount = all.filter((i) => i.data.section === 'projects').length;
     content: '·';
     color: var(--muted);
     margin: 0 10px;
-  }
-  .onward-link {
-    font-size: 1.15rem;
-    font-weight: 500;
   }
   .contact-row {
     display: flex;

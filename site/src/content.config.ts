@@ -2,7 +2,7 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-export const SECTIONS = ['experience', 'research', 'university', 'certifications', 'projects'] as const;
+export const SECTIONS = ['experience', 'research', 'education', 'certifications', 'projects'] as const;
 export const AREAS = ['Machine learning', 'Language (NLP)', 'Data and networks', 'Search', 'Software', 'Games', 'Writing'] as const;
 
 const items = defineCollection({

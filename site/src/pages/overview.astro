@@ -19,8 +19,8 @@ const items = await publishedItems();
 
   {sections.map((s) => {
     let list = items.filter((i) => i.data.section === s.key);
-    // University: the degree always leads; the course pieces follow as a muted sub-list.
-    const courseWork = s.key === 'university' ? list.filter((i) => i.data.course) : [];
+    // Education: the degree always leads; the course pieces follow as a muted sub-list.
+    const courseWork = s.key === 'education' ? list.filter((i) => i.data.course) : [];
     if (courseWork.length > 0) list = list.filter((i) => !i.data.course);
     const row = (i: (typeof items)[number]) => (
       <li>

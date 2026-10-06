@@ -4,16 +4,16 @@ import { courses } from '../../data/courses';
 import { publishedItems } from '../../data/items';
 
 const all = await publishedItems();
-const degree = all.filter((i) => i.data.section === 'university' && !i.data.course);
+const degree = all.filter((i) => i.data.section === 'education' && !i.data.course);
 const byCourse = courses
   .map((c) => ({ ...c, items: all.filter((i) => i.data.course === c.code) }))
   .filter((c) => c.items.length > 0);
 ---
-<Base title="University" current="university" description="Samruddhi Kakade's degrees from Illinois Institute of Technology and the work from her courses.">
-  <h1>University</h1>
+<Base title="Education" current="education" description="Samruddhi Kakade's degrees from Illinois Institute of Technology and the work from her courses.">
+  <h1>Education</h1>
   {degree.map((d) => (
     <section class="degree">
-      <h2><a href={`/university/${d.id}/`}>{d.data.title}</a></h2>
+      <h2><a href={`/education/${d.id}/`}>{d.data.title}</a></h2>
       <p class="muted small">{d.data.context} · {d.data.when}</p>
       <p>{d.data.summary}</p>
     </section>
