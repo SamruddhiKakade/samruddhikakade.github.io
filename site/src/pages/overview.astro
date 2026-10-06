@@ -1,10 +1,17 @@
 ---
 import Base from '../layouts/Base.astro';
 import Timeline from '../components/Timeline.astro';
-import { sections } from '../data/site';
+import { sections, slugify } from '../data/site';
+import { skillGroups, featuredSkills } from '../data/skills';
 import { publishedItems } from '../data/items';
 
 const items = await publishedItems();
+// Skills own no pages, so Overview shows a few per group, each linked to its entry on the Skills page.
+const used = new Set(items.flatMap((i) => i.data.skills));
+const skillRows = skillGroups
+  .map((g) => ({ name: g.name, skills: (featuredSkills[g.name] ?? []).filter((s) => used.has(s)) }))
+  .filter((g) => g.skills.length > 0);
+const skillsShown = skillRows.reduce((n, g) => n + g.skills.length, 0);
 ---
 <Base title="Overview" current="overview" wide description="Selected work by Samruddhi Kakade, by section, with a timeline of everything.">
   <h1>Overview</h1>
@@ -25,6 +32,23 @@ const items = await publishedItems();
     if (s.key === 'education') list = all.filter((i) => !i.data.course);
     // Projects: only the selected ones here; the Projects page has them all.
     if (s.key === 'projects') list = all.filter((i) => i.data.selected);
+    if (s.key === 'skills') {
+      return (
+        <section class="block" id={s.key}>
+          <h2><a href={s.href}>{s.label}</a> <span class="count muted">({skillsShown} of {used.size})</span></h2>
+          <p class="muted">{s.line}</p>
+          <dl class="skill-rows">
+            {skillRows.map((g) => (
+              <div>
+                <dt>{g.name}</dt>
+                <dd>{g.skills.map((sk, n) => <>{n > 0 && ', '}<a href={`/skills/#${slugify(sk)}`}>{sk}</a></>)}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="all"><a href={s.href}>All {used.size} on the Skills page</a></p>
+        </section>
+      );
+    }
     const shown = list.length + courseWork.length;
     const row = (i: (typeof items)[number]) => (
       <li>
@@ -126,5 +150,19 @@ const items = await publishedItems();
   }
   .all {
     margin: 10px 0 0;
+  }
+  .skill-rows {
+    max-width: var(--measure);
+    margin: 0;
+  }
+  .skill-rows div {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .skill-rows dt {
+    font-weight: 500;
+  }
+  .skill-rows dd {
+    margin: 2px 0 0;
   }
 </style>

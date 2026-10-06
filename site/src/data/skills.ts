@@ -44,3 +44,14 @@ export const skillGroups = [
     skills: ['Stakeholder collaboration', 'Team leadership', 'Sprint leadership', 'Agile', 'Presenting', 'Teamwork'],
   },
 ];
+
+// Overview's short list: a few skills per group, chosen for research and AI-engineer applications.
+export const featuredSkills: Record<string, string[]> = {
+  Programming: ['Python', 'R', 'C'],
+  'AI and machine learning': ['Language models', 'RAG', 'Generative AI', 'Text classification', 'Model selection', 'Neural networks'],
+  'Search and speech': ['Information retrieval', 'Azure Speech'],
+  Data: ['Data pipelines', 'Metadata design', 'Data quality', 'Network analysis'],
+  'Software and cloud': ['Django', 'Flask', 'Systems programming'],
+  'Research, analysis and communication': ['Experiment design', 'Technical writing', 'Game design'],
+  'Working with people': ['Stakeholder collaboration', 'Team leadership'],
+};
