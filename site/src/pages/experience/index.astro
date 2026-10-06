@@ -4,9 +4,9 @@ import Card from '../../components/Card.astro';
 import { itemsIn } from '../../data/items';
 const items = await itemsIn('experience');
 ---
-<Base title="Experience" current="experience" wide description="Where Samruddhi Kakade has worked.">
+<Base title="Experience" current="experience" wide description="Samruddhi Kakade's experience as an AI engineer and generative AI engineer intern.">
   <h1>Experience</h1>
-  <p class="lead">Where I have worked, newest first. Open any role for what I built and how.</p>
+  <p class="lead">Where I have worked, newest first. Open a role for the details of the work.</p>
   <div class="grid">{items.map((item) => <Card item={item} />)}</div>
 </Base>
 <style>
