@@ -47,27 +47,74 @@ const links = [{ label: 'Overview', href: '/overview/' }, ...sections];
      2026-10-06). Light mode: a soft amethyst glow behind the photo only. */
   .sky {
     position: absolute;
-    inset: -24px 0 -12px;
+    inset: -64px -48px -12px; /* up to the page top and out to the column edges */
     z-index: -1;
     pointer-events: none;
     opacity: 0;
+    mask-image: linear-gradient(to bottom, #000 70%, transparent); /* fades out above the intro */
     background-image:
-      radial-gradient(1.2px 1.2px at 6% 30%, #fff 60%, transparent),
-      radial-gradient(1px 1px at 17% 70%, #cbbcf0 60%, transparent),
-      radial-gradient(1.4px 1.4px at 29% 20%, #fff 60%, transparent),
-      radial-gradient(1px 1px at 41% 60%, #fff 60%, transparent),
-      radial-gradient(1.2px 1.2px at 53% 35%, #cbbcf0 60%, transparent),
-      radial-gradient(1px 1px at 64% 80%, #fff 60%, transparent),
-      radial-gradient(1.4px 1.4px at 76% 25%, #fff 60%, transparent),
-      radial-gradient(1px 1px at 88% 55%, #cbbcf0 60%, transparent),
-      radial-gradient(1.2px 1.2px at 96% 15%, #fff 60%, transparent);
+      radial-gradient(3.5px 3.5px at 90% 26%, #fff 25%, rgba(203, 188, 240, 0.35) 55%, transparent),
+      radial-gradient(3.5px 3.5px at 71% 64%, #fff 25%, rgba(203, 188, 240, 0.35) 55%, transparent),
+      radial-gradient(3.5px 3.5px at 47% 12%, #fff 25%, rgba(203, 188, 240, 0.35) 55%, transparent),
+      radial-gradient(3.5px 3.5px at 28% 80%, #fff 25%, rgba(203, 188, 240, 0.35) 55%, transparent),
+      radial-gradient(3.5px 3.5px at 6% 22%, #fff 25%, rgba(203, 188, 240, 0.35) 55%, transparent),
+      radial-gradient(1.6px 1.6px at 3% 21%, #fff 60%, transparent),
+      radial-gradient(1.6px 1.6px at 8% 19%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 14% 9%, #fff 60%, transparent),
+      radial-gradient(1.4px 1.4px at 23% 14%, #f3e3b0 60%, transparent),
+      radial-gradient(0.8px 0.8px at 29% 6%, #cbbcf0 60%, transparent),
+      radial-gradient(1.2px 1.2px at 47% 18%, #fff 60%, transparent),
+      radial-gradient(1.6px 1.6px at 53% 15%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 65% 14%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 71% 8%, #fff 60%, transparent),
+      radial-gradient(0.8px 0.8px at 88% 3%, #fff 60%, transparent),
+      radial-gradient(1.4px 1.4px at 95% 10%, #fff 60%, transparent),
+      radial-gradient(1.2px 1.2px at 2% 41%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 12% 43%, #fff 60%, transparent),
+      radial-gradient(1.6px 1.6px at 13% 37%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 22% 31%, #fff 60%, transparent),
+      radial-gradient(0.8px 0.8px at 28% 47%, #fff 60%, transparent),
+      radial-gradient(0.8px 0.8px at 36% 34%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 42% 40%, #fff 60%, transparent),
+      radial-gradient(1.2px 1.2px at 51% 40%, #fff 60%, transparent),
+      radial-gradient(1.2px 1.2px at 66% 28%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 74% 37%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 76% 46%, #cbbcf0 60%, transparent),
+      radial-gradient(1.4px 1.4px at 85% 39%, #cbbcf0 60%, transparent),
+      radial-gradient(0.8px 0.8px at 90% 30%, #fff 60%, transparent),
+      radial-gradient(1.4px 1.4px at 98% 35%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 2% 56%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 10% 65%, #fff 60%, transparent),
+      radial-gradient(1.2px 1.2px at 14% 53%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 20% 58%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 34% 67%, #fff 60%, transparent),
+      radial-gradient(1.2px 1.2px at 40% 60%, #f3e3b0 60%, transparent),
+      radial-gradient(1.2px 1.2px at 53% 67%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 65% 53%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 71% 66%, #cbbcf0 60%, transparent),
+      radial-gradient(0.8px 0.8px at 80% 70%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 85% 65%, #fff 60%, transparent),
+      radial-gradient(1.6px 1.6px at 96% 59%, #fff 60%, transparent),
+      radial-gradient(0.8px 0.8px at 1% 93%, #fff 60%, transparent),
+      radial-gradient(1.6px 1.6px at 20% 93%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 35% 82%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 43% 87%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 45% 86%, #cbbcf0 60%, transparent),
+      radial-gradient(1px 1px at 54% 84%, #fff 60%, transparent),
+      radial-gradient(1px 1px at 61% 78%, #f3e3b0 60%, transparent),
+      radial-gradient(1.2px 1.2px at 64% 87%, #f3e3b0 60%, transparent),
+      radial-gradient(1.2px 1.2px at 71% 88%, #cbbcf0 60%, transparent),
+      radial-gradient(0.8px 0.8px at 79% 84%, #fff 60%, transparent),
+      radial-gradient(1.2px 1.2px at 85% 83%, #fff 60%, transparent),
+      radial-gradient(1.6px 1.6px at 88% 80%, #fff 60%, transparent),
+      radial-gradient(0.8px 0.8px at 96% 93%, #f3e3b0 60%, transparent);
   }
   :global(:root[data-theme='dark']) .sky {
-    opacity: 0.55;
+    opacity: 0.75;
   }
   @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme])) .sky {
-      opacity: 0.55;
+      opacity: 0.75;
     }
   }
   .hero {
@@ -135,6 +182,21 @@ const links = [{ label: 'Overview', href: '/overview/' }, ...sections];
     gap: 20px;
     list-style: none;
     padding: 0;
+  }
+  /* On a wide screen the stars run on to the right edge of the window. */
+  @media (min-width: 1024px) {
+    .sky {
+      right: auto;
+      width: calc(100vw - var(--band-w));
+    }
+    :global(body) {
+      overflow-x: clip;
+    }
+  }
+  @media (max-width: 1023px) {
+    .sky {
+      inset: -56px -16px -12px;
+    }
   }
   @media (max-width: 767px) {
     .who {

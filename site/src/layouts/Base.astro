@@ -110,7 +110,7 @@ const nav = [
         </div>
       </aside>
 
-      <main id="main" class:list={['main', { wide }]}>
+      <main id="main" class:list={['main', { wide, home: current === 'home' }]}>
         <slot />
         <footer class="foot muted small">
           <p>Last updated {built} · © {new Date().getFullYear()} {person.name}</p>
@@ -257,6 +257,14 @@ const nav = [
   }
   .main.wide {
     max-width: calc(var(--wide) + 96px);
+  }
+  /* Home fits on a laptop screen without scrolling. */
+  .main.home {
+    padding-top: 40px;
+    padding-bottom: 16px;
+  }
+  .main.home .foot {
+    margin-top: 40px;
   }
   .foot {
     margin-top: 96px;
