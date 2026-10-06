@@ -28,7 +28,7 @@ const sec = sections.find((s) => s.key === d.section)!;
 
   <dl class="summary">
     <div><dt>What</dt><dd>{d.summary}</dd></div>
-    <div><dt>Role</dt><dd>{d.role}</dd></div>
+    {d.role !== d.title && <div><dt>Role</dt><dd>{d.role}</dd></div>}
     <div><dt>When</dt><dd>{d.when}</dd></div>
     <div><dt>{d.section === 'experience' ? 'Where' : 'Context'}</dt><dd>{d.context}{d.place ? ` · ${d.place}` : ''}</dd></div>
     {d.links.length > 0 && (
