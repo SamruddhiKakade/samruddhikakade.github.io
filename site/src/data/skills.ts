@@ -9,7 +9,7 @@ export const skillGroups = [
     name: 'AI and machine learning',
     skills: [
       'Machine learning', 'Generative AI', 'Azure OpenAI', 'Prompt engineering', 'RAG', 'scikit-learn',
-      'Neural networks', 'Model selection', 'Cross-validation', 'Gradient descent', 'Text classification',
+      'Neural networks', 'Model selection', 'Model evaluation', 'Cross-validation', 'Gradient descent', 'Text classification',
       'Naive Bayes', 'Language models', 'Information theory', 'NLTK', 'Simulated annealing', 'Multi-armed bandits',
       'Optimisation',
     ],

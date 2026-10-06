@@ -9,70 +9,66 @@ place: New Brunswick, NJ
 oneLine: "Data-ingestion pipelines for retrieval-augmented healthcare chatbots; designed the metadata and categorisation that make healthcare knowledge searchable and consistent."
 summary: "Engineering ingestion pipelines for retrieval-augmented healthcare chatbots, with metadata and semantic categorisation to guide passage retrieval. Implementing quality checks and corrective workflows for redundancy, inconsistency and schema drift within healthcare compliance and governance requirements."
 role: AI Engineer
-myPart: I build and maintain the ingestion pipelines, design the metadata and categorisation, and look after data quality, working across product, compliance, governance and engineering teams.
-skills: [Python, Data pipelines, RAG, Metadata design, Data quality, Generative AI, Stakeholder collaboration]
+myPart: Designing the metadata and semantic categorisation, diagnosing data-quality problems, evaluating approved models for the project, and collaborating with product, compliance, governance and engineering teams.
+skills: [Python, Data pipelines, RAG, Metadata design, Data quality, Model evaluation, Generative AI, Stakeholder collaboration]
 ---
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-An enterprise chatbot is only as good as the knowledge it draws on. Healthcare knowledge comes from many sources, in
-many shapes, and every answer has to meet regulatory and governance standards.
+An enterprise chatbot depends on the knowledge it retrieves. Healthcare knowledge comes from many sources and in many
+formats, and the pipelines that prepare it operate within healthcare compliance and governance requirements.
 
-<More>
-When sources are duplicated, inconsistent or quietly change their structure over time, a retrieval-augmented chatbot
-finds the wrong passage, or several conflicting ones. Its answers become slower, less relevant and harder to trust.
-Much of the quality of such a system is decided before the language model ever sees a question.
+<More label="How source quality affects retrieval">
+When sources are duplicated, inconsistent or change their structure over time, a retrieval-augmented chatbot can
+retrieve the wrong passage, or several conflicting ones, and its answers become less relevant. In these systems, data
+quality and metadata had a direct effect on retrieval.
 </More>
 
 ## Approach
 
 <Flow
-  label="The general pattern of the pipelines I work on"
-  steps={['Knowledge sources', 'Ingestion', 'Cleaning and quality checks', 'Metadata and semantic categories', 'Retrieval index', 'Chatbot answers']}
+  label="The general pattern of the pipelines"
+  steps={['Knowledge sources', 'Cleaning and quality checks', 'Metadata and semantic categories', 'Ingestion', 'Retrieval index', 'Chatbot answers']}
 />
 
-I build the stages between the sources and the chatbot, so that each passage arrives clean and labelled.
+Each source is checked, described and categorised before ingestion, so that every passage reaches the retrieval index
+clean and labelled.
 
-<More>
+<More label="Metadata, categories and quality checks">
 - **Metadata and semantic categories.** Each piece of knowledge is described and grouped by meaning, so retrieval can
   narrow its search to the right part of the collection before ranking passages.
-- **Quality checks.** Redundancy, inconsistency and schema drift are caught and corrected before they reach the
-  chatbot, with corrective workflows rather than one-off fixes.
+- **Quality checks and corrective workflows.** Checks detect redundancy, inconsistency and schema drift. When a check
+  finds a problem, a corrective workflow resolves that class of problem, not only the single instance.
 </More>
 
-## My part
+## Contribution
 
-- I build and maintain the ingestion pipelines.
-- I design the metadata and semantic categorisation.
-- I diagnose data-quality problems and put corrective workflows in place.
-- I work with product, compliance, governance and engineering teams.
+- Designing the metadata and semantic categorisation used to guide passage retrieval.
+- Diagnosing data-quality problems and implementing corrective workflows for them.
+- Evaluating several approved models for the project, which informed the choice of model.
+- Collaborating with product, compliance, governance and engineering teams in a regulated healthcare environment.
 
-<More>
+<More label="Requirements, communication and live support">
 - Turning unclear needs into clear functional and data requirements.
 - Explaining technical results to business stakeholders in plain terms.
 - Supporting live use of the chatbots and improving them from user and stakeholder feedback.
-- Working within compliance and governance requirements in a regulated healthcare environment.
 </More>
 
-## What I learned
+## Lessons learned
 
-Working on AI in production has changed how I think about building it:
+- **Data quality and metadata matter for retrieval.** The passages a chatbot retrieved depended on how clean and well
+  described its sources were.
+- **Fix the cause.** A data problem that appears once is likely to appear again, so corrective workflows address the
+  whole class of problem.
 
-- **The data decides the answer.** Answers come from what the chatbot retrieves, so clean, well-described sources
-  improve them more reliably than changes made further down the line.
-- **Structure is part of retrieval.** How knowledge is described and grouped decides what the chatbot can find, so
-  I treat metadata and categories as part of the design.
-
-<More>
-- **Fix the cause.** When a data problem appears once, it will appear again, so I build corrective workflows that
-  catch the whole class of problem.
-- **Compliance is a design input.** In a regulated setting, bringing compliance and governance in early, and
-  documenting decisions as I make them, means a solution is ready for production when it is ready technically.
-- **Clear requirements save the most time.** Turning a loosely stated need into precise functional and data
-  requirements, and explaining results to business stakeholders in plain terms, keeps everyone building toward the
-  same thing.
-- **Live use is the real test.** Watching how a system is used and folding feedback into the next change teaches me
-  more than any test run before launch.
+<More label="Further lessons: compliance, requirements and live use">
+- **Compliance is a design input.** Involving compliance and governance teams early, and documenting decisions as they
+  are made, avoids waiting on approval once a solution is technically ready.
+- **Clear requirements keep teams aligned.** Turning a loosely stated need into precise functional and data
+  requirements, and explaining results to business stakeholders in plain terms, keeps teams working from the same
+  understanding.
+- **Live use shows what testing does not.** Watching how a system is used and feeding that back into the next change
+  surfaces problems that pre-launch testing did not.
 </More>

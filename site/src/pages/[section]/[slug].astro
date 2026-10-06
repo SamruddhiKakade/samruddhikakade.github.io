@@ -20,7 +20,7 @@ const toc = [
 ];
 const sec = sections.find((s) => s.key === d.section)!;
 ---
-<Base title={d.title} current={d.section} description={d.oneLine}>
+<Base title={d.section === 'experience' ? `${d.title}, ${d.context}` : d.title} current={d.section} description={d.oneLine}>
   <nav class="trail small" aria-label="Breadcrumb">
     <a href="/overview/">Overview</a> / <a href={sec.href}>{sec.label}</a> / <span aria-current="page">{d.title}</span>
   </nav>
