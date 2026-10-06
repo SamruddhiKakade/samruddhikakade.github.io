@@ -5,19 +5,15 @@ start: '2023-10'
 when: Fall 2023
 context: CS 525 Advanced Database Organization
 course: CS 525
-oneLine: The storage, buffer-pool and record layers of a database engine, written in C; I wrote most of the code.
-summary: A database engine in C, built layer by layer, with page files on disk, a buffer pool with FIFO and LRU replacement, and a record manager with conditional scans. I wrote most of the code.
-role: Main developer, team of 3
-myPart: Wrote most of the storage, buffer and record managers, fixed memory leaks and made the engine run on Linux.
+oneLine: The storage, buffer-pool and record layers of a database engine, written in C.
+summary: A database engine in C, built layer by layer, with page files on disk, a buffer pool with FIFO and LRU replacement, and a record manager with conditional scans.
+role: Developer, team of 3
+myPart: Built the core of the buffer manager, the record manager and the storage manager's file handling, fixed memory leaks and made the engine run on Linux.
 skills: [C, Systems programming, Database internals, Memory management, Git, Teamwork]
 areas: [Software]
 ---
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
-import Bars from '../../components/Bars.astro';
-import { Image } from 'astro:assets';
-import notes1 from '../../assets/database-engine-notes-1.jpg';
-import notes2 from '../../assets/database-engine-notes-2.jpg';
 
 ## Problem
 
@@ -49,33 +45,87 @@ layers from scratch in C, each using only the layer below it.
 Before writing the buffer manager I worked the design out on paper. My first sketch left an open question: where
 does each page frame keep its own state, such as whether it has been changed? My answer was an array of pointers,
 one per frame, each to a small structure holding the page number, a dirty flag and a pointer to the page's data.
+Both pages of notes are typed out below.
 
-<div class="stages">
-  <figure>
-    <Image src={notes1} alt="Handwritten notes: memory addresses for a five-page file and a three-frame buffer pool, the order in which the managers start, and a boxed question about where each frame's attributes should be stored." width={420} />
-    <figcaption class="muted small">1. First sketch, with the open question boxed.</figcaption>
-  </figure>
-  <figure>
-    <Image src={notes2} alt="Handwritten notes titled Idea 1 for Issue: the buffer pool's management data as an array of pointers to page-frame structures holding page number, dirty flag and a data pointer." width={420} />
-    <figcaption class="muted small">2. My answer: one page-frame structure per frame.</figcaption>
-  </figure>
-</div>
+<figure class="transcript">
+<pre>{`PAGE_SIZE = 1 (for this example)
+
+Address   Memory
+1000      Page 0
+1001      Page 1
+1002      Page 2
+1003      Page 3
+1004      Page 4
+...
+2000      PF
+2001      PF
+2002      PF
+
+File "Test" has 5 pages. Its pointer *file
+points to where it starts: *file = 1000.
+
+The buffer pool has 3 pages. Its pointer
+buff_mem points to where it starts:
+*buff_mem = 2000.
+
+When the file is opened, fHandle has
+{ fileName = "Test"; curPagePos = 0;
+  totalNumPages = 5;
+  mgmtInfo = *file -> 1000 }
+
+[ Issue: 2000, 2001 and 2002 should each
+  have several attributes, like
+  isDirty = false. How do we store them? ]
+
+User -> Buffer Manager -> Storage Manager
+
+1. The user starts the Buffer Manager.
+2. The Storage Manager starts too.
+3. Open the page (fHandle is set up).
+4. Initialise the buffer pool:
+   bm = { pageFile = "Test"; numPages = 3;
+          strategy = FIFO;
+          mgmtData = *buff_mem -> 2000 }
+   Pages 2000, 2001 and 2002 are allocated.
+   (Issue above)`}</pre>
+<figcaption class="muted small">1. First sketch, ending on the open question.</figcaption>
+</figure>
+
+<figure class="transcript">
+<pre>{`Idea 1 for the issue
+
+Let mgmtData in the buffer pool be an
+array of pointers:
+
+bm = { pf = "Test"; numPages = 3;
+       strategy = FIFO;
+       mgmtData = [*PF1, *PF2, *PF3] }
+
+Each pointer leads to a new structure, PF,
+that holds everything a page frame in the
+buffer needs:
+
+PF1 { pageNum = -1 (empty);
+      isDirty = false;
+      buffNum = 1 (for FIFO);
+      *data (where the page's data is
+             stored in memory);
+      more fields as the implementation
+      grows }
+
+When PF1 holds page 3 of "Test":
+
+PF1 { pageNum = 3; isDirty = false;
+      buffNum = 1; *data = 3000 }
+
+Address   Memory
+3000      Page 3`}</pre>
+<figcaption class="muted small">2. My answer: one page-frame structure per frame.</figcaption>
+</figure>
 
 ## My part
 
-I wrote the core of the buffer manager, nearly all of the record manager and the storage manager's file handling: 50 of
-the team's 73 commits, merges excluded.
-
-<Bars
-  caption="My commits in each of the three layers, out of the team's commits there (merges excluded). The team's other commits, and three of mine, went to the B+-tree index and shared setup."
-  series={['My commits', 'Team total']}
-  rows={[
-    { label: 'Storage manager', values: [14, 20] },
-    { label: 'Buffer manager', values: [19, 28] },
-    { label: 'Record manager', values: [14, 16] },
-  ]}
-  digits={0}
-/>
+I built the core of the buffer manager, the record manager and the storage manager's file handling.
 
 <More>
 I also tracked down and fixed memory leaks in the buffer manager's handling of changed pages, and made the engine

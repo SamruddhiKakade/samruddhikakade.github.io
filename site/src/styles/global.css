@@ -301,3 +301,19 @@ img {
   border: 1px solid var(--border);
   border-radius: var(--radius-s);
 }
+
+/* Paper notes, typed out. */
+.transcript {
+  margin: 8px 0 24px;
+}
+.transcript pre {
+  margin: 0 0 6px;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
