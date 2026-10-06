@@ -6,9 +6,9 @@ import { publishedItems } from '../data/items';
 
 const items = await publishedItems();
 ---
-<Base title="Overview" current="overview" wide description="Everything Samruddhi Kakade has worked on since 2019, by section.">
+<Base title="Overview" current="overview" wide description="Selected work by Samruddhi Kakade since 2019, by section, with a timeline of everything.">
   <h1>Overview</h1>
-  <p class="lead">Everything I have worked on since 2019, by section. Click a section for more, or an item for its full page.</p>
+  <p class="lead">Selected work since 2019, by section. Open a section for everything in it, or an item for its full page. The timeline at the end shows every item.</p>
   <nav class="jump small" aria-label="Sections on this page">
     <span class="muted">Jump to</span>
     <ul>
@@ -18,10 +18,14 @@ const items = await publishedItems();
   </nav>
 
   {sections.map((s) => {
-    let list = items.filter((i) => i.data.section === s.key);
-    // Education: the degree always leads; the course pieces follow as a muted sub-list.
-    const courseWork = s.key === 'education' ? list.filter((i) => i.data.course) : [];
-    if (courseWork.length > 0) list = list.filter((i) => !i.data.course);
+    const all = items.filter((i) => i.data.section === s.key);
+    let list = all;
+    // Education: the degree always leads; selected course pieces follow as a muted sub-list.
+    const courseWork = s.key === 'education' ? all.filter((i) => i.data.course && i.data.selected) : [];
+    if (s.key === 'education') list = all.filter((i) => !i.data.course);
+    // Projects: only the selected ones here; the Projects page has them all.
+    if (s.key === 'projects') list = all.filter((i) => i.data.selected);
+    const shown = list.length + courseWork.length;
     const row = (i: (typeof items)[number]) => (
       <li>
         <a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a>
@@ -31,7 +35,7 @@ const items = await publishedItems();
     );
     return (
       <section class="block" id={s.key}>
-        <h2><a href={s.href}>{s.label}</a>{list.length > 0 && <span class="count muted"> ({list.length + courseWork.length})</span>}</h2>
+        <h2><a href={s.href}>{s.label}</a>{shown > 0 && <span class="count muted"> ({shown < all.length ? `${shown} of ${all.length}` : all.length})</span>}</h2>
         {list.length === 0 ? <p class="muted">{s.line}</p> : (
           <ul class="items">{list.map(row)}</ul>
         )}
@@ -41,13 +45,13 @@ const items = await publishedItems();
             <ul class="items minor">{courseWork.map(row)}</ul>
           </>
         )}
+        {shown < all.length && <p class="all"><a href={s.href}>All {all.length} on the {s.label} page</a></p>}
       </section>
     );
   })}
 
   <section class="block" id="timeline">
     <h2>Timeline</h2>
-    <p class="muted small">Hover or tap a mark for its title; click to open it. The gold line is today.</p>
     <Timeline items={items} />
   </section>
 </Base>
@@ -119,5 +123,8 @@ const items = await publishedItems();
   }
   .items p {
     margin: 2px 0 0;
+  }
+  .all {
+    margin: 10px 0 0;
   }
 </style>

@@ -27,6 +27,10 @@ const items = defineCollection({
     cover: image().optional(),
     links: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
     status: z.enum(['published', 'draft']).default('published'),
+    // Shown in Overview's short lists of projects and course writing (chosen for research and job applications).
+    selected: z.boolean().default(false),
+    // Further periods of the same item (a returning internship), drawn on the timeline.
+    periods: z.array(z.object({ start: z.string().regex(/^\d{4}-\d{2}$/), end: z.string().regex(/^\d{4}-\d{2}$/) })).default([]),
   }),
 });
 

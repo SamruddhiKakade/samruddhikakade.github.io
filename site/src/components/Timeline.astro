@@ -5,7 +5,7 @@ interface Props { items: CollectionEntry<'items'>[] }
 const { items } = Astro.props;
 
 const lanes = [
-  { key: 'experience', label: 'Work' },
+  { key: 'experience', label: 'Experience' },
   { key: 'research', label: 'Research' },
   { key: 'education', label: 'Education' },
   { key: 'certifications', label: 'Certifications' },
@@ -30,25 +30,27 @@ for (const lane of lanes) {
   const laneItems = items.filter((i) => i.data.section === lane.key);
   const stack = new Map<number, number>();
   const marks: Mark[] = [];
-  // Dots go below any bar in the same lane, so a span never hides them.
-  const base = laneItems.some((it) => {
+  // Each item's periods: its main one, plus any later ones (a returning internship).
+  const spans = (it: (typeof items)[number]) => {
     const s = m(it.data.start);
     const e = it.data.end === 'present' ? nowM : it.data.end ? m(it.data.end) : s;
-    return e - s >= 2;
-  }) ? 1 : 0;
+    return [{ s, e }, ...(it.data.periods ?? []).map((p) => ({ s: m(p.start), e: m(p.end) }))];
+  };
+  // Dots go below any bar in the same lane, so a span never hides them.
+  const base = laneItems.some((it) => spans(it).some((p) => p.e - p.s >= 2)) ? 1 : 0;
   let depth = 1;
   for (const it of laneItems) {
-    const s = m(it.data.start);
-    const e = it.data.end === 'present' ? nowM : it.data.end ? m(it.data.end) : s;
     const href = `/${it.data.section}/${it.id}/`;
     const title = `${it.data.title} (${it.data.when}): ${it.data.oneLine}`;
-    if (e - s >= 2) {
-      marks.push({ href, title, x: x(s), x2: x(e), y: 0 });
-    } else {
-      const n = stack.get(s) ?? 0;
-      stack.set(s, n + 1);
-      depth = Math.max(depth, base + n + 1);
-      marks.push({ href, title, x: x(s + 0.5), y: base + n });
+    for (const { s, e } of spans(it)) {
+      if (e - s >= 2) {
+        marks.push({ href, title, x: x(s), x2: x(e), y: 0 });
+      } else {
+        const n = stack.get(s) ?? 0;
+        stack.set(s, n + 1);
+        depth = Math.max(depth, base + n + 1);
+        marks.push({ href, title, x: x(s + 0.5), y: base + n });
+      }
     }
   }
   const h = 14 + depth * 12;
@@ -58,9 +60,18 @@ for (const lane of lanes) {
 const H = y + 24;
 const years: number[] = [];
 for (let yr = 2020; yr * 12 <= t1; yr++) years.push(yr);
+// A year label too close to "now" is left out, so the two never overlap.
+const nearNow = (yr: number) => Math.abs(x(yr * 12) - x(nowM)) < 32;
+const sectionName: Record<string, string> = {
+  experience: 'Experience', research: 'Research', education: 'Education', certifications: 'Certification', projects: 'Project',
+};
 const byDate = [...items].sort((a, b) => b.data.start.localeCompare(a.data.start));
 ---
 <figure class="timeline">
+  <figcaption class="muted small">
+    <span class="for-chart">Hover over a mark for its title, or click it to open. The gold line is today.</span>
+    <span class="for-list">Every item since 2019, newest first.</span>
+  </figcaption>
   <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label="Timeline of everything since 2019">
     {rows.map((r) => (
       <g>
@@ -68,7 +79,7 @@ const byDate = [...items].sort((a, b) => b.data.start.localeCompare(a.data.start
         <line x1={left} x2={W - right} y1={r.y + r.h} y2={r.y + r.h} class="rule" />
         {r.marks.map((mk) =>
           mk.x2 !== undefined ? (
-            <a href={mk.href}><title>{mk.title}</title><rect x={mk.x} y={r.y + 4} width={Math.max(6, mk.x2 - mk.x)} height="9" rx="3" class="mark" /></a>
+            <a href={mk.href}><title>{mk.title}</title><rect x={mk.x + 2} y={r.y + 4} width={Math.max(6, mk.x2 - mk.x - 4)} height="9" rx="3" class="mark" /></a>
           ) : (
             <a href={mk.href}><title>{mk.title}</title><circle cx={mk.x} cy={r.y + 9 + mk.y * 12} r="5" class="mark" /></a>
           ),
@@ -78,7 +89,7 @@ const byDate = [...items].sort((a, b) => b.data.start.localeCompare(a.data.start
     {years.map((yr) => (
       <g>
         <line x1={x(yr * 12)} x2={x(yr * 12)} y1="8" y2={H - 22} class="tick" />
-        <text x={x(yr * 12)} y={H - 6} class="year">{yr}</text>
+        {!nearNow(yr) && <text x={x(yr * 12)} y={H - 6} class="year">{yr}</text>}
       </g>
     ))}
     <line x1={x(nowM)} x2={x(nowM)} y1="4" y2={H - 22} class="now" />
@@ -86,7 +97,7 @@ const byDate = [...items].sort((a, b) => b.data.start.localeCompare(a.data.start
   </svg>
   <ol class="vertical">
     {byDate.map((i) => (
-      <li><span class="muted small">{i.data.when}</span> <a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a></li>
+      <li><span class="muted small">{sectionName[i.data.section]} · {i.data.when}</span> <a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a></li>
     ))}
   </ol>
 </figure>
@@ -132,6 +143,12 @@ const byDate = [...items].sort((a, b) => b.data.start.localeCompare(a.data.start
   .now-label {
     fill: var(--gold);
   }
+  figcaption {
+    margin-bottom: 8px;
+  }
+  .for-list {
+    display: none;
+  }
   .vertical {
     display: none;
     list-style: none;
@@ -142,10 +159,12 @@ const byDate = [...items].sort((a, b) => b.data.start.localeCompare(a.data.start
     border-bottom: 1px solid var(--border);
   }
   @media (max-width: 767px) {
-    svg {
+    svg,
+    .for-chart {
       display: none;
     }
-    .vertical {
+    .vertical,
+    .for-list {
       display: block;
     }
   }

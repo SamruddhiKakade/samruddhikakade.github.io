@@ -15,11 +15,11 @@ export const person = {
 // Band and Overview order (her decision, 2026-09-25).
 export const sections = [
   { key: 'experience', label: 'Experience', href: '/experience/', line: 'Where I have worked, newest first.' },
-  { key: 'research', label: 'Research', href: '/research/', line: 'How LLM agents fail, read turn by turn: what they say they see, what they say they will do, and what they do.' },
+  { key: 'research', label: 'Research', href: '/research/', line: 'My independent research on how to evaluate large language models.' },
   { key: 'education', label: 'Education', href: '/education/', line: 'My degrees and the written work from my courses.' },
   { key: 'certifications', label: 'Certifications', href: '/certifications/', line: 'Courses I completed alongside and after university.' },
   { key: 'projects', label: 'Projects', href: '/projects/', line: 'Course projects from my degrees, newest first.' },
-  { key: 'skills', label: 'Skills', href: '/skills/', line: 'Every skill, with links to the work that shows it.' },
+  { key: 'skills', label: 'Skills', href: '/skills/', line: 'My technical skills, each linked to the work that shows it.' },
 ] as const;
 
 export type SectionKey = (typeof sections)[number]['key'];
