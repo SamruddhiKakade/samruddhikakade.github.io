@@ -6,7 +6,7 @@ const items = await itemsIn('experience');
 ---
 <Base title="Experience" current="experience" wide description="Samruddhi Kakade's experience as an AI engineer and generative AI engineer intern.">
   <h1>Experience</h1>
-  <p class="lead">Where I have worked, newest first. Open a role for the details of the work.</p>
+  <p class="lead">Where I have worked, newest first. Open a role for details.</p>
   <div class="grid">{items.map((item) => <Card item={item} />)}</div>
 </Base>
 <style>
