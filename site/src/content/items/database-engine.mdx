@@ -8,7 +8,7 @@ course: CS 525
 oneLine: "A database engine in C; implemented buffer-pool logic, record operations and storage-manager file handling."
 summary: "Developed the core of the buffer manager, the record manager and the storage manager's file handling for a team database engine in C. The engine stored page files on disk, supported FIFO and LRU buffer replacement, and ran conditional record scans."
 role: Developer, team of 3
-myPart: Built the core of the buffer manager, the record manager and the storage manager's file handling, fixed memory leaks and made the engine run on Linux.
+myPart: Implemented the storage manager's file handling and the core of the buffer manager and the record manager; corrected memory leaks and LRU timing on Linux.
 skills: [C, Systems programming, Database internals, Memory management, Git, Teamwork]
 selected: true
 areas: [Software]
@@ -16,33 +16,37 @@ areas: [Software]
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-A database has to move fixed-size pages between disk and memory, and store records inside those pages. We built those
-layers from scratch in C, each using only the layer below it.
-
-## Approach
+A database stores data in fixed-size pages on disk and keeps some of them in memory. This course project implemented
+those layers from scratch in C, each layer using only the one below it. A B+-tree index followed as the team's final
+assignment.
 
 <Flow
   label="The layers of the engine, bottom to top"
   steps={['Storage manager: page files on disk', 'Buffer manager: a pool of pages in memory', 'Record manager: tables in slotted pages', 'Scans filtered by a condition']}
 />
 
-<More>
+## Approach
+
+Each layer was checked against the course's test programs before the next one used it. The buffer manager tracks which
+pages are in use, which have changed and which were used least recently. The record manager stores fixed-size records
+in slotted pages and reaches the disk only through the buffer manager.
+
+<More label="How each layer works">
 - **Storage manager.** Page files of a fixed page size, with create, open, close and destroy, and reading and writing
   by block.
-- **Buffer manager.** Each frame tracks how many clients are using it, whether it has changed, and when it was last
-  used. When the pool is full, FIFO or LRU replacement picks a page to evict, and changed pages are written back to
-  disk first. The pool also counts its disk reads and writes.
-- **Record manager.** Each page starts with a header (total slots, occupied slots, the next page with free space),
-  followed by a bitmap of used slots and the fixed-size record slots. Pages with free space are chained together, and
-  the table's schema is stored on its first page. Records can be inserted, updated, deleted and read, and scans return
-  only the records that match a condition.
-
-
-- Everything runs against the course's test programs, and memory leaks count as failures.
+- **Buffer manager.** Each frame records its page number, how many clients are using it (the fix count), whether it has
+  changed, and when it was last used. When the pool is full, FIFO or LRU replacement picks a page to evict. Frames in
+  use are never evicted, and a request fails with an error when every frame is in use. Changed pages are written back
+  before eviction, and the pool counts its disk reads and writes.
+- **Record manager.** The first page of a table's file holds the table's metadata and schema. Each data page starts
+  with a header (total slots, occupied slots, next free page), followed by a bitmap of used slots and the fixed-size
+  record slots. The table tracks the first page with free space, and a new page is added when that page fills. Records
+  can be inserted, updated, deleted and read, and a scan returns only the records that match a condition.
 </More>
 
+<More label="Design notes for the buffer frames">
 Before writing the buffer manager I worked the design out on paper. My first sketch left an open question: where
 does each page frame keep its own state, such as whether it has been changed? My answer was an array of pointers,
 one per frame, each to a small structure holding the page number, a dirty flag and a pointer to the page's data.
@@ -123,12 +127,32 @@ Address   Memory
 3000      Page 3`}</pre>
 <figcaption class="muted small">2. My answer: one page-frame structure per frame.</figcaption>
 </figure>
-
-## My part
-
-I built the core of the buffer manager, the record manager and the storage manager's file handling.
-
-<More>
-I also tracked down and fixed memory leaks in the buffer manager's handling of changed pages, and made the engine
-build and run on Linux. The team went on to add a B+-tree index in the final assignment.
 </More>
+
+## Contribution
+
+- Implemented the storage manager's page-file handling and the buffer manager's pinning, FIFO and LRU replacement and
+  write-back of changed pages, after designing the page-frame structure in written notes.
+- Implemented the record manager's table creation, record insertion, update, deletion and conditional scan, with a
+  slot bitmap and fixed-size slots in each page.
+- Corrected memory leaks in the buffer manager's status arrays, and changed LRU's timestamps to a millisecond clock so
+  that replacement worked on Linux.
+
+<More label="Correctness checks and testing">
+- **Test programs.** The buffer manager was checked with the course's tests of FIFO and LRU, which compare the pool's
+  contents after each request. The record manager was checked with tests that create a table, insert, update, delete
+  and read records, and run several scans at once.
+- **Self-check on table creation.** After a table is created, the record manager reads its first two pages back and
+  confirms that the stored metadata, schema and empty slot bitmap match what was written.
+- **Memory.** The assignment treated memory leaks as errors. The dirty-flag and fix-count arrays were first allocated
+  on every call; they are now allocated once with the pool and freed when it shuts down.
+- **Pinned pages.** The pool refuses to shut down while any page is still in use, and every record operation releases
+  the pages it pins.
+</More>
+
+## Lessons learned
+
+- **Allocate once, free once.** Returning a newly allocated array from every status call leaked memory. Tying each
+  array to the pool's lifetime removed the leak and kept clean-up simple.
+- **Each layer depends on the one below it.** The record manager's correctness rested on the buffer manager releasing
+  pages properly, so a pinning mistake in the lower layer surfaced as a failure in the upper one.
