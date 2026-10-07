@@ -8,26 +8,68 @@ course: IPRO 497 (Spring 2022)
 oneLine: "A student book marketplace in Django; developed messaging, linked listings to student accounts and restricted uploads to authenticated users."
 summary: "Developed the messaging system for a web marketplace where students buy, sell, rent or swap books. Linked each listing to the student who posted it, limited uploads to signed-in users and presented the team's progress in two weekly reports."
 role: Developer, team of 6
-myPart: Built the messaging system, tied listings to the students who posted them, limited uploads to signed-in users, and presented the team's progress in two weekly reports.
+myPart: Developed the messaging system, linked listings to the students who posted them, restricted uploads to signed-in users, and presented the team's progress in two weekly reports.
 skills: [Python, Django, Backend development, Agile, Presenting, Teamwork]
 areas: [Software]
 ---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-New textbooks are expensive, while graduating students have books they no longer need.
+Students on tight budgets need textbooks, while other students have books they no longer need. The product brief set
+out a marketplace for Illinois Tech students to buy, sell, rent or exchange physical books, with buyer and seller
+agreeing payment and handover between themselves. A six-person team developed it in Django as an interprofessional
+course project.
+
+<Flow
+  label="How two students arranged a sale on the site"
+  steps={['A student signs in and uploads a listing, which records the poster', 'The buyer finds the listing in the catalogue and sees who posted it', 'The buyer starts a conversation with that username', 'Both students exchange messages stored on the server']}
+/>
 
 ## Approach
 
-The team worked in an agile way, with user stories on a Kanban board, weekly progress reports and rotating presenters.
-Each part of the product (catalogue, listings, registration, messaging, wishlist and fraud reporting) was its own
-Django app.
+The team worked in weekly cycles on a Kanban board. The main systems were the catalogue, listings, accounts and
+messaging, with a wishlist and fraud reporting as secondary features. Each function sat in a separate part of the
+Django project, and every messaging and upload page required a signed-in user.
 
-## My part
+<More label="Team process and project structure">
+- **Board and stories.** Work was tracked as numbered user stories on a Kanban board. Faculty advice during the term
+  led to detailed descriptions and acceptance checklists on each story, and to stories taken on in pairs.
+- **Weekly rhythm.** Each week a facilitator opened the board, and each member described the story completed and the
+  one in progress. A working agreement set GitHub for shared code, email and Discord for communication, and a fixed
+  weekend slot for extra meetings.
+- **Progress reports.** Presenting rotated in pairs of consecutive weeks across the six members.
+- **Structure.** The Django project has separate apps for the catalogue, listings, user registration, messaging and the
+  landing page. The wishlist and fraud reporting sit inside the catalogue and registration apps.
+</More>
 
-- I built the messaging system, so buyers and sellers could arrange a sale inside the site.
-- I linked each listing to the student who posted it, and allowed uploads only for signed-in users.
-- I presented the team's weekly progress reports twice.
+## Contribution
 
-The messaging app has its own data model for conversations and messages, with pages to start a conversation, list
-conversations, and send and read messages.
+- Developed the messaging system, in which two signed-in students hold one stored conversation and exchange messages
+  to arrange payment and handover.
+- Linked every listing to the account that posted it, so the catalogue shows the poster, and restricted uploads to
+  signed-in users.
+- Presented the team's progress in two weekly reports.
+
+<More label="Messaging design and access checks">
+- **Data model.** A conversation links two users. A message records its conversation, sender, receiver, text of up to
+  1,000 characters and the time it was sent.
+- **One thread per pair.** Starting a conversation by username first looks for an existing conversation between the
+  two users in either order and reopens it, so each pair of students keeps a single thread whoever writes first.
+- **Receiver.** When a message is sent, the receiver is taken from the conversation as the participant other than the
+  sender, so no one enters a recipient twice.
+- **Conversation list.** The Messages page lists only the conversations in which the signed-in user takes part,
+  labelled with the other student's username.
+- **Sign-in checks.** The conversation, message and upload views redirect to the login page when the user is not
+  signed in.
+- **Listing link.** Each catalogue listing holds a required reference to the user who posted it, and the upload view
+  fills it from the signed-in user.
+</More>
+
+## Lessons learned
+
+- **Define done before starting.** Faculty feedback on thin story descriptions led the team to add acceptance
+  checklists, so that each story stated what finished work looked like.
+- **Key a conversation by its pair of users.** Reusing one stored thread per pair kept the Messages list short and
+  avoided duplicate conversations.
