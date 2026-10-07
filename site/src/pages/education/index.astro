@@ -5,33 +5,44 @@ import { publishedItems } from '../../data/items';
 
 const all = await publishedItems();
 const degree = all.filter((i) => i.data.section === 'education' && !i.data.course);
-const byCourse = courses
+const withItems = courses
   .map((c) => ({ ...c, items: all.filter((i) => i.data.course === c.code) }))
   .filter((c) => c.items.length > 0);
+// Graduate work first; newest first within each group.
+const groups = ['Graduate', 'Undergraduate'].map((level) => ({
+  level,
+  courses: withItems.filter((c) => c.level === level),
+}));
 ---
-<Base title="Education" current="education" description="Samruddhi Kakade's degrees from Illinois Institute of Technology and the work from her courses.">
+<Base title="Education at Illinois Institute of Technology" current="education" description="Samruddhi Kakade's Master of Artificial Intelligence and B.S. Computer Science from Illinois Tech, with projects and writing from her courses.">
   <h1>Education</h1>
+  <p class="lead">My degrees, then the projects and written work from my courses, graduate first. Open a title for details.</p>
   {degree.map((d) => (
     <section class="degree">
       <h2><a href={`/education/${d.id}/`}>{d.data.title}</a></h2>
       <p class="muted small">{d.data.context} · {d.data.when}</p>
       <p>{d.data.summary}</p>
+      <p class="small"><a href={`/education/${d.id}/`}>Focus areas and all coursework</a></p>
     </section>
   ))}
-  <h2>Work from my courses</h2>
-  <p class="muted">Every course with a project or written piece on this site, newest first.</p>
-  {byCourse.map((c) => (
-    <section class="course">
-      <h3>{c.code.replace(/ \(.*\)$/, '')} {c.name} <span class="muted small">· {c.term}</span></h3>
-      <ul>
-        {c.items.map((i) => (
-          <li><a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a> <span class="muted small">{i.data.oneLine}</span></li>
-        ))}
-      </ul>
+  {groups.map((g) => g.courses.length > 0 && (
+    <section class="group">
+      <h2>{g.level} coursework</h2>
+      {g.courses.map((c) => (
+        <section class="course">
+          <h3>{c.name} <span class="muted small">· {c.code.replace(/ \(.*\)$/, '')} · {c.term}</span></h3>
+          <ul>
+            {c.items.map((i) => (
+              <li><a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a> <span class="muted">{i.data.oneLine}</span></li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </section>
   ))}
 </Base>
 <style>
+  .lead { max-width: var(--measure); }
   .degree { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 20px 8px; }
   .degree h2 { margin-top: 16px; font-size: 1.35rem; }
   .degree h2 a { text-decoration: none; }
