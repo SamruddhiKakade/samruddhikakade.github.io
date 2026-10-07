@@ -19,60 +19,64 @@ links:
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-Which crimes are most common in Chicago, where do they happen, and how have they changed in recent years?
-
-## Data
-
-The City of Chicago's public crime dataset, which I cut down to the years 2020 to 2023 and the columns the analysis
-needed.
-
-<div class="table-wrap">
-
-| | Raw dataset | After cleaning |
-| --- | ---: | ---: |
-| Records | 7,930,875 | 877,453 |
-| Columns | 22 | 9 |
-
-</div>
-
-<More>
-- Kept 2020 to 2023, so the analysis reflects the city today.
-- Dropped columns the questions did not need, then removed duplicates and incomplete rows.
-- Split each date into day, month and year, and added a time-of-day bucket, so patterns over the day and the year
-  could be studied.
-</More>
+Which crimes are most common in Chicago, how often do they lead to an arrest, and how have they changed in recent
+years?
 
 ## Approach
 
+The team analysed the City of Chicago's public crime records for 2020 to 2023 in R, in one shared R Markdown document
+with a section for each question.
+
 <Flow
   label="How the team's analysis was organised"
-  steps={['Prepare and clean the data', 'Rank crime types', 'Top five by district and community area', 'Trends by year and month', 'PCA and simple classifiers']}
+  steps={['Prepare and clean the data', 'Rank crime types and arrest rates', 'Crime and arrests by district', 'Trends by year and month', 'PCA and simple classifiers']}
 />
 
-I laid out the analysis section by section in a shared R Markdown document, with each part assigned, so four people
-could work in parallel and the results would fit together.
+<More label="Data preparation">
+<div class="table-wrap">
 
-<More>
-- **My sections:** data preparation, the ranking of crime types by share (with a pie chart and a top-five bar chart),
-  and arrest rates for the top five crime types.
-- **Teammates' sections:** crime by district and community area, trends over the years and months, PCA, and k-nearest
-  neighbours and random-forest classifiers.
+| | Records | Columns |
+| --- | ---: | ---: |
+| Full dataset, 2001 to 2023 | 7,930,875 | 22 |
+| Kept: 2020 to 2023 | 877,453 | 22 |
+| After cleaning | 867,920 | 9 |
+
+</div>
+
+- Kept six of the 22 columns, then removed duplicate and incomplete rows.
+- Split each date into day, month and year, and added a time of day (morning, afternoon, evening or night).
 </More>
 
-## Results
+<More label="How the work was divided">
+- **My sections:** data preparation, the ranking of crime types by share (a pie chart and a top-five bar chart), and
+  arrest rates for the five most common crimes.
+- **Teammates' sections:** crime and arrests by district, trends by year and month, PCA, and k-nearest neighbours and
+  random-forest classifiers.
+</More>
 
-Theft, battery, criminal damage, assault and motor vehicle theft were the five most common crimes, and motor vehicle
-theft rose sharply after 2021.
+## Contribution
 
-## My part
+- Led the four-person team: set up the repository, wrote the section-by-section analysis plan that divided the work,
+  and finalised the presentation.
+- Wrote the data preparation and the crime-type analysis, including arrest rates for the five most common crimes.
 
-- I led the team: I set up the repository, wrote the analysis plan that divided the work, and finalised the
-  presentation.
-- I wrote the data preparation and the crime-type analysis.
-
-<More>
+<More label="How the analysis plan worked">
 The plan was a skeleton of the whole report, with a section for each question and notes on what each teammate would
 add, set up before any analysis began. The team presented the results on 21 April 2024.
+</More>
+
+## Findings and limitations
+
+- Theft (21.0% of records), battery (18.4%), criminal damage (11.7%), assault (9.0%) and motor vehicle theft (7.6%)
+  were the five most common crime types.
+- Arrest rates differed widely among them: 15.2% for battery and 10.3% for assault, but under 5% for theft, criminal
+  damage and motor vehicle theft.
+- Motor vehicle theft doubled from 2021 to 2022 and rose again in 2023.
+
+<More label="Limitations">
+- The records are crimes reported to and recorded by the police, not all crime.
+- Cleaning dropped 9,533 duplicate or incomplete records, about 1% of the 2020 to 2023 data.
+- The counts are not adjusted for population, and the analysis describes patterns without explaining their causes.
 </More>
