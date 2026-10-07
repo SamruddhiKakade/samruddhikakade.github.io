@@ -11,9 +11,9 @@ const href = itemHref(item);
 const code = d.links.find((l) => l.url.includes('github.com'));
 const verify = d.links.find((l) => l.label.startsWith('Verify'));
 ---
-<article class="card" data-areas={d.areas.join('|')} data-year={d.start.slice(0, 4)}>
+<article class:list={["card", { linked: d.page }]} data-areas={d.areas.join('|')} data-year={d.start.slice(0, 4)}>
   {d.cover ? <Image src={d.cover} alt="" width={560} class="cover" /> : d.areas.length > 0 && <p class="area small">{d.areas.join(' · ')}</p>}
-  <h3><a class="stretch" href={href}>{d.title}</a></h3>
+  <h3>{d.page ? <a class="stretch" href={href}>{d.title}</a> : d.title}</h3>
   <p class="meta muted small">{d.context} · {d.when}</p>
   {d.role !== d.title && d.section !== 'certifications' && <p class="role small">{d.role}</p>}
   <p class="summary">{d.summary}</p>
@@ -34,7 +34,7 @@ const verify = d.links.find((l) => l.label.startsWith('Verify'));
     padding: 16px 18px 18px;
     transition: transform 200ms var(--ease);
   }
-  .card:hover {
+  .card.linked:hover {
     transform: translateY(-2px);
   }
   .card:focus-within {
