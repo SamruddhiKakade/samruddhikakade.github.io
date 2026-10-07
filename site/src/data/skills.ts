@@ -35,7 +35,7 @@ export const skillGroups = [
   {
     name: 'Research, analysis and communication',
     skills: [
-      'Experiment design', 'Requirements and design', 'Cost analysis', 'Technical writing', 'Research posters',
+      'Experiment design', 'Requirements and design', 'Market research', 'Cost analysis', 'Technical writing', 'Research posters',
       'Critical analysis', 'Game design', 'Playtesting', 'Visual design',
     ],
   },
