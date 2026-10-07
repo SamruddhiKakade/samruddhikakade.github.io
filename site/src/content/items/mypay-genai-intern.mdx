@@ -7,36 +7,37 @@ when: Sep 2024 – Jan 2025
 context: MyPay LLC
 place: Remote
 oneLine: "A restaurant voice and chat assistant; developed the backend, prompts, speech input and output, ordering flow and multi-restaurant configuration."
-summary: "Developed a restaurant voice and chat assistant, progressing from a fixed-menu prototype to a service with live menus and per-restaurant configuration. Tuned prompts and retrieval to ground responses in menu content and implemented structured ordering."
+summary: "Developed a restaurant voice and chat assistant, progressing from a fixed-menu prototype to a service with live menus and per-restaurant configuration. Tuned prompts to ground responses in each restaurant's live menu and implemented structured ordering."
 role: Generative AI Engineer Intern
-myPart: Designed and built the assistant's backend, prompts, voice input and output, ordering flow and multi-restaurant setup, and wrote the provider cost analysis.
-skills: [Python, Flask, Azure OpenAI, Azure Speech, Prompt engineering, RAG, MongoDB, Cost analysis]
+myPart: Designed and developed the assistant's backend, prompts, speech input and output, ordering flow and multi-restaurant configuration; evaluated language-model platforms; collaborated with the product team on requirements and demos.
+skills: [Python, Flask, Generative AI, Prompt engineering, Speech-to-text, MongoDB]
 ---
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-Diners want quick answers about a menu and an easy way to order, by voice or by text. Every restaurant has its own
-menu and setup, so one assistant has to serve many restaurants.
+Diners want details that a menu does not easily cover, and an easy way to order, by voice or by text. Every restaurant
+has its own menu and setup, so one assistant has to serve many restaurants.
 
 ## Approach
 
 <Flow
   label="How a customer's question becomes an answer or an order"
-  steps={['Chat or voice in the browser', 'Speech to text (Azure Speech)', 'Flask service', "Azure OpenAI, answering from the restaurant's live menu", 'Reply as text or speech', "Order sent to the restaurant's ordering system"]}
+  steps={['Chat or voice in the browser', 'Speech to text', 'Flask service', "Language model, answering from the restaurant's live menu", 'Reply as text or speech', "Order sent to the restaurant's ordering system"]}
 />
 
-The assistant answers from the restaurant's current menu, keeps track of the conversation, and turns a confirmed
-order into a structured order for the restaurant.
+The assistant answered from the restaurant's current menu, tracked the conversation, and converted a confirmed order
+into a structured order sent to the restaurant.
 
-<More>
+<More label="Prompts, voice, menu grounding and multi-restaurant setup">
 - **Prompt design.** A persona, rules for the conversation, an order format with a worked example, and the
-  restaurant's menu, assembled for each restaurant when a session starts.
+  restaurant's menu, assembled for each restaurant when a session started.
 - **Voice.** Speech-to-text for questions and text-to-speech for answers, with short spoken summaries of long replies.
-- **Retrieval.** Knowledge bases for retrieval, and prompts and retrieval tuned so answers stay grounded in the menu.
-- **Many restaurants.** Settings for each restaurant are kept in MongoDB, and each restaurant reaches the service
-  with its own access token.
+- **Menu grounding.** Each restaurant's live menu was supplied in the prompt for every session, and prompts were tuned
+  to keep answers to that menu.
+- **Many restaurants.** Settings for each restaurant were kept in MongoDB, and each restaurant reached the service with
+  its own access token.
 </More>
 
 ## How it grew
@@ -45,35 +46,28 @@ order into a structured order for the restaurant.
 2. Live menus fetched from the restaurant platform.
 3. A multi-restaurant service with per-restaurant settings and secure access.
 
-<More>
+<More label="What each version changed">
 Each version kept what worked and removed a limit of the one before: first the fixed menu, then the single
 restaurant. The last version separated configuration from code, so adding a restaurant meant adding data rather
 than writing code.
 </More>
 
-## Calculations
+## Contribution
 
-To help choose a provider, I built a cost model for running the assistant:
+- Designed and developed the assistant's backend, including the prompts that supplied each restaurant's menu and the
+  rules for the conversation.
+- Developed the speech input and output, and the ordering flow that sent structured orders to the restaurant.
+- Developed the multi-restaurant configuration: per-restaurant settings and secure access.
+- Evaluated language-model platforms for running the assistant, which informed the choice of platform.
 
-$$
-\text{cost per conversation} = n_{\text{in}}\cdot p_{\text{in}} + n_{\text{out}}\cdot p_{\text{out}}
-\;\;(+\ \text{hourly hosting, for a fine-tuned model})
-$$
-
-where $n$ is the number of input or output tokens and $p$ the price per token.
-
-<More>
-I compared two providers (Azure OpenAI and OpenAI's own platform) on three costs: fine-tuning a model, running each
-conversation, and hosting a fine-tuned model. I then rolled them up into the cost of a fixed number of conversations,
-so the choice could be made on the total rather than on any single price.
+<More label="Requirements and demos">
+- Collaborated with the product team to turn user needs into functional requirements.
+- Developed demos and incorporated feedback into each new version.
 </More>
 
-## My part
+## Lessons learned
 
-I designed and built the backend, the prompts, the voice input and output, the ordering flow and the multi-restaurant
-setup, and wrote the cost analysis.
-
-<More>
-- Working with the product team to turn user needs into functional requirements.
-- Building demos and folding feedback into each new version.
-</More>
+- **Configuration as data.** Separating configuration from code meant that adding a restaurant required adding data
+  rather than writing code.
+- **Remove one limit at a time.** Each version removed a limit of the one before, and demos after each version
+  supplied feedback for the next.

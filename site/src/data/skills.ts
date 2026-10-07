@@ -16,7 +16,7 @@ export const skillGroups = [
   },
   {
     name: 'Search and speech',
-    skills: ['Information retrieval', 'TF-IDF', 'Scrapy', 'Azure Cognitive Search', 'Azure Speech'],
+    skills: ['Information retrieval', 'TF-IDF', 'Scrapy', 'Azure Cognitive Search', 'Azure Speech', 'Speech-to-text'],
   },
   {
     name: 'Data',
