@@ -8,7 +8,7 @@ course: CS 584
 oneLine: "NumPy implementations of logistic regression, softmax regression and a perceptron; achieved 94.7% test accuracy on handwritten digits with the perceptron."
 summary: "Implemented gradient descent, logistic regression, softmax regression and a perceptron from first principles in NumPy for course assignments. Studied regularisation in linear models and evaluated the perceptron on handwritten digits."
 role: Individual project
-myPart: I derived and implemented the algorithms myself and ran every experiment.
+myPart: Implemented gradient descent, logistic and softmax regression and a perceptron in NumPy, and compared ridge and lasso regression using scikit-learn.
 skills: [Python, NumPy, Gradient descent, scikit-learn, Machine learning]
 selected: true
 areas: [Machine learning]
@@ -16,55 +16,71 @@ areas: [Machine learning]
 import More from '../../components/More.astro';
 import Bars from '../../components/Bars.astro';
 
-## Problem
+## Context
 
-Understand machine-learning methods by building them: write the maths as code instead of calling a library's fit.
+Three CS 584 Machine Learning assignments (Fall 2023). Two asked for the core methods to be written out rather than
+called from a library: logistic and softmax regression trained by gradient descent, and a perceptron for handwritten
+digits. The third compared linear, ridge and lasso regression on car data. Scores are read against simple baselines,
+because the datasets are small.
 
 ## Approach
 
-- **Regularisation:** ridge and lasso regression across regularisation strengths, including degree-5 polynomial
-  features, on real car data (with scikit-learn).
-- **Logistic and softmax regression:** sigmoid, softmax, cross-entropy loss, and training by batch gradient descent
-  and mini-batch stochastic gradient descent, written in NumPy.
-- **Perceptron:** a perceptron with three activation functions, trained on handwritten digits, written in NumPy.
+- **Logistic and softmax regression:** sigmoid, softmax and cross-entropy loss in NumPy, trained by batch gradient
+  descent and by mini-batch stochastic gradient descent on a ten-point, three-class table.
+- **Perceptron:** one layer with ten outputs, in NumPy, comparing linear, sigmoid and ReLU activations on scikit-learn's
+  1,797 8×8 handwritten digits (1,078 training, 359 validation and 360 test images, stratified by digit).
+- **Regularisation:** linear, ridge and lasso regression with scikit-learn on the UCI Automobile data (205 cars),
+  predicting city fuel economy from five measurements, with and without degree-5 polynomial features. A 60/20/20 split
+  chose the regularisation strength on validation data.
 
-## Calculations
+<More label="Update rules and library use">
+Logistic regression predicts $\hat y = \sigma(w^\top x + b)$ with $\sigma(z) = 1/(1+e^{-z})$ and updates
+$w \leftarrow w - \eta\,\frac{1}{n}\sum_i(\hat y_i - y_i)\,x_i$ on the cross-entropy loss. Softmax regression uses
+$\hat y_k = e^{z_k} / \sum_j e^{z_j}$ with the same form of step for each class. Mini-batch descent takes each step on a
+batch of two points instead of all ten.
 
-Logistic regression predicts $\hat y = \sigma(w^\top x + b)$ with $\sigma(z) = 1/(1+e^{-z})$, and learns by gradient
-descent on the cross-entropy loss:
-
-$$
-L = -\frac{1}{n}\sum_{i=1}^{n}\bigl[y_i \log \hat y_i + (1-y_i)\log(1-\hat y_i)\bigr],
-\qquad
-w \leftarrow w - \eta\,\frac{1}{n}\sum_{i=1}^{n}(\hat y_i - y_i)\,x_i
-$$
-
-<More>
-Softmax regression generalises this to several classes: $\hat y_k = e^{z_k} / \sum_j e^{z_j}$, with the same kind of
-gradient step per class. Mini-batch stochastic gradient descent takes each step on a small random batch instead of the
-whole dataset, which is faster and adds useful noise.
+In the digits assignment, scikit-learn supplied only the data, the split, the one-hot encoding and the metrics; the
+weight updates are NumPy code.
 </More>
 
-## Results
+## Contribution
 
-My perceptron reached 94.7% test accuracy on handwritten digits with the ReLU activation.
+- Implemented logistic and softmax regression in NumPy, with batch and mini-batch gradient descent, and compared the
+  two optimisers by loss and F1 score over 1,000 iterations.
+- Implemented a single-layer perceptron in NumPy with linear, sigmoid and ReLU activations, and evaluated it on 360
+  held-out digit images.
+- Compared linear, ridge and lasso regression, with and without degree-5 polynomial features, selecting the
+  regularisation strength on a validation split.
+
+## Findings and limitations
+
+The perceptron with ReLU activation classified 341 of 360 held-out digit images correctly (94.7%), against 10.3% for
+always predicting the most frequent digit. Sigmoid reached 94.2% and the linear activation 88.6%.
 
 <Bars
-  caption="Perceptron test accuracy on 8×8 handwritten digits, by activation function"
-  series={['Test accuracy']}
+  caption="Perceptron test accuracy (%) on 360 held-out 8×8 digit images, against the majority-class baseline"
+  series={['Accuracy (%)']}
   rows={[
-    { label: 'Linear', values: [0.886] },
-    { label: 'Sigmoid', values: [0.942] },
-    { label: 'ReLU', values: [0.947] },
+    { label: 'ReLU', values: [94.7] },
+    { label: 'Sigmoid', values: [94.2] },
+    { label: 'Linear', values: [88.6] },
+    { label: 'Majority-class baseline', values: [10.3] },
   ]}
-  max={1}
+  digits={1}
+  max={100}
 />
 
-On the regularisation assignment, linear regression predicted city fuel economy from five car features with
-R² = 0.73 on held-out data, and the ridge and lasso sweeps showed how each shrinks the model's coefficients as the
-regularisation grows.
+On the car data, linear regression reached R² = 0.73 on 41 held-out cars (test MSE 10.54). Degree-5 polynomial
+features lowered the test MSE to 5.25 with ridge regression and 5.11 with lasso, a test R² of 0.87.
 
-## My part
-
-I wrote the gradient descent, the logistic and softmax regression and the perceptron in NumPy, and ran and compared
-every setting myself.
+<More label="Limitations of the experiments">
+- The perceptron results come from one run with random initial weights. ReLU and sigmoid differ by two images out of
+  360, so their order is not established. The learning rate (0.0001) and the 30 epochs were not tuned.
+- With the linear activation the cross-entropy loss is undefined, because outputs can be negative, so its accuracy is
+  taken from the largest output and no loss curve is reported.
+- On the five original car measurements, no regularisation gave the lowest validation error, so ridge and lasso matched
+  plain linear regression there. Without regularisation, the degree-5 features (252 of them, for 123 training cars)
+  made ridge regression unstable.
+- The regression test set has 41 cars, and the logistic and softmax models were scored on the same ten points they
+  were trained on, so those figures show optimisation behaviour, not generalisation.
+</More>
