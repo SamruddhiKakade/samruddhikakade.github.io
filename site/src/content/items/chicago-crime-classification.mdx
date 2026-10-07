@@ -5,10 +5,10 @@ start: '2023-11'
 when: Fall 2023
 context: CS 584 Machine Learning
 course: CS 584
-oneLine: "Crime-type classification of recorded Chicago incidents from time and location; compared seven model families, reworked the stratified cross-validation and tuned a neural network by grid search."
-summary: "Classified the type of recorded Chicago crimes from time and location, using 656,549 incidents from 2020 to 2022. Compared seven model families, reworked the stratified cross-validation so each fold trained and scored on a separate split, and tuned a neural network by grid search."
+oneLine: "Crime-type classification of recorded Chicago incidents from time and location; compared seven model families, reworked the stratified cross-validation and added a neural-network grid search."
+summary: "Classified the type of recorded Chicago crimes from time and location, using 656,549 incidents from 2020 to 2022. Compared seven model families, reworked the stratified cross-validation so each fold trained and scored on a separate split, and added a neural-network grid search."
 role: Modelling and evaluation, team of 4
-myPart: Wrote the model-selection notebook, rebuilt the stratified cross-validation so each fold trains and scores on its own split, and added the neural-network grid search.
+myPart: Wrote the model-selection notebook, reworked the stratified cross-validation so each fold trains and scores on a separate split, and added the neural-network grid search.
 skills: [Python, scikit-learn, Model selection, Cross-validation, Neural networks, Teamwork]
 selected: true
 areas: [Machine learning, Data and networks]
@@ -17,16 +17,16 @@ import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 import Bars from '../../components/Bars.astro';
 
-## Problem
+## Context
 
-Can the time and place of a crime report predict what kind of crime it is?
+Can the day and place of a recorded Chicago incident predict its crime type? The task was to classify each incident in
+the City of Chicago's public records for 2020 to 2022, using only when and where it was recorded.
 
-## Data
+<More label="The data and its class imbalance">
+The records hold 656,549 incidents across 33 crime types, described by community area, type of location, day, month
+and year. The classes are very uneven: theft, battery and criminal damage account for 51% of the records, the five
+most common types for 68%, and seven types have fewer than 100 records each.
 
-Chicago's public crime records for 2020 to 2022: 656,549 incidents across 33 crime types, described by community
-area, type of location, day, month and year.
-
-<More>
 <Bars
   caption="The five most common crime types, 2020 to 2022 (number of incidents)"
   series={['Incidents']}
@@ -39,31 +39,53 @@ area, type of location, day, month and year.
   ]}
   digits={0}
 />
-
-The classes are uneven: a few crime types make up most of the records, and many are rare.
 </More>
 
 ## Approach
 
+The team compared seven classifiers (logistic regression, decision tree, random forest, naive Bayes, k-nearest
+neighbours, support vector machine and a neural network), each evaluated with the same stratified cross-validation.
+Teammates cleaned and explored the data beforehand.
+
 <Flow
   label="The modelling pipeline"
-  steps={['Encode and scale features', 'Compare seven model families', 'Stratified k-fold cross-validation', 'Grid search for the neural network']}
+  steps={['Encode and scale features', 'Random 80/20 split', 'Stratified 3-fold cross-validation', 'Compare seven model families', 'Grid search for the neural network']}
 />
 
-I set up a fair comparison of seven classifiers (logistic regression, decision tree, random forest, naive Bayes,
-k-nearest neighbours, support vector machine and a neural network), each evaluated the same way.
-
-<More>
-- **Stratified folds:** they keep the share of each crime type the same in every fold, so rare types are not missing from
-  some folds.
-- I rebuilt the cross-validation loop so that each fold trains on its own training split and is scored on its own
-  held-out split, and set it up as an 80/20 split with three stratified folds.
-- I added a grid search over the neural network: four layer shapes, two activation functions, two solvers, three
-  regularisation strengths and two learning-rate schedules, 96 configurations in all.
+<More label="How the split, the folds and the preprocessing fit together">
+- **Preprocessing:** the type of location was coded as integers and every feature was scaled to the range 0 to 1,
+  across all records, before the split.
+- **80/20 split:** a random split with a fixed seed; 80% of the records were kept for training and model selection.
+- **3-fold cross-validation:** the folds are cut from the 80% training part. Each fold trains on two thirds of it and is
+  scored on the remaining third.
+- **Stratification:** the folds keep the share of each crime type similar. The rarest type has a single record, so it
+  cannot appear in every fold.
 </More>
 
-## My part
+<More label="The neural-network grid search">
+The grid covers four layer shapes, two activation functions, two solvers, three regularisation strengths and two
+learning-rate schedules, 96 configurations in all, each scored by the same stratified 3-fold cross-validation.
+</More>
 
-- I wrote the model-selection notebook comparing the seven model families.
-- I rebuilt the stratified cross-validation and added the neural-network grid search.
-- Teammates cleaned and explored the data.
+## Contribution
+
+- Wrote the model-selection notebook comparing seven model families on the Chicago records.
+- Reworked the stratified cross-validation so that every fold trains on its training split and is scored on a separate
+  held-out split.
+- Added the neural-network grid search over 96 configurations.
+
+## Findings and limitations
+
+Predicting crime type from date and place alone proved hard. Always predicting theft is right for about 21% of
+incidents, and the saved cross-validation runs scored only modestly above that across 33 crime types. The saved
+notebooks do not hold a final comparison of all seven families.
+
+<More label="Limits of the evaluation and of the data">
+- Accuracy rewards the common types. No per-class scores were saved, so the results cannot show how well rare types
+  were recognised.
+- The records are incidents reported to and recorded by the police, not all crime, and the features are limited to
+  place, day, month and year. Time of day was not used.
+- Scaling was fitted on all records before the split; fitting it on the training folds only would be stricter.
+- The type of location was coded as plain integers, which imposes an order that the categories do not have.
+- The 20% test part was not scored in the saved notebooks.
+</More>
