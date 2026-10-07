@@ -8,7 +8,7 @@ course: CS 581
 oneLine: "Search and decision-making experiments; implemented simulated annealing for a 40-stop campus tour and evaluated epsilon-greedy Wi-Fi channel selection on real traces."
 summary: "Tuned simulated annealing to find a short tour through 40 campus locations. Implemented an epsilon-greedy bandit that learned which Wi-Fi channel stayed free and evaluated the policy on real signal traces."
 role: Individual project
-myPart: I implemented both algorithms, designed the parameter sweeps and ran the experiments.
+myPart: Implemented both algorithms, designed the parameter sweeps and ran the repeated experiments.
 skills: [Python, Simulated annealing, Multi-armed bandits, Optimisation, Experiment design]
 selected: true
 areas: [Search, Machine learning]
@@ -16,54 +16,66 @@ areas: [Search, Machine learning]
 import More from '../../components/More.astro';
 import Bars from '../../components/Bars.astro';
 
-## Problem
+## Context
 
-1. Find a short round trip through 40 locations on campus, starting and ending at one building.
+Two experiments from the CS 581 programming assignments, one on search and one on decision-making under uncertainty:
+
+1. Find a short round trip through 40 campus locations, starting and ending at one building.
 2. Learn which of 11 Wi-Fi channels is least likely to be busy, from real measurements.
-
-## Data
-
-- **Tour:** the coordinates of 40 campus locations.
-- **Wi-Fi:** real traces from a campus library: signal strength on 11 channels over 5,128 time steps. A channel
-  counts as free when its signal is below −90 dBm.
 
 ## Approach
 
-For the tour, I implemented simulated annealing: start from a random tour, try swapping two edges, and sometimes accept
-a worse tour early on so the search does not get stuck. For the Wi-Fi channels, I implemented an epsilon-greedy
-bandit that learns on the first part of a trace and then commits to its best channel for the rest.
+For the tour, simulated annealing starts from a random tour and repeatedly reverses a section of it (a two-edge swap).
+It accepts a longer tour with a probability that falls as the search cools, so early moves can escape poor tours. For
+the Wi-Fi channels, an epsilon-greedy bandit learns on the first part of a trace, then commits to its best channel for
+the rest.
 
-<More>
-- Each simulated-annealing setting was run five times, over three starting temperatures and three cooling rates.
-- The bandit was run over nine values of epsilon (0.1 to 0.9) and five training shares (10% to 50% of the trace),
-  three times each.
-- I wrote a plotting function to show each bandit run's cumulative success over time.
+<More label="Data and scoring">
+- **Tour:** the coordinates of 40 campus locations on a grid. A tour's cost is the sum of straight-line distances
+  between consecutive stops, in the grid units of the input file, which carry no physical scale.
+- **Wi-Fi:** real traces from a campus library, with signal strength on 11 channels over 5,128 time steps. A channel
+  counts as free when its signal is below −90 dBm.
+- **Bandit score:** the share of the remaining time steps, after training, on which the chosen channel was free.
 </More>
 
-## Calculations
-
+<More label="Acceptance rule, cooling schedule and bandit update">
 Simulated annealing accepts a worse tour, longer by $\Delta$, with probability
 
 $$
 P(\text{accept}) = e^{-\Delta / T_k}, \qquad T_k = T_0\, e^{-\alpha k}
 $$
 
-so a high temperature early on allows exploration, and the search settles as the temperature falls. A smaller
-$\alpha$ cools more slowly.
+so a high temperature early on allows exploration, and the search settles as the temperature falls. A smaller $\alpha$
+cools more slowly. A run stops when the temperature reaches zero.
 
-<More>
 The epsilon-greedy bandit explores with probability $\varepsilon$, trying a random channel, and otherwise exploits,
-choosing the channel that has been free most often so far. A channel earns a reward of 1 when it is free and 0 when
-it is busy, so a larger $\varepsilon$ learns more about every channel at the cost of using the best one less.
+choosing the channel that has been free most often so far. A channel earns a reward of 1 when it is free and 0 when it
+is busy, and only the channel played is observed.
 </More>
 
-## Results
+<More label="Parameter sweeps and repeated runs">
+- Tour: three starting temperatures (100, 1,000 and 10,000) and three cooling rates (α = 0.9, 0.8 and 0.4), each
+  setting run five times (45 runs).
+- Bandit: nine values of epsilon (0.1 to 0.9) and five training shares (10% to 50% of the trace), each pairing run
+  three times (135 runs).
+</More>
 
-The slowest cooling I tried gave the shortest tours, and more training data made the bandit's choice of channel more
-reliable: with half the trace for training, its chosen channel was free 99.3% of the time.
+## Contribution
+
+- Implemented simulated annealing for the 40-stop tour, with two-edge-swap moves and exponential cooling.
+- Implemented an epsilon-greedy bandit that estimated each Wi-Fi channel's success rate from a training share of the
+  trace and evaluated the chosen channel on the remaining time steps.
+- Designed the parameter sweeps, ran 45 tour runs and 135 bandit runs, and reported averages, best runs and spread.
+
+## Findings and limitations
+
+The slowest cooling gave the shortest tours. With a starting temperature of 1,000, the average tour cost was 62.41 at
+α = 0.4 against 77.08 at α = 0.9, and the best run reached 60.06. For the bandit, with half the trace for training,
+the chosen channel was free on 99.3% of the remaining time steps, matching the best single channel over those steps
+(99.34%).
 
 <Bars
-  caption="Simulated annealing: average tour cost over five runs (lower is better), by cooling rate, starting temperature 1,000"
+  caption="Simulated annealing: tour cost over five runs (lower is better), by cooling rate, starting temperature 1,000"
   series={['Average cost', 'Best cost']}
   rows={[
     { label: 'α = 0.9 (fast)', values: [77.08, 70.55] },
@@ -73,27 +85,47 @@ reliable: with half the trace for training, its chosen channel was free 99.3% of
   digits={2}
 />
 
-<More>
-Bandit: share of the remaining trace on which the chosen channel was free, by share of the trace used for training
-(mean over runs):
+<More label="Reference tours for comparison">
+Two simple tours over the same 40 locations, computed afterwards for comparison: the average of 20,000 random tours,
+and a nearest-neighbour tour that always moves to the closest unvisited stop. The slow-cooling average is about 15%
+shorter than the nearest-neighbour tour.
+
+<Bars
+  caption="Tour cost in grid units (lower is better)"
+  series={['Tour cost']}
+  rows={[
+    { label: 'Random tour (average)', values: [224.88] },
+    { label: 'Nearest-neighbour tour', values: [73.5] },
+    { label: 'Annealing average, α = 0.4', values: [62.41] },
+    { label: 'Best annealing run', values: [60.06] },
+  ]}
+  digits={2}
+/>
+</More>
+
+<More label="Bandit results by training share">
+Mean success of the chosen channel over the remaining time steps, over 27 runs per training share (nine values of
+epsilon, three runs each). The remaining steps differ by training share, so the best fixed channel on those steps is
+shown beside it.
 
 <div class="table-wrap">
 
-| Training share | Mean success |
-| ---: | ---: |
-| 10% | 96.30% |
-| 20% | 99.20% |
-| 30% | 99.21% |
-| 40% | 99.27% |
-| 50% | 99.33% |
+| Training share | Steps evaluated | Mean success | Best fixed channel on those steps | Runs choosing that channel |
+| ---: | ---: | ---: | ---: | ---: |
+| 10% | 4,616 | 96.39% | 99.24% | 12 of 27 |
+| 20% | 4,103 | 99.20% | 99.24% | 23 of 27 |
+| 30% | 3,590 | 99.21% | 99.28% | 23 of 27 |
+| 40% | 3,077 | 99.28% | 99.32% | 22 of 27 |
+| 50% | 2,564 | 99.32% | 99.34% | 25 of 27 |
 
 </div>
 
-With 10% of the trace for training, the worst run reached 88.9%. With 50%, every run did better than 99%, and the
-bandit settled on the same channel in almost every run.
+With 10% of the trace for training, some runs settled on weaker channels, and the worst run reached 88.9%. With 50%,
+every run was above 99%. Over the whole trace the 11 channels were free between 64.9% and 99.1% of the time, and a
+randomly chosen channel averaged about 86% on the steps evaluated at the 50% split.
+</More>
 
-All simulated-annealing settings:
-
+<More label="All simulated-annealing settings">
 <div class="table-wrap">
 
 | Starting temperature | α | Average cost | Best cost |
@@ -111,7 +143,12 @@ All simulated-annealing settings:
 </div>
 </More>
 
-## My part
-
-I implemented both algorithms, chose the parameter grids and ran every setting: five times each for simulated
-annealing and three times each for the bandit.
+<More label="Limitations">
+- Slower cooling also meant more moves, because a run stops when the temperature reaches zero: about 1,860 moves at
+  α = 0.4 against about 830 at α = 0.9. The comparison does not separate the cooling rate from the number of moves.
+- Each tour setting has five runs and each bandit pairing three, with no fixed random seed, so small differences
+  between settings are not reliable. Across epsilon values the mean success ranged from 97.8% to 99.3% with no clear
+  trend.
+- The tour uses one set of 40 locations, and the bandit one library trace and one threshold (−90 dBm). The bandit
+  assumes that channels behave later as they did during training.
+</More>
