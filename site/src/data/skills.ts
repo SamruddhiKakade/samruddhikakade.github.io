@@ -8,7 +8,7 @@ export const skillGroups = [
   {
     name: 'AI and machine learning',
     skills: [
-      'Machine learning', 'Generative AI', 'Azure OpenAI', 'Prompt engineering', 'RAG', 'scikit-learn',
+      'Machine learning', 'Generative AI', 'Prompt engineering', 'RAG', 'scikit-learn',
       'Neural networks', 'Model selection', 'Model evaluation', 'Cross-validation', 'Gradient descent', 'Text classification',
       'Naive Bayes', 'Language models', 'Information theory', 'NLTK', 'Simulated annealing', 'Multi-armed bandits',
       'Optimisation',
@@ -16,26 +16,26 @@ export const skillGroups = [
   },
   {
     name: 'Search and speech',
-    skills: ['Information retrieval', 'TF-IDF', 'Scrapy', 'Azure Cognitive Search', 'Azure Speech', 'Speech-to-text'],
+    skills: ['Information retrieval', 'TF-IDF', 'Scrapy', 'Speech-to-text'],
   },
   {
     name: 'Data',
     skills: [
       'Data pipelines', 'Data quality', 'Metadata design', 'Data cleaning', 'Exploratory analysis',
-      'Data visualisation', 'Network analysis', 'Gephi', 'Tweepy', 'MongoDB', 'Statistics',
+      'Data visualisation', 'Network analysis', 'Gephi', 'Tweepy', 'MongoDB',
     ],
   },
   {
-    name: 'Software and cloud',
+    name: 'Software engineering',
     skills: [
       'Flask', 'Django', 'Backend development', 'Data modelling', 'Systems programming', 'Database internals',
-      'Memory management', 'Azure Blob Storage', 'Responsive design', 'Accessibility', 'Git',
+      'Memory management', 'Responsive design', 'Accessibility', 'Git',
     ],
   },
   {
     name: 'Research, analysis and communication',
     skills: [
-      'Experiment design', 'Requirements and design', 'Market research', 'Cost analysis', 'Technical writing', 'Research posters',
+      'Experiment design', 'Requirements and design', 'Market research', 'Technical writing',
       'Critical analysis', 'Game design', 'Playtesting', 'Visual design',
     ],
   },
@@ -51,7 +51,7 @@ export const featuredSkills: Record<string, string[]> = {
   'AI and machine learning': ['Language models', 'RAG', 'Generative AI', 'Text classification', 'Model selection', 'Neural networks'],
   'Search and speech': ['Information retrieval', 'Speech-to-text'],
   Data: ['Data pipelines', 'Metadata design', 'Data quality', 'Network analysis'],
-  'Software and cloud': ['Django', 'Flask', 'Systems programming'],
+  'Software engineering': ['Django', 'Flask', 'Systems programming'],
   'Research, analysis and communication': ['Experiment design', 'Technical writing', 'Game design'],
   'Working with people': ['Stakeholder collaboration', 'Team leadership'],
 };

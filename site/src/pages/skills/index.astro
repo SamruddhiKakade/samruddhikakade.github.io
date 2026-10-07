@@ -6,16 +6,18 @@ import { skillGroups } from '../../data/skills';
 
 const items = await publishedItems();
 const bySkill = new Map<string, typeof items>();
-for (const i of items) for (const s of i.data.skills) bySkill.set(s, [...(bySkill.get(s) ?? []), i]);
+for (const i of items) if (i.id !== 'illinois-tech') for (const s of i.data.skills) bySkill.set(s, [...(bySkill.get(s) ?? []), i]);
 const grouped = new Set(skillGroups.flatMap((g) => g.skills));
 const other = [...bySkill.keys()].filter((s) => !grouped.has(s)).sort();
-const groups = [...skillGroups, { name: 'Other', skills: other }]
+// AI first on this page; Overview keeps the order of skillGroups.
+const ordered = [...skillGroups].sort((a, b) => Number(b.name.startsWith('AI')) - Number(a.name.startsWith('AI')));
+const groups = [...ordered, { name: 'Other', skills: other }]
   .map((g) => ({ ...g, skills: g.skills.filter((s) => bySkill.has(s)) }))
   .filter((g) => g.skills.length > 0);
 ---
-<Base title="Skills" current="skills" wide description="Samruddhi Kakade's skills, each linked to the work that shows it.">
+<Base title="Skills in AI, data and software" current="skills" wide description="Samruddhi Kakade's skills in AI, data and software engineering, each linked to the roles and projects that show it.">
   <h1>Skills</h1>
-  <p class="lead">Every skill, with links to the work that shows it.</p>
+  <p class="lead">Each skill links to the roles and projects that show it, newest first. Long lists show the latest four.</p>
   {groups.map((g) => (
     <section>
       <h2>{g.name}</h2>
@@ -25,9 +27,10 @@ const groups = [...skillGroups, { name: 'Other', skills: other }]
             <dt>{s}</dt>
             <dd>
               <ul>
-                {bySkill.get(s)!.map((i) => (
+                {bySkill.get(s)!.slice(0, 4).map((i) => (
                   <li><a href={itemHref(i)}>{i.data.title}</a>{i.data.section === 'experience' && <span class="small">, {i.data.context}</span>} <span class="muted small">{i.data.when}</span></li>
                 ))}
+                {bySkill.get(s)!.length > 4 && <li class="muted small">and {bySkill.get(s)!.length - 4} more</li>}
               </ul>
             </dd>
           </div>

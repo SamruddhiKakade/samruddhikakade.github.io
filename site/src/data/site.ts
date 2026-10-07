@@ -19,7 +19,7 @@ export const sections = [
   { key: 'education', label: 'Education', href: '/education/', line: 'My degrees and the written work from my courses.' },
   { key: 'certifications', label: 'Certifications', href: '/certifications/', line: 'Courses I completed alongside and after university.' },
   { key: 'projects', label: 'Projects', href: '/projects/', line: 'Course projects from my degrees, newest first.' },
-  { key: 'skills', label: 'Skills', href: '/skills/', line: 'My technical skills, each linked to the work that shows it.' },
+  { key: 'skills', label: 'Skills', href: '/skills/', line: 'Skills in AI, data and software, each linked to the work that shows it.' },
 ] as const;
 
 export type SectionKey = (typeof sections)[number]['key'];
