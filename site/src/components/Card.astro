@@ -20,7 +20,7 @@ const verify = d.links.find((l) => l.label.startsWith('Verify'));
   <div class="above">
     {d.skills.length > 0 && <p class="skills-label muted small">Skills</p>}
     <Chips skills={d.skills.slice(0, 5)} />
-    {code && <p class="small code"><a href={code.url}>Code on GitHub</a></p>}
+    {code && <p class="small code"><a href={code.url} aria-label={`Code on GitHub: ${d.title}`}>Code on GitHub</a></p>}
     {verify && <p class="small code"><a href={verify.url}>{verify.label}</a></p>}
   </div>
 </article>

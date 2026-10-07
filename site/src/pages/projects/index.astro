@@ -7,9 +7,8 @@ import { AREAS } from '../../content.config';
 const items = await itemsIn('projects');
 const terms = [...new Set(items.map((i) => i.data.when))];
 const areas = AREAS.filter((a) => items.some((i) => i.data.areas.includes(a)));
-const years = [...new Set(items.map((i) => i.data.start.slice(0, 4)))].sort();
 ---
-<Base title="Projects" current="projects" wide description="Samruddhi Kakade's course projects, 2022 to 2024.">
+<Base title="Course projects in machine learning, language and software" current="projects" wide description="Fourteen course projects from Samruddhi Kakade's degrees at Illinois Institute of Technology, 2022 to 2024, in machine learning, language processing, data analysis, search and software engineering.">
   <h1>Projects</h1>
   <p class="lead">Course projects from my degrees, newest first. Open any card for the full project.</p>
 
@@ -17,10 +16,6 @@ const years = [...new Set(items.map((i) => i.data.start.slice(0, 4)))].sort();
     <div class="row" role="group" aria-label="Filter by area">
       <span class="muted small label">Area</span>
       {areas.map((a) => <button type="button" class="f" data-kind="area" data-value={a} aria-pressed="false">{a}</button>)}
-    </div>
-    <div class="row" role="group" aria-label="Filter by year">
-      <span class="muted small label">Year</span>
-      {years.map((y) => <button type="button" class="f" data-kind="year" data-value={y} aria-pressed="false">{y}</button>)}
     </div>
     <p class="small status" aria-live="polite"><span class="shown">Showing {items.length} of {items.length}</span> · <button type="button" class="clear">Clear</button></p>
   </div>
@@ -46,12 +41,10 @@ const years = [...new Set(items.map((i) => i.data.start.slice(0, 4)))].sort();
     const on = (kind: string) =>
       buttons.filter((b) => b.dataset.kind === kind && b.getAttribute('aria-pressed') === 'true').map((b) => b.dataset.value!);
     const areas = on('area');
-    const years = on('year');
     let n = 0;
     for (const c of cards) {
       const okArea = areas.length === 0 || (c.dataset.areas ?? '').split('|').some((a) => areas.includes(a));
-      const okYear = years.length === 0 || years.includes(c.dataset.year!);
-      c.hidden = !(okArea && okYear);
+      c.hidden = !okArea;
       if (!c.hidden) n++;
     }
     document.querySelectorAll<HTMLElement>('.term').forEach((s) => {
