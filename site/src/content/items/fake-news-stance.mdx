@@ -8,7 +8,7 @@ course: CS 579
 oneLine: "Headline stance classification against known fake news; co-developed the text pipeline and compared four models using five-fold cross-validation."
 summary: "Classified whether a new headline agreed with, disagreed with or was unrelated to a known fake-news headline. With a partner, developed the text pipeline, compared four models by cross-validation on 256,442 labelled headline pairs and wrote the report."
 role: Developer, team of 2
-myPart: Built the text pipeline, the model comparison and the report as a pair.
+myPart: Developed the text pipeline and the model comparison with a partner, and co-wrote the report and presentation slides.
 skills: [Python, NLTK, scikit-learn, Text classification, Cross-validation, Model selection]
 selected: true
 areas: [Language (NLP), Machine learning]
@@ -17,17 +17,14 @@ import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 import Bars from '../../components/Bars.astro';
 
-## Problem
+## Context
 
 Fake news spreads through headlines that repeat or contradict each other. Given a headline already known to be fake and
-a new one, can a model tell whether the new headline agrees with it, disagrees with it, or is unrelated?
-
-## Data
-
-256,442 labelled pairs of English news headlines, and 64,110 unlabelled pairs to predict. The labels are very uneven.
+a new one, the task was to decide whether the new headline agrees with it, disagrees with it, or is unrelated. The
+labels were heavily uneven, so accuracy has to be read against a baseline.
 
 <Bars
-  caption="Labelled headline pairs by stance"
+  caption="Labelled headline pairs by stance (256,442 in total; a further 64,110 unlabelled pairs were left for prediction)"
   series={['Pairs']}
   rows={[
     { label: 'Unrelated', values: [175598] },
@@ -37,30 +34,63 @@ a new one, can a model tell whether the new headline agrees with it, disagrees w
   digits={0}
 />
 
-<More>
-A model can look accurate just by predicting "unrelated", so each model had to beat that baseline.
+<More label="Why the baseline matters">
+Unrelated pairs are 68.5% of the labelled data, so a model that always answered "unrelated" would be right 68.5% of
+the time. Every accuracy on this page is read against that figure.
 </More>
 
 ## Approach
+
+A text pipeline turned each headline pair into word counts, and four classifiers were compared by five-fold
+cross-validation. The best of the four was refitted on all labelled pairs and used to label the unlabelled set.
 
 <Flow
   label="The classification pipeline"
   steps={['Clean and lowercase', 'Tokenise and lemmatise (NLTK)', 'Word counts per headline pair', 'Scale features', 'Compare four models by five-fold cross-validation', 'Refit the best on all data and label the test set']}
 />
 
-We compared logistic regression, a random forest, a decision tree and a linear support vector machine, each scored by
-five-fold cross-validation.
-
-<More>
-The tokeniser runs inside the word-count step, so cleaning and counting stay in one pipeline. The features are scaled
-without centring, which keeps the large word-count matrix sparse and fast to train on.
+<More label="Pipeline and model details">
+- Both headlines of a pair were joined into one text before counting, so each pair became a single vector of word
+  counts.
+- The tokeniser runs inside the word-count step, so cleaning and counting stay in one pipeline.
+- Features were scaled without centring, which keeps the large word-count matrix sparse and fast to train on.
+- The four models were logistic regression, a random forest, a decision tree and a linear support vector machine, all
+  with scikit-learn's default settings.
 </More>
 
-## Results
+## Contribution
 
-The random forest was the most accurate and the most stable of the four: 0.761 mean cross-validated accuracy,
-varying by only ±0.002 across the five folds.
+- With a partner, developed the text pipeline (cleaning, tokenising and lemmatising with NLTK, word counts and feature
+  scaling), compared four classifiers by five-fold cross-validation and selected the random forest.
+- Co-wrote the project report and presentation slides.
 
-## My part
+## Findings and limitations
 
-We built the project as a pair, from the text pipeline and the model comparison to the final report and presentation.
+The random forest reached 0.761 mean cross-validated accuracy, 7.6 percentage points above the 68.5% majority-class
+baseline, and was the most accurate of the four models.
+
+<Bars
+  caption="Mean five-fold cross-validated accuracy (%), against the majority-class baseline"
+  series={['Accuracy (%)']}
+  rows={[
+    { label: 'Random forest', values: [76.1] },
+    { label: 'Decision tree', values: [70.2] },
+    { label: 'Majority-class baseline', values: [68.5] },
+    { label: 'Logistic regression', values: [67.5] },
+    { label: 'Linear SVM', values: [64.8] },
+  ]}
+  digits={1}
+  max={100}
+/>
+
+<More label="Variation across folds and limitations">
+- The report gives each accuracy with the standard deviation of the five fold accuracies: random forest 0.002, decision
+  tree 0.007, logistic regression 0.008, linear support vector machine 0.006.
+- Only accuracy was reported. Per-class recall and F1 were not computed, so how well the 6,606 disagreeing pairs were
+  found is not known.
+- The word-count vocabulary and the scaler were fitted on all labelled pairs before cross-validation, so the fold scores
+  may be slightly optimistic.
+- Counting the words of both headlines together ignores which words came from which headline, and no model settings
+  were tuned.
+- The unlabelled pairs had no published answers, so the accuracy is a cross-validation estimate, not a test-set score.
+</More>
