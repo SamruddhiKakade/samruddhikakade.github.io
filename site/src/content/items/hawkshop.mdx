@@ -12,27 +12,51 @@ myPart: Set up the first Django backend and led the team's sprint in weeks 11 an
 skills: [Python, Django, Sprint leadership, Agile, Teamwork]
 areas: [Software]
 ---
+import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-Students leaving campus throw away things others could use, while new students buy the same things new. A local
-marketplace between students saves money and waste.
+HawkShop was the team project for IPRO 497 in Fall 2022, for a team of six: a web marketplace where students sell used
+items to students nearby, to save money and reduce waste.
 
-The product design called for posting items with a photo, price and condition, browsing by distance, messaging
-sellers, verifying a university email address, reporting fraud, and planning an on-campus meet-up to hand items over.
+<Flow
+  label="The team's versions of HawkShop, in order"
+  steps={['Product design document', 'Django project with three apps', 'React and Node application', 'Firebase for stored items and images']}
+/>
+
+<More label="Planned capabilities and scenarios">
+- **Capabilities.** The design document listed posting an item with photos, price and condition; browsing items within
+  a set distance; messaging sellers; verifying users by university email; reporting fraud or damage; and agreeing a
+  time and place on campus for the hand-over.
+- **Scenarios.** A graduating student selling a refrigerator, a student selling textbooks to an incoming second-year
+  student, and a new student searching for a used calculator.
+- **Planned stack.** Django for the backend, React for the front end and an Oracle database.
+</More>
 
 ## Approach
 
-The team worked in two-week sprints, with the sprint leader role rotating so every member led in turn.
+The team followed a rotating sprint-leader schedule in two-week blocks, and every member led at least once. Its first
+backend was a Django project; the team then moved to a React and Node application, which later used Firebase to store
+items and images.
 
-<Flow
-  label="How the build moved. My part was the first Django backend."
-  steps={['Product design', 'First backend in Django', 'Front end moved to React with Firebase']}
-/>
+<More label="The Django project and the sprint schedule">
+- **Django project.** The project was split into three apps, for product search, product upload and user
+  registration, and teammates then added the database tables and the search route.
+- **Sprint schedule.** Weeks 11 and 12 fell in the phase that prepared the final demo. The team's focus then was
+  uploading files, setting up and using the database, acceptance criteria for stories, and the stories needed for the
+  demo.
+</More>
 
-## My part
+## Contribution
 
-- I set up the first backend: a Django project divided into apps for search, uploading items and registration, with
-  its settings and template structure.
-- I was the team's sprint leader for weeks 11 and 12.
+- Configured the project's initial Django backend, with separate apps for product search, product upload and user
+  registration.
+- Served as sprint leader for weeks 11 and 12 of the team's rotating schedule, in the phase leading to the final demo.
+
+## Lessons learned
+
+- **An early split can outlast a change of stack.** The three areas defined in the Django project (search, upload and
+  registration) reappear as components of the React application, so the early division of the product carried over.
+- **Written acceptance criteria give continuity.** With the sprint leader changing every two weeks, acceptance
+  criteria let each new leader and the rest of the team work from the same definition of done.
