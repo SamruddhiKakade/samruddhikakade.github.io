@@ -1,0 +1,18 @@
+---
+// A moved page: sends visitors on and asks search engines to index the new address.
+interface Props { to: string }
+const { to } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Moved · Samruddhi Kakade</title>
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <link rel="canonical" href={new URL(to, Astro.site).href} />
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <p>This page has moved: <a href={to}>{to}</a>.</p>
+  </body>
+</html>

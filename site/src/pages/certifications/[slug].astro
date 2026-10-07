@@ -1,0 +1,8 @@
+---
+// The certificate pages were dropped on 2026-10-07; certifications are cards on /certifications/.
+import Redirect from '../../components/Redirect.astro';
+export function getStaticPaths() {
+  return ['ibm-ai-practitioner', 'ml-specialization', 'nlp-vector-spaces'].map((slug) => ({ params: { slug } }));
+}
+---
+<Redirect to="/certifications/" />

@@ -11,7 +11,6 @@ const used = new Set(items.flatMap((i) => i.data.skills));
 const skillRows = skillGroups
   .map((g) => ({ name: g.name, skills: (featuredSkills[g.name] ?? []).filter((s) => used.has(s)) }))
   .filter((g) => g.skills.length > 0);
-const skillsShown = skillRows.reduce((n, g) => n + g.skills.length, 0);
 ---
 <Base title="Overview" current="overview" wide description="Selected work by Samruddhi Kakade, by section, with a timeline of everything.">
   <h1>Overview</h1>
@@ -35,7 +34,7 @@ const skillsShown = skillRows.reduce((n, g) => n + g.skills.length, 0);
     if (s.key === 'skills') {
       return (
         <section class="block" id={s.key}>
-          <h2><a href={s.href}>{s.label}</a> <span class="count muted">({skillsShown} of {used.size})</span></h2>
+          <h2><a href={s.href}>{s.label}</a></h2>
           <p class="muted">{s.line}</p>
           <dl class="skill-rows">
             {skillRows.map((g) => (
@@ -59,7 +58,7 @@ const skillsShown = skillRows.reduce((n, g) => n + g.skills.length, 0);
     );
     return (
       <section class="block" id={s.key}>
-        <h2><a href={s.href}>{s.label}</a>{shown > 0 && <span class="count muted"> ({shown < all.length ? `${shown} of ${all.length}` : all.length})</span>}</h2>
+        <h2><a href={s.href}>{s.label}</a></h2>
         {list.length === 0 ? <p class="muted">{s.line}</p> : (
           <ul class="items">{list.map(row)}</ul>
         )}
@@ -127,10 +126,6 @@ const skillsShown = skillRows.reduce((n, g) => n + g.skills.length, 0);
   }
   .block h2 a {
     text-decoration: none;
-  }
-  .count {
-    font-family: var(--font-body), system-ui, sans-serif;
-    font-size: 1rem;
   }
   .items {
     list-style: none;

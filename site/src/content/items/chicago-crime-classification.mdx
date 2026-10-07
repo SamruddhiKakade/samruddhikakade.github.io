@@ -5,8 +5,8 @@ start: '2023-11'
 when: Fall 2023
 context: CS 584 Machine Learning
 course: CS 584
-oneLine: "Crime-type classification of recorded Chicago incidents from time and location; compared seven model families, reworked the stratified cross-validation and added a neural-network grid search."
-summary: "Classified the type of recorded Chicago crimes from time and location, using 656,549 incidents from 2020 to 2022. Compared seven model families, reworked the stratified cross-validation so each fold trained and scored on a separate split, and added a neural-network grid search."
+oneLine: "Crime-type classification of recorded Chicago incidents; set up a comparison of seven model families, reworked the stratified cross-validation and added a neural-network grid search."
+summary: "Classified the type of recorded Chicago crimes from time and location, using 656,549 incidents from 2020 to 2022. Set up a comparison of seven model families, reworked the cross-validation so each fold trained and scored on a separate split, and added a neural-network grid search."
 role: Modelling and evaluation, team of 4
 myPart: Wrote the model-selection notebook, reworked the stratified cross-validation so each fold trains and scores on a separate split, and added the neural-network grid search.
 skills: [Python, scikit-learn, Model selection, Cross-validation, Neural networks, Teamwork]
@@ -43,7 +43,7 @@ most common types for 68%, and seven types have fewer than 100 records each.
 
 ## Approach
 
-The team compared seven classifiers (logistic regression, decision tree, random forest, naive Bayes, k-nearest
+The team set up a comparison of seven classifiers (logistic regression, decision tree, random forest, naive Bayes, k-nearest
 neighbours, support vector machine and a neural network), each evaluated with the same stratified cross-validation.
 Teammates cleaned and explored the data beforehand.
 
@@ -69,7 +69,7 @@ learning-rate schedules, 96 configurations in all, each scored by the same strat
 
 ## Contribution
 
-- Wrote the model-selection notebook comparing seven model families on the Chicago records.
+- Wrote the model-selection notebook that set up the comparison of seven model families on the Chicago records.
 - Reworked the stratified cross-validation so that every fold trains on its training split and is scored on a separate
   held-out split.
 - Added the neural-network grid search over 96 configurations.
@@ -85,7 +85,7 @@ notebooks do not hold a final comparison of all seven families.
   were recognised.
 - The records are incidents reported to and recorded by the police, not all crime, and the features are limited to
   place, day, month and year. Time of day was not used.
-- Scaling was fitted on all records before the split; fitting it on the training folds only would be stricter.
+- Scaling was fitted on all records before the split. The correct procedure fits it on the training folds only.
 - The type of location was coded as plain integers, which imposes an order that the categories do not have.
 - The 20% test part was not scored in the saved notebooks.
 </More>

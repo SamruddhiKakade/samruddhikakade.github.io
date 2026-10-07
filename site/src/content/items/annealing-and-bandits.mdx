@@ -46,7 +46,7 @@ P(\text{accept}) = e^{-\Delta / T_k}, \qquad T_k = T_0\, e^{-\alpha k}
 $$
 
 so a high temperature early on allows exploration, and the search settles as the temperature falls. A smaller $\alpha$
-cools more slowly. A run stops when the temperature reaches zero.
+cools more slowly. A run stops when the temperature becomes so small that the computer rounds it to zero.
 
 The epsilon-greedy bandit explores with probability $\varepsilon$, trying a random channel, and otherwise exploits,
 choosing the channel that has been free most often so far. A channel earns a reward of 1 when it is free and 0 when it
@@ -71,8 +71,8 @@ is busy, and only the channel played is observed.
 
 The slowest cooling gave the shortest tours. With a starting temperature of 1,000, the average tour cost was 62.41 at
 α = 0.4 against 77.08 at α = 0.9, and the best run reached 60.06. For the bandit, with half the trace for training,
-the chosen channel was free on 99.3% of the remaining time steps, matching the best single channel over those steps
-(99.34%).
+the chosen channel was free on 99.32% of the remaining time steps, within 0.02 percentage points of the best fixed
+channel on the same steps (99.34%).
 
 <Bars
   caption="Simulated annealing: tour cost over five runs (lower is better), by cooling rate, starting temperature 1,000"
@@ -144,7 +144,7 @@ randomly chosen channel averaged about 86% on the steps evaluated at the 50% spl
 </More>
 
 <More label="Limitations">
-- Slower cooling also meant more moves, because a run stops when the temperature reaches zero: about 1,860 moves at
+- Slower cooling also meant more moves, because a run stops only when the temperature rounds to zero: about 1,860 moves at
   α = 0.4 against about 830 at α = 0.9. The comparison does not separate the cooling rate from the number of moves.
 - Each tour setting has five runs and each bandit pairing three, with no fixed random seed, so small differences
   between settings are not reliable. Across epsilon values the mean success ranged from 97.8% to 99.3% with no clear

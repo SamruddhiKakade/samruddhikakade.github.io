@@ -2,14 +2,12 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import photo from '../assets/photo.png';
-import { person, sections } from '../data/site';
+import { person } from '../data/site';
 import { publishedItems } from '../data/items';
 
 const all = await publishedItems();
 // "Latest" appears only once a research paper is published on the site (from the day it is public).
 const latest = all.find((i) => i.data.section === 'research');
-// Every menu option, one click from Home (the menu folds away below 1024px).
-const links = [{ label: 'Overview', href: '/overview/' }, ...sections];
 ---
 <Base current="home">
   <section class="hero">
@@ -24,17 +22,15 @@ const links = [{ label: 'Overview', href: '/overview/' }, ...sections];
     </div>
     <p class="intro">
       As an independent researcher, I study how to evaluate large language models. Since January 2025 I have
-      worked as an AI engineer for the client Johnson &amp; Johnson, building the data-ingestion pipelines behind
+      worked as an AI engineer on projects for Johnson &amp; Johnson, building the data-ingestion pipelines behind
       retrieval-augmented chatbots for healthcare knowledge. I earned a Master of Artificial Intelligence and a
       B.S. in Computer Science from Illinois Institute of Technology in May 2024.
     </p>
-    <ul class="proof">
-      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
-    </ul>
     {latest && (
       <p class="latest"><span class="muted">Latest:</span> <a href={`/research/${latest.id}/`}>{latest.data.title}</a></p>
     )}
     <ul class="contact-row">
+      <li><a href="/research/">Research</a></li>
       <li><a href={`mailto:${person.email}`}>Email</a></li>
       <li><a href={person.github}>GitHub</a></li>
       <li><a href={person.linkedin}>LinkedIn</a></li>
@@ -162,20 +158,6 @@ const links = [{ label: 'Overview', href: '/overview/' }, ...sections];
   .intro {
     font-size: 1.15rem;
     max-width: 62ch;
-  }
-  .proof {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 0;
-    list-style: none;
-    padding: 0;
-    margin: 0 0 20px;
-    font-size: 1.05rem;
-  }
-  .proof li:not(:last-child)::after {
-    content: '·';
-    color: var(--muted);
-    margin: 0 10px;
   }
   .contact-row {
     display: flex;

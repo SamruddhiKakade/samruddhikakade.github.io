@@ -1,0 +1,12 @@
+---
+// Item pages that lived under /university/ before the rename; the degree page was merged into Education.
+import Redirect from '../../components/Redirect.astro';
+export function getStaticPaths() {
+  const moved = ['ai-and-society', 'automated-systems-paper', 'demolition-derby-ad', 'fibre-glycemic-poster', 'game-x-report'];
+  return [
+    ...moved.map((slug) => ({ params: { slug }, props: { to: `/education/${slug}/` } })),
+    { params: { slug: 'illinois-tech' }, props: { to: '/education/' } },
+  ];
+}
+---
+<Redirect to={Astro.props.to} />
