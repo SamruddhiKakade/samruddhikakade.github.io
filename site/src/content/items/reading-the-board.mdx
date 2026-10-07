@@ -4,7 +4,7 @@ section: research
 start: '2026-10'
 when: "Preprint, 7 October 2026"
 context: Independent research
-oneLine: "Turn-level evaluation of five open language-model agents on textual Sokoban; induced a failure taxonomy from blind readings and tested its agreement, labels and controls."
+oneLine: "Turn-level evaluation of open language-model agents on textual Sokoban; induced a failure taxonomy from blind readings and reported its agreement and a null validity test."
 summary: "Evaluated five open language-model agents of 3 to 8B parameters on textual Sokoban turn by turn, over 180 episodes and 1,561 steps. Induced a failure taxonomy from blind reading passes and reported its annotator agreement, human label checks and a null validity test."
 role: Sole author
 myPart: Designed the study, the turn-level instrument and its controls, ran the experiments on a self-hosted serving stack, analysed the results and wrote the paper.
@@ -42,7 +42,7 @@ what it wrote, the action it emitted and the board that resulted.
 
 Five open models played six fixed levels of textual Sokoban through one harness on a self-hosted serving stack: 180
 episodes and 1,561 steps over six conditions. Every turn was coded by two language-model annotators against a taxonomy
-induced from three blind reading passes. Controls and a pre-registered positive control limit what the codes can be taken to show.
+induced from three blind reading passes. Control arms, including a pre-registered positive control, set the limits on what the codes can be taken to show.
 
 <Flow
   label="One turn as recorded. The reasoning at step N is read against the board shown at step N-1, because the logged observation is the one after the action."
@@ -66,7 +66,8 @@ induced from three blind reading passes. Controls and a pre-registered positive 
 <More label="How the taxonomy was induced">
 - Three blind reading passes each read one execution's 60 episodes, so no episode was read twice and the three cover
   all 180. Each pass had ten readers, fresh language-model sessions with no prior context, given one file and a fixed
-  brief with no checklist, rubric or category definitions.
+  brief with no checklist, rubric or category definitions. The readers were sessions of the same model as annotator
+  A, so that annotator is not naive to the taxonomy's framing.
 - Readers described what they saw. Matching a description to a taxonomy item was a separate written step afterwards.
   Where a description fitted an existing item only arguably, a new item was created.
 - Every step-level finding carries a verbatim span checked mechanically against the thought of the step it comes from. The
@@ -88,7 +89,7 @@ induced from three blind reading passes. Controls and a pre-registered positive 
   never pooled with the A and B figure.
 - A test of whether the annotators' materials revealed the study's expected result found that the first version of the
   second annotator's copy did: seven of eight fresh readers could state the direction. The prose that conveyed it was
-  removed before those materials were sent, and annotator A labelled from the unrevised copy.
+  removed before the materials were sent to annotator B; annotator A had labelled from the unrevised copy.
 </More>
 
 <More label="Human label checks">
@@ -103,7 +104,7 @@ induced from three blind reading passes. Controls and a pre-registered positive 
   they cannot be adjudicated. The paper reports the disagreement with the 316 and does not resolve it.
 </More>
 
-<More label="Controls: harness check, difficulty ladder and pre-registered arms">
+<More label="Controls: harness check, difficulty ladder and prompt arms">
 - Harness check: a push-optimal solution from a solver sharing no code with the harness, replayed through the repaired
   harness, solves all six levels over 229 replayed steps. So the harness can record a solve.
 - Difficulty ladder: placements on a single 5 by 5 open room at each optimal push count from 1 to 6, 120 episodes in
@@ -111,8 +112,9 @@ induced from three blind reading passes. Controls and a pre-registered positive 
   41.5%, 5 of 20 against 16.2%, 7 of 20 against 6.1%). At four or more pushes, 0 of 60 episodes solve, and a random
   agent would also be expected to solve none, so those rungs separate the agents from chance in neither direction.
 - Positive control: a pre-registered test of whether the taxonomy separates solved from unsolved ladder episodes.
-- Two pre-registered prompt arms, described under Findings and limitations: one restoring the game's rules text, one
-  changing the prompt's worked example.
+- Two prompt arms, described under Findings and limitations: a pre-registered one changing the prompt's worked
+  example, and one restoring the game's rules text, whose decision rule was fixed after the first model had run, so it
+  is not pre-registered.
 </More>
 
 ## Contribution
@@ -122,7 +124,7 @@ Sole author.
 - Designed a turn-level evaluation instrument: a ten-family behavioural failure taxonomy induced from three blind
   reading passes, with a contrast set that codes what an agent gets right.
 - Designed the controls: a harness check by push-optimal replay, a difficulty ladder with chance baselines, a
-  pre-registered positive control and two pre-registered prompt arms.
+  pre-registered positive control, a pre-registered worked-example arm and a rules-text arm.
 - Ran 180 episodes of five open models on a self-hosted serving stack and coded every turn with two language-model
   annotators, reporting κ beside PABAK and prevalence.
 - Reported label defensibility from 316 human label-verdicts across three instruments, kept apart from the annotator
@@ -151,7 +153,7 @@ thought causes the action that follows it.
     <table>
       <caption class="muted small">One E2 turn: what the agent was shown, what the turn wrote, the action it emitted and what followed.</caption>
       <thead>
-        <tr><th scope="col">What the agent was shown (rows of the board table after step 1)</th><th scope="col">What step 2 wrote, emitted and produced</th></tr>
+        <tr><th scope="col">What the agent was shown at step 2 (six rows of the logged board, which is the one left after step 1)</th><th scope="col">What step 2 wrote, emitted and produced</th></tr>
       </thead>
       <tbody>
         <tr>
