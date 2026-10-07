@@ -3,11 +3,11 @@
 import type { CollectionEntry } from 'astro:content';
 import { itemHref } from '../data/items';
 interface Props { items: CollectionEntry<'items'>[] }
-const { items } = Astro.props;
+// Research papers stay off the timeline (her call, 2026-10-07): a paper is not a period of work.
+const items = Astro.props.items.filter((i) => i.data.section !== 'research');
 
 const lanes = [
   { key: 'experience', label: 'Experience' },
-  { key: 'research', label: 'Research' },
   { key: 'education', label: 'Education' },
   { key: 'certifications', label: 'Certifications' },
   { key: 'projects', label: 'Projects' },
