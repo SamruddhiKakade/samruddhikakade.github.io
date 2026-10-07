@@ -8,7 +8,7 @@ export const skillGroups = [
   {
     name: 'AI and machine learning',
     skills: [
-      'Machine learning', 'Generative AI', 'Prompt engineering', 'RAG', 'scikit-learn',
+      'Machine learning', 'LLM evaluation', 'Generative AI', 'Prompt engineering', 'RAG', 'scikit-learn',
       'Neural networks', 'Model selection', 'Model evaluation', 'Cross-validation', 'Gradient descent', 'Text classification',
       'Naive Bayes', 'Language models', 'Information theory', 'NLTK', 'Simulated annealing', 'Multi-armed bandits',
       'Optimisation',
@@ -35,7 +35,7 @@ export const skillGroups = [
   {
     name: 'Research, analysis and communication',
     skills: [
-      'Experiment design', 'Requirements and design', 'Market research', 'Technical writing',
+      'Experiment design', 'Annotation reliability', 'Requirements and design', 'Market research', 'Technical writing',
       'Critical analysis', 'Game design', 'Playtesting', 'Visual design',
     ],
   },
@@ -48,7 +48,7 @@ export const skillGroups = [
 // Overview's short list: a few skills per group, chosen for research and AI-engineer applications.
 export const featuredSkills: Record<string, string[]> = {
   Programming: ['Python', 'R', 'C'],
-  'AI and machine learning': ['Language models', 'RAG', 'Generative AI', 'Text classification', 'Model selection', 'Neural networks'],
+  'AI and machine learning': ['LLM evaluation', 'Language models', 'RAG', 'Generative AI', 'Text classification', 'Model selection', 'Neural networks'],
   'Search and speech': ['Information retrieval', 'Speech-to-text'],
   Data: ['Data pipelines', 'Metadata design', 'Data quality', 'Network analysis'],
   'Software engineering': ['Django', 'Flask', 'Systems programming'],

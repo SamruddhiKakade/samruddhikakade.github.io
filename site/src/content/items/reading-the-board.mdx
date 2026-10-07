@@ -1,0 +1,254 @@
+---
+title: "Reading the Board, Playing Another One: Turn-Level Evaluation of Open LLM Agents on Textual Sokoban"
+section: research
+start: '2026-10'
+when: "Preprint, 7 October 2026"
+context: Independent research
+oneLine: "Turn-level evaluation of five open language-model agents on textual Sokoban; induced a failure taxonomy from blind readings and tested its agreement, labels and controls."
+summary: "Evaluated five open language-model agents of 3 to 8B parameters on textual Sokoban turn by turn, over 180 episodes and 1,561 steps. Induced a failure taxonomy from blind reading passes and reported its annotator agreement, human label checks and a null validity test."
+role: Sole author
+myPart: Designed the study, the turn-level instrument and its controls, ran the experiments on a self-hosted serving stack, analysed the results and wrote the paper.
+skills: [LLM evaluation, Annotation reliability, Experiment design, Language models, Python]
+areas: [Language (NLP), Games]
+links:
+  - label: Preprint (Zenodo)
+    url: https://doi.org/10.5281/zenodo.23220308
+  - label: Supplementary material (Zenodo)
+    url: https://zenodo.org/records/23220308
+selected: true
+---
+import More from '../../components/More.astro';
+import Flow from '../../components/Flow.astro';
+
+## Question
+
+Aggregate outcomes hide where an interactive agent fails. In this study no agent solved any level, so an outcome-only
+evaluation would report six identical zeroes. The unit of analysis is therefore the turn: what the agent was shown,
+what it wrote, the action it emitted and the board that resulted.
+
+<More label="Why the turn, and why Sokoban">
+- Sokoban is a box-pushing puzzle. It is PSPACE-complete in general, one bad push can leave a level unwinnable, and it
+  is fully observable. The board is given to the agent as text, so visual perception is out of the loop.
+- The five models are fixed, publicly available open checkpoints of 3 to 8B parameters. They solve no level in any
+  condition, and more than half of the episodes end at six steps, when the harness's stuck detector fires. The study
+  is therefore of agents at the floor of the task: where in the turn the error enters, and what an evaluation has to
+  record to see it.
+- A count of ineffective actions records that the agent pushed into empty floor. A turn-level code records that its
+  thought placed a box in that cell. An outcome-only record could not tell an agent that read the board correctly and
+  then chose an impossible move from one that never read it.
+</More>
+
+## Approach
+
+Five open models played six fixed levels of textual Sokoban through one harness on a self-hosted serving stack: 180
+episodes and 1,561 steps over six conditions. Every turn was coded by two language-model annotators against a taxonomy
+induced from three blind reading passes. Controls and a pre-registered positive control limit what the codes can be taken to show.
+
+<Flow
+  label="One turn as recorded. The reasoning at step N is read against the board shown at step N-1, because the logged observation is the one after the action."
+  steps={['Board shown, as text', 'Reasoning the agent stated', 'Action string it emitted', 'Resulting board', 'Turn coded against the taxonomy']}
+/>
+
+<More label="Models, levels, harness and serving">
+- Models: Qwen2.5-3B-Instruct, Qwen2.5-7B-Instruct, Llama-3.2-3B-Instruct, Llama-3.1-8B-Instruct and
+  Mistral-7B-Instruct-v0.3, all at fp16.
+- The corpus is 5 models, 6 levels, 3 replicates and 2 temperatures: 180 episodes and 1,561 steps. Each replicate is a
+  separate execution, and the temperatures are never pooled into one behavioural rate.
+- An episode ends on success or when the board is unchanged for five consecutive steps. Episodes are short: median 6
+  steps, and 95 of 180 (52.8%) are exactly 6 steps long, so the findings are mostly about the opening of an episode.
+- The harness is an existing open-source game-agent harness (GamingAgent), run with its full per-step loop of
+  perception, memory and reflection, and reasoning. Serving was self-hosted vLLM on a single NVIDIA L4, with no paid
+  API.
+- In this harness a plain move and a push are separate commands, and a command whose precondition fails does nothing,
+  with no fallback from one to the other.
+</More>
+
+<More label="How the taxonomy was induced">
+- Three blind reading passes each read one execution's 60 episodes, so no episode was read twice and the three cover
+  all 180. Each pass had ten readers, fresh language-model sessions with no prior context, given one file and a fixed
+  brief with no checklist, rubric or category definitions.
+- Readers described what they saw. Matching a description to a taxonomy item was a separate written step afterwards.
+  Where a description fitted an existing item only arguably, a new item was created.
+- Every step-level finding carries a verbatim span checked mechanically against the thought of the step it comes from. The
+  passes produced 1,552 step lines and 2,194 quoted spans.
+- The result is a codebook of ten families organised by where in the turn a claim goes wrong, with a contrast set that
+  codes what the agent gets right. The inventory has 99 items, 97 of them codeable, and is over-split on purpose, so
+  97 overstates the number of distinct forms.
+</More>
+
+<More label="Annotators and agreement">
+- All 1,561 steps were double-coded by two language-model annotators from different families (annotator A is Claude
+  Opus 5, annotator B is GPT-5 through the Codex coding agent), each blind to the other's labels. A third annotator
+  (Gemini 3.7 Flash) labelled all 180 episodes under the same item definitions, differing in model family, harness,
+  prompt and context isolation.
+- Cohen's kappa (κ) is misleading at low prevalence, so the κ ≥ 0.6 gate is applied only to items whose mean prevalence
+  lies between 10% and 90%. That admits 25 of 97 items, of which 9 pass; the median in-band κ is 0.576. For the rest,
+  agreement, both prevalences and PABAK (prevalence- and bias-adjusted κ) are reported beside κ.
+- With the third annotator the median in-band κ is 0.319 against A and 0.381 against B, each over the band for that pairing and
+  never pooled with the A and B figure.
+- A test of whether the annotators' materials revealed the study's expected result found that the first version of the
+  second annotator's copy did: seven of eight fresh readers could state the direction. The prose that conveyed it was
+  removed before those materials were sent, and annotator A labelled from the unrevised copy.
+</More>
+
+<More label="Human label checks">
+- Because two language models can agree on the same wrong label, people read sampled turns and judged whether the
+  labels were defensible under the frozen codebook. Three instruments returned 316 label-verdicts: two pre-specified
+  draws of 40 turns and one purposive probe. They differ in checker, draw and independence, so they are never pooled
+  into a rate.
+- Of the 225 labels that both annotators applied, 3 were judged wrong and 15 unclear. Each of the two checkers had run
+  one of the annotators, so neither is independent of the pipeline.
+- A fourth instrument, checked by a person who ran neither annotator, is reported apart: 182 label-verdicts, of which
+  155 were confirmed, 25 marked wrong and 2 unclear. Reasons are missing for 25 of the 27 that were not confirmed, so
+  they cannot be adjudicated. The paper reports the disagreement with the 316 and does not resolve it.
+</More>
+
+<More label="Controls: harness check, difficulty ladder and pre-registered arms">
+- Harness check: a push-optimal solution from a solver sharing no code with the harness, replayed through the repaired
+  harness, solves all six levels over 229 replayed steps. So the harness can record a solve.
+- Difficulty ladder: placements on a single 5 by 5 open room at each optimal push count from 1 to 6, 120 episodes in
+  all, 20 per rung. Rungs 1 to 3 are calibration rungs, reported against uniform-random baselines (8 of 20 against
+  41.5%, 5 of 20 against 16.2%, 7 of 20 against 6.1%). At four or more pushes, 0 of 60 episodes solve, and a random
+  agent would also be expected to solve none, so those rungs separate the agents from chance in neither direction.
+- Positive control: a pre-registered test of whether the taxonomy separates solved from unsolved ladder episodes.
+- Two pre-registered prompt arms, described under Findings and limitations: one restoring the game's rules text, one
+  changing the prompt's worked example.
+</More>
+
+## Contribution
+
+Sole author.
+
+- Designed a turn-level evaluation instrument: a ten-family behavioural failure taxonomy induced from three blind
+  reading passes, with a contrast set that codes what an agent gets right.
+- Designed the controls: a harness check by push-optimal replay, a difficulty ladder with chance baselines, a
+  pre-registered positive control and two pre-registered prompt arms.
+- Ran 180 episodes of five open models on a self-hosted serving stack and coded every turn with two language-model
+  annotators, reporting κ beside PABAK and prevalence.
+- Reported label defensibility from 316 human label-verdicts across three instruments, kept apart from the annotator
+  agreement.
+- Analysed the results and wrote the paper, using language-model assistance for drafting, scripts and review as the
+  paper's statement on language models records.
+
+## Findings and limitations
+
+No level was solved in any of the six conditions. Two observations are supported, at different strengths.
+
+- **E2, the stronger one:** across the five models, the move a turn's thought describes and the action it emits differ
+  in kind, usually a plain move described and a push emitted. Both annotators label this in 111 of 180 episodes
+  (κ = 0.749).
+- **I2, an existence observation:** in the one model that writes a board table into its thought, an accurate table,
+  probably copied from the input, sits beside prose that reasons from a different board. This is 14 episodes on the
+  reading passes and 6 to 27 of 180 on the annotations, in one model.
+
+The prompt's only worked example has the shape of E2, and a pre-registered arm that changed it left its effect
+unresolved. The one pre-registered validity test, a positive control, found no separation between solved and unsolved
+episodes, so the taxonomy is a description, not a validated discriminator. The study does not test whether a written
+thought causes the action that follows it.
+
+<figure class="annotated-turn">
+  <div class="table-wrap">
+    <table>
+      <caption class="muted small">One E2 turn: what the agent was shown, what the turn wrote, the action it emitted and what followed.</caption>
+      <thead>
+        <tr><th scope="col">What the agent was shown (rows of the board table after step 1)</th><th scope="col">What step 2 wrote, emitted and produced</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <table>
+              <thead><tr><th scope="col">ID</th><th scope="col">Item type</th><th scope="col">Position</th></tr></thead>
+              <tbody>
+                <tr><td>11</td><td>Wall</td><td>(1, 1)</td></tr>
+                <tr><td>20</td><td>Worker</td><td>(1, 2)</td></tr>
+                <tr><td>21</td><td>Box</td><td>(2, 2)</td></tr>
+                <tr><td>22</td><td>Empty</td><td>(3, 2)</td></tr>
+                <tr><td>23</td><td>Empty</td><td>(4, 2)</td></tr>
+                <tr><td>29</td><td>Wall</td><td>(1, 3)</td></tr>
+              </tbody>
+            </table>
+          </td>
+          <td>
+            <p><strong>Wrote:</strong> "However, to avoid a potential deadlock, I should move the worker to (3, 2) and then push the box to (4, 2), as it provides more flexibility for future moves."</p>
+            <p><strong>Emitted:</strong> push down</p>
+            <p><strong>Result:</strong> the board after the step is identical to the one shown. The worker is at (1, 2) with walls at (1, 1) and (1, 3), and the box is at (2, 2). The step returned the step penalty only.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <figcaption class="muted small">t0 llama3.1-8b L2, step 2, execution 2. The thought describes a plain move and the emitted action is a push, the shape both annotators label E2. Six rows of the board table are shown; the full table has 81 rows.</figcaption>
+</figure>
+
+<More label="Further results">
+- Every unrecoverable state comes from a successful push. Failed actions are no-ops, so a solver's check of the logged
+  boards finds 12 of the 180 episodes that reach an unrecoverable state, two in each condition, across all five models
+  and both temperatures, and each is created by a push that moved a box. In 4 of the 12 it is the episode's only push
+  that moves a box. A count of ineffective actions cannot see this.
+- E2 runs almost entirely one way: 421 of annotator A's 432 E2 steps and 341 of annotator B's 354 emit a push where the
+  thought describes a plain move.
+- Temperature-0 runs did not reproduce. The harness writes the wall-clock time into every reasoning prompt, so the
+  inputs were never identical. Of 30 cells, 14 took an identical path in all three executions at temperature 0, and 1
+  of 30 at temperature 1. This is one triplet of executions, read as an existence result about this stack, not as a
+  divergence rate.
+- Difficulty ladder: 0 of the 60 episodes at four or more optimal pushes were solved, across five models and three
+  families. A random agent would also be expected to solve none there.
+- Rules-text arm: restoring the game's rules text to the prompt solved no level, 0 of 30 episodes against 0 of 30
+  without it. The treatment prompt is 734 characters longer with no length-matched control, so content is not
+  separated from length.
+- Worked-example arm: the prompt's only worked example pairs a thought describing a plain move with a push. Changing
+  only that thought to one describing its push gave forward E2 (a plain move described, a push emitted) on 126 of 386
+  push steps (32.6%) with the original example and 104 of 339 (30.7%) with the consistent one, a ratio of 0.940 (95%
+  CI 0.644 to 1.321). The interval meets neither pre-registered decisive range, so no direction is claimed, and as
+  registered it allows the example's inconsistency to account for up to 35.6% of forward E2. Both prompts still carry
+  a push example, so the arm does not estimate the contribution of worked examples in general.
+- One larger model, Qwen2.5-32B from the same family as two corpus models, was run at 12 episodes per prompt arm. One
+  annotator labelled none of its 172 push steps as forward E2, and a second annotator, on the 7 episodes it coded,
+  labelled no E2 either. Every 32B episode still carried I1 (an accurate reading followed by an impossible move), and
+  none solved. This says nothing about larger models in general.
+</More>
+
+<More label="Limitations in full">
+- The positive control was null. On 291 ladder turns labelled blind, the pre-specified primary item returned 2 of 18
+  solved episodes against 4 of 40 unsolved (one-sided Fisher p = 0.61, where the registered detectable effect needed 6
+  of 18), and the secondary item moved opposite to its prediction. With 3 boards and 12.76 of the 20 solves
+  chance-expected, this is a null against a weak success regime. E2 is more frequent on solved episodes, 12 of 18
+  against 17 of 40, but no test was registered for that, and E2 is not shown to mark failing play.
+- Both annotators are language models, so κ measures agreement between annotation pipelines, not validity. For E2, κ is
+  0.473 between annotator A and the third annotator and 0.469 between B and the third, against 0.749 between A and B.
+  Annotator A labelled from the unrevised codebook copy, which told it never to skip I2, so its higher I2 rate (82
+  steps against B's 14) may partly reflect that instruction.
+- Human coverage is partial and uneven. No human independently coded a complete episode, 111 of the 316 verdicts fall
+  on one model, and neither checker of the 316 is independent of the annotators.
+- There is one scaffold, and its worked example has the shape that E2 codes. It is sent on all 1,561 steps, so it may
+  account for a share of E2.
+- Scope: six fixed hand-authored levels, one harness, five open models of 3 to 8B and 3 replicates per cell. Episodes
+  are short, so failure processes that need a longer horizon, such as plan revision or recovery from a mid-game error,
+  are out of reach by construction.
+- The taxonomy was induced on the same 180 episodes it is applied to, with no held-out set. Counts from the reading
+  passes support presence and breadth, not rates. Only one model writes the board table that I2 requires, so a habit of
+  that checkpoint cannot be told apart from a more general pattern.
+</More>
+
+## How to cite
+
+The preprint is on Zenodo under CC BY 4.0, with the supplementary material (the codebook, the quoted-span traces and
+the annotators' label sheets) on the same record.
+
+> Kakade, S. S. (2026). Reading the Board, Playing Another One: Turn-Level Evaluation of Open LLM Agents on Textual Sokoban (Version v1). Zenodo. https://doi.org/10.5281/zenodo.23220308
+
+<More label="BibTeX">
+
+```bibtex
+@misc{kakade2026readingtheboard,
+  author    = {Kakade, Samruddhi Sanjaykumar},
+  title     = {Reading the Board, Playing Another One: Turn-Level Evaluation of Open LLM Agents on Textual Sokoban},
+  year      = {2026},
+  version   = {v1},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23220308},
+  url       = {https://doi.org/10.5281/zenodo.23220308}
+}
+```
+
+</More>

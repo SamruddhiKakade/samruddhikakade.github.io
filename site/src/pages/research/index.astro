@@ -11,7 +11,12 @@ const items = await itemsIn('research');
     behaves along the way, whether repeated runs agree, or whether the judgements used for scoring can be relied on.
     My work examines these questions with evaluation methods that can be checked and repeated.
   </p>
-  {items.length > 0 && <div class="list">{items.map((item) => <Card item={item} />)}</div>}
+  {items.length > 0 && (
+    <>
+      <h2>Papers</h2>
+      <div class="list">{items.map((item) => <Card item={item} />)}</div>
+    </>
+  )}
 </Base>
 <style>
   .lead { max-width: var(--measure); }
