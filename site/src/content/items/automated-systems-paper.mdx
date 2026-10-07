@@ -5,29 +5,45 @@ start: '2022-06'
 when: Summer 2022
 context: CS 487 Software Engineering
 course: CS 487
-oneLine: "A paper on automated-system reliability; analysed electronic toll collection to examine requirements, development reviews and stress testing."
-summary: An individual research paper on how software engineering keeps automated, mission-critical systems reliable, grounded in a case study of electronic toll collection.
+oneLine: "A paper on reliability in automated mission-critical software; traced the development of electronic toll collection and proposed stress testing and an automated fail-safe."
+summary: "Wrote an individual research paper on reliability in automated, mission-critical software, with electronic toll collection (E-ZPass) as the case study. Proposed clear requirements checked iteratively, extensive and stress testing, and an automated fail-safe for toll collection."
 role: Sole author
-myPart: I chose the case study, researched it and wrote the paper.
-skills: [Technical writing, Requirements and design]
-selected: true
+myPart: Researched and wrote the paper as sole author, developing it from a draft into the final version.
+skills: [Technical writing, Critical analysis]
 ---
+import More from '../../components/More.astro';
 
 ## Question
 
-When a system runs on its own, with no person checking each step, how do you engineer it to be reliable?
+How can software be developed to be reliable enough for automated systems in mission-critical environments, where an
+error can mean major financial loss or loss of life?
 
 ## Argument
 
-Automated systems that people depend on need to be right the first time. Using electronic toll collection as a case
-study, the paper argues for clear requirements, repeated review during development, and stress testing before
-release.
+Automated systems replace work done by people and run with minimal human intervention, so the paper treated extreme
+reliability as their defining requirement. It surveyed how software development evolved to meet this, from the rigid
+Waterfall model to the iterative Agile model, and named three threats to reliability: requirements that change or are
+misread, inadequate testing, and keeping software current with changing technology after deployment.
 
-The paper moves from software development and automation in general, to the toll-collection case study, to future
-possibilities for automated systems, and closes with what engineers should do differently for systems that run
-unattended.
+The case study followed E-ZPass from manual to automatic toll collection: early tests of automatic vehicle
+identification, a committee of seven agencies in 1991, and deployment at the Spring Valley toll plaza on the Thruway in
+1993. For greater reliability, the paper proposed clear requirements that are checked iteratively, extensive testing,
+stress testing, and an automated fail-safe that records passing vehicles during a software fault so that they can be
+charged through other means.
 
-## My part
+<More label="Structure of the paper">
+1. An introduction.
+2. Software development and reliability: why computers suit repetitive and precise work, the evolution of development
+   methods, and the challenges and practices for reliability (managing requirements with user feedback, users as
+   periodic testers, extensive testing).
+3. A case study of E-ZPass, from manual to automatic toll collection.
+4. Future possibilities: tools and techniques for greater reliability, and further automation for the case study.
+5. A conclusion, followed by seven cited sources.
+</More>
 
-I wrote the paper, built around the toll-collection case study, alongside the course's team project (the campus
-communication app).
+## Contribution
+
+- Researched and wrote the paper as sole author, developing it from a draft into the final version.
+- Traced the development of electronic toll collection (E-ZPass) from manual to automatic collection.
+- Proposed an automated fail-safe for toll collection: if the software failed, passing vehicles would be recorded and
+  charged through other means, and staff notified promptly.
