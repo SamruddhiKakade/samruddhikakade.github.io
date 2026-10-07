@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { courses } from '../../data/courses';
+import { courses, additionalCourses } from '../../data/courses';
 import { publishedItems } from '../../data/items';
 
 const all = await publishedItems();
@@ -19,10 +19,9 @@ const groups = ['Graduate', 'Undergraduate'].map((level) => ({
   <p class="lead">My degrees, then the projects and written work from my courses, graduate first. Open a title for details.</p>
   {degree.map((d) => (
     <section class="degree">
-      <h2><a href={`/education/${d.id}/`}>{d.data.title}</a></h2>
+      <h2>{d.data.title}</h2>
       <p class="muted small">{d.data.context} · {d.data.when}</p>
       <p>{d.data.summary}</p>
-      <p class="small"><a href={`/education/${d.id}/`}>Focus areas and all coursework</a></p>
     </section>
   ))}
   {groups.map((g) => g.courses.length > 0 && (
@@ -40,14 +39,29 @@ const groups = ['Graduate', 'Undergraduate'].map((level) => ({
       ))}
     </section>
   ))}
+  <section class="group">
+    <h2>Additional coursework</h2>
+    <p class="muted">Further courses, with no project or written piece on this site.</p>
+    <dl class="extra">
+      {['Graduate', 'Undergraduate'].map((level) => (
+        <div>
+          <dt>{level}</dt>
+          <dd>{additionalCourses.filter((c) => c.level === level).map((c) => `${c.name} (${c.code})`).join(', ')}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
 </Base>
 <style>
   .lead { max-width: var(--measure); }
   .degree { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 20px 8px; }
   .degree h2 { margin-top: 16px; font-size: 1.35rem; }
-  .degree h2 a { text-decoration: none; }
   .course h3 { font-family: var(--font-body), system-ui, sans-serif; font-weight: 600; font-size: 1.05rem; margin: 28px 0 6px; }
   .course ul { padding-left: 18px; margin: 0; }
   .course li { margin: 4px 0; }
   .course li span { display: block; }
+  .extra { max-width: var(--measure); margin: 0; }
+  .extra div { padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .extra dt { font-weight: 600; }
+  .extra dd { margin: 2px 0 0; }
 </style>

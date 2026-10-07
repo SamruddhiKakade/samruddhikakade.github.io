@@ -8,7 +8,7 @@ import { sections } from '../../data/site';
 
 export async function getStaticPaths() {
   const items = await publishedItems();
-  return items.map((item) => ({ params: { section: item.data.section, slug: item.id }, props: { item } }));
+  return items.filter((item) => item.data.page).map((item) => ({ params: { section: item.data.section, slug: item.id }, props: { item } }));
 }
 
 const { item } = Astro.props;

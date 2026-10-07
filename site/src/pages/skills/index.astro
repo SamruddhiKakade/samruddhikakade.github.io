@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { publishedItems } from '../../data/items';
+import { publishedItems, itemHref } from '../../data/items';
 import { slugify } from '../../data/site';
 import { skillGroups } from '../../data/skills';
 
@@ -26,7 +26,7 @@ const groups = [...skillGroups, { name: 'Other', skills: other }]
             <dd>
               <ul>
                 {bySkill.get(s)!.map((i) => (
-                  <li><a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a>{i.data.section === 'experience' && <span class="small">, {i.data.context}</span>} <span class="muted small">{i.data.when}</span></li>
+                  <li><a href={itemHref(i)}>{i.data.title}</a>{i.data.section === 'experience' && <span class="small">, {i.data.context}</span>} <span class="muted small">{i.data.when}</span></li>
                 ))}
               </ul>
             </dd>

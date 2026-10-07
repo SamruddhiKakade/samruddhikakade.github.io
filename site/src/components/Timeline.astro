@@ -1,6 +1,7 @@
 ---
 // Timeline drawn at build time: an SVG with real links, so it works without JavaScript.
 import type { CollectionEntry } from 'astro:content';
+import { itemHref } from '../data/items';
 interface Props { items: CollectionEntry<'items'>[] }
 const { items } = Astro.props;
 
@@ -40,7 +41,7 @@ for (const lane of lanes) {
   const base = laneItems.some((it) => spans(it).some((p) => p.e - p.s >= 2)) ? 1 : 0;
   let depth = 1;
   for (const it of laneItems) {
-    const href = `/${it.data.section}/${it.id}/`;
+    const href = itemHref(it);
     const title = `${it.data.title} (${it.data.when}): ${it.data.oneLine}`;
     for (const { s, e } of spans(it)) {
       if (e - s >= 2) {
@@ -97,7 +98,7 @@ const byDate = [...items].sort((a, b) => b.data.start.localeCompare(a.data.start
   </svg>
   <ol class="vertical">
     {byDate.map((i) => (
-      <li><span class="muted small">{sectionName[i.data.section]} · {i.data.when}</span> <a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a></li>
+      <li><span class="muted small">{sectionName[i.data.section]} · {i.data.when}</span> <a href={itemHref(i)}>{i.data.title}</a></li>
     ))}
   </ol>
 </figure>

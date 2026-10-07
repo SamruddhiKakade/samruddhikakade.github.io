@@ -17,3 +17,22 @@ export const courses = [
   { code: 'CS 485', name: 'Computers and Society', term: 'Fall 2021', level: 'Undergraduate' },
   { code: 'COM 421', name: 'Technical Communication', term: 'Summer 2021', level: 'Undergraduate' },
 ];
+
+// Courses with no project or written piece on the site, listed on Education as additional coursework.
+// Names first, as on the Education page. CS 422 and CS 480 are never listed (her decision).
+export const additionalCourses = [
+  { code: 'CS 583', name: 'Probabilistic Graphical Models', level: 'Graduate' },
+  { code: 'MBA 532', name: 'Artificial Intelligence', level: 'Graduate' },
+  { code: 'CS 458', name: 'Introduction to Information Security', level: 'Undergraduate' },
+  { code: 'CS 450', name: 'Operating Systems', level: 'Undergraduate' },
+  { code: 'CS 440', name: 'Programming Languages', level: 'Undergraduate' },
+  { code: 'CS 430', name: 'Algorithms', level: 'Undergraduate' },
+  { code: 'CS 425', name: 'Database Organization', level: 'Undergraduate' },
+  { code: 'CS 351', name: 'Systems Programming', level: 'Undergraduate' },
+  { code: 'CS 350', name: 'Computer Organization', level: 'Undergraduate' },
+  { code: 'CS 331', name: 'Data Structures and Algorithms', level: 'Undergraduate' },
+  { code: 'CS 330', name: 'Discrete Structures', level: 'Undergraduate' },
+  { code: 'MATH 474', name: 'Probability and Statistics', level: 'Undergraduate' },
+  { code: 'MATH 332', name: 'Linear Algebra', level: 'Undergraduate' },
+  { code: 'PSYC 250', name: 'Leadership', level: 'Undergraduate' },
+];

@@ -2,10 +2,11 @@
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import Chips from './Chips.astro';
+import { itemHref } from '../data/items';
 interface Props { item: CollectionEntry<'items'> }
 const { item } = Astro.props;
 const d = item.data;
-const href = `/${d.section}/${item.id}/`;
+const href = itemHref(item);
 // A real visual where one exists; otherwise a thin band naming the area (projects and course work only).
 const code = d.links.find((l) => l.url.includes('github.com'));
 const verify = d.links.find((l) => l.label.startsWith('Verify'));

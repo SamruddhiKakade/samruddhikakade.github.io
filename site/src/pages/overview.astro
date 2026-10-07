@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Timeline from '../components/Timeline.astro';
 import { sections, slugify } from '../data/site';
 import { skillGroups, featuredSkills } from '../data/skills';
-import { publishedItems } from '../data/items';
+import { publishedItems, itemHref } from '../data/items';
 
 const items = await publishedItems();
 // Skills own no pages, so Overview shows a few per group, each linked to its entry on the Skills page.
@@ -52,7 +52,7 @@ const skillsShown = skillRows.reduce((n, g) => n + g.skills.length, 0);
     const shown = list.length + courseWork.length;
     const row = (i: (typeof items)[number]) => (
       <li>
-        <a href={`/${i.data.section}/${i.id}/`}>{i.data.title}</a>
+        <a href={itemHref(i)}>{i.data.title}</a>
         <span class="muted small"> · {i.data.context} · {i.data.when}</span>
         <p>{i.data.oneLine}</p>
       </li>
