@@ -8,7 +8,7 @@ course: HUM 371
 oneLine: "A 2 to 4 player board game; designed rules, balanced four characters through playtesting and illustrated the board, cards and rulebook."
 summary: "Designed the rules for a race game in which players set traps for their rivals and shortcuts for themselves. Balanced four characters through playtesting and illustrated the board, cards and rulebook."
 role: Solo designer
-myPart: I designed the game, ran the playtests, rebalanced it from what they showed, and made the board, cards and rulebook.
+myPart: Designed the game and its rules, playtested and rebalanced it from the results, and illustrated the board, cards and rulebook in Canva.
 skills: [Game design, Playtesting, Visual design, Technical writing]
 selected: true
 areas: [Games]
@@ -26,42 +26,68 @@ import cards from '../../assets/race-to-the-treasure-cards.jpg';
   <figcaption class="muted small">The final board: an old-scroll map with a 100-step path from the start to the treasure chest.</figcaption>
 </figure>
 
-## Problem
+## Context
 
-Make a race-to-the-finish game where strategy matters as much as the roll of a die.
+The course exercise was to prototype a race-to-the-end board game. The aim was a game in which strategy counts
+alongside the roll of the die, suitable for families with children over twelve.
 
-## How it plays
+<More label="Audience and theme choice">
+Strategy set the age range: the game suits families, but its strategy is most enjoyable for children over twelve. Two
+themes were tried and dropped before the final one.
 
-Two to four players race along the path to the treasure. Before the race, players take turns placing trap cards, which
-only hurt their rivals, and shortcut cards, which only help themselves. On each turn a player either rolls the die or
-moves one of their own cards. The first to reach the treasure wins.
+<div class="table-wrap">
+
+| Theme | Kept or dropped | Why |
+| --- | --- | --- |
+| Escape from zombies | Dropped | Too dark for a family game |
+| Capture the flag | Dropped | Did not suit a race to the finish, and the mechanics were too tedious |
+| Treasure race | Kept | Fits a race, and was inspired by a Hindi-language comedy film about a group racing to a hidden treasure |
+
+</div>
+</More>
+
+## Approach
+
+Two to four players race along a path to the treasure. Players set traps that hold back their rivals and shortcuts
+that move themselves forward. Each player draws a character card that changes how the game plays for them, and the
+first player to reach the treasure wins.
 
 <figure>
   <Image src={cards} alt="The four character cards: Trap Designer, Map Expert, Just Lucky and The Strategist, each with its ability written on it." width={720} />
-  <figcaption class="muted small">The four character cards I designed, each with its own ability.</figcaption>
+  <figcaption class="muted small">The four character cards, each with its own ability.</figcaption>
 </figure>
 
-<More>
-Each player also has a character that changes how the game plays for them:
+<More label="Rules and characters">
+Before the race, players take turns placing one or two cards on the board until every card is used. Traps affect only
+rivals and shortcuts affect only the player who set them. After that, a turn is either a die roll or a move of one of
+the player's placed cards to a new space. Each character receives a different mix of trap and shortcut cards.
 
 <div class="table-wrap">
 
 | Character | Ability |
 | --- | --- |
-| Trap Designer | Stronger traps |
-| Map Expert | Stronger shortcuts |
-| Just Lucky | Can ignore three traps |
-| The Strategist | Three extra turns, never two in a row |
+| Trap Designer | Can strengthen their traps by up to 2 spaces |
+| Map Expert | Can strengthen their shortcuts by up to 2 spaces |
+| Just Lucky | Can avoid three traps |
+| The Strategist | Extra turns, never two in a row |
 
 </div>
 
-An optional ending, "The last stretch", asks for an exact roll to land on the treasure.
+An optional ending, "The last stretch", requires an exact roll to land on the treasure.
 </More>
 
-## Approach
+Playtesting changed the design in two ways:
 
-I tried three themes before settling on a treasure race, then tested the game with players and changed the design
-after each round. The board went through three versions.
+- **A loophole:** if every player used only traps, the game dragged on and broke down. Characters were added so that
+  each player receives a different mix of traps and shortcuts, and their strengths and card counts were revised many
+  times until all four were roughly equal in strength.
+- **The last stretch:** in one playtest a very lucky player stayed far ahead even when the others combined their traps.
+  A playtester suggested requiring the exact number on the die to reach the treasure, so that the leader could be
+  caught. After more playtesting it was added as a variant.
+
+<More label="Board design in three versions">
+The board began as a pencil sketch, moved to a first digital board, and ended as the old-scroll map shown at the top
+of the page.
 
 <div class="stages">
   <figure>
@@ -74,33 +100,25 @@ after each round. The board went through three versions.
   </figure>
   <figure>
     <Image src={map} alt="The final board: an old scroll with a dotted path of 100 numbered stones." width={300} />
-    <figcaption class="muted small">3. Final board (above).</figcaption>
+    <figcaption class="muted small">3. Final board.</figcaption>
   </figure>
 </div>
 
-<More>
-<div class="table-wrap">
-
-| Theme | Kept or dropped | Why |
-| --- | --- | --- |
-| Escape from zombies | Dropped | Too dark for a family game |
-| Capture the flag | Dropped | Became tedious in play |
-| Treasure race | Kept | Kept the tension of a race, with room for the trap-and-shortcut strategy |
-
-</div>
-
-The game is aimed at families with children over twelve, and I made the art in Canva: an old-scroll map, a parchment
-rulebook and a themed font.
+The art was drawn by hand at first, then produced in Canva: the old-scroll map, a rulebook on matching paper and a
+font chosen to suit the theme, so that players feel they have found the old documents that started the race.
 </More>
 
-## Results
+## Contribution
 
-Playtesting showed a problem my first design had missed: when everyone played only traps, the game stalled. I fixed
-it by adding the four characters, each with its own mix of traps and shortcuts, and rebalanced them until each had a
-fair chance of winning.
+- Designed the game and its rules as an individual course exercise: the trap and shortcut mechanic, four characters
+  and the optional exact-roll ending.
+- Playtested the game and revised the characters and card counts until the four were roughly equal in strength.
+- Illustrated the board, character cards, tokens and rulebook in Canva, in one old-document style.
 
-The exact-roll ending came from a playtester's suggestion, and became the "Last stretch" variant in the rulebook.
+## Lessons learned
 
-## My part
-
-I designed the rules, ran the playtests and made all the art in Canva.
+- A rule can work for one strategy and fail when every player adopts it. Playtests in which everyone used the same
+  approach exposed the loophole.
+- Playtesters' suggestions solved a problem the design had not anticipated: the exact-roll ending came from a
+  playtester's idea, and it let trailing players catch a runaway leader.
+- Testing themes early saved effort: two themes were dropped after short trials.
