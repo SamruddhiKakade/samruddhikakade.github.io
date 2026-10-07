@@ -4,7 +4,7 @@ import Card from '../../components/Card.astro';
 import { itemsIn } from '../../data/items';
 const items = await itemsIn('certifications');
 ---
-<Base title="Certifications" current="certifications" wide description="Certifications completed by Samruddhi Kakade.">
+<Base title="Certifications" current="certifications" wide description="Certifications in machine learning, natural language processing and artificial intelligence from DeepLearning.AI, Stanford University and IBM.">
   <h1>Certifications</h1>
   <p class="lead">Courses I completed alongside and after university, newest first.</p>
   <div class="grid">{items.map((item) => <Card item={item} />)}</div>

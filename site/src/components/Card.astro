@@ -15,7 +15,7 @@ const verify = d.links.find((l) => l.label.startsWith('Verify'));
   {d.cover ? <Image src={d.cover} alt="" width={560} class="cover" /> : d.areas.length > 0 && <p class="area small">{d.areas.join(' · ')}</p>}
   <h3><a class="stretch" href={href}>{d.title}</a></h3>
   <p class="meta muted small">{d.context} · {d.when}</p>
-  {d.role !== d.title && <p class="role small">{d.role}</p>}
+  {d.role !== d.title && d.section !== 'certifications' && <p class="role small">{d.role}</p>}
   <p class="summary">{d.summary}</p>
   <div class="above">
     {d.skills.length > 0 && <p class="skills-label muted small">Skills</p>}
