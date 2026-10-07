@@ -9,60 +9,49 @@ context: V-Square Consulting
 oneLine: "A search tool for recorded talks; developed audio extraction, transcription, indexing, search and a web app that opens matching recordings."
 summary: "Designed and implemented a search application for recorded talks in 2022, documenting stakeholder requirements, drafting wireframes and evaluating storage, speech and search services before selecting the technology stack."
 role: IT Intern
-myPart: Owned the 2022 project end to end, from requirements, design and wireframes to code and the final presentation.
-skills: [Python, Flask, Azure Speech, Azure Cognitive Search, Azure Blob Storage, Requirements and design, Presenting]
+myPart: Designed and developed the 2022 search application, from requirements, the design document and wireframes to code and the final presentation; evaluated storage, speech and search services.
+skills: [Python, Flask, Speech-to-text, Information retrieval, Requirements and design, Presenting]
 ---
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-Hours of recorded talks, in audio, video and text, with no way to search inside them. A listener looking for one topic
-had to browse whole recordings.
+A library of recorded talks in audio and video, along with written texts, could not be searched by content, so finding
+one topic meant going through whole recordings.
 
 ## Approach
 
 <Flow
   label="From recordings to a searchable library"
-  steps={['Video', 'Audio extracted (moviepy)', 'Speech to text (Azure Speech)', 'Transcripts stored (Azure Blob Storage)', 'Indexes for text, audio and video (Azure Cognitive Search)', 'Search site (Flask, Bootstrap)']}
+  steps={['Video recordings', 'Audio extracted (moviepy)', 'Speech to text (speech-to-text service)', 'Transcripts in cloud storage', 'Search indexes for text, audio and video (cloud search index)', 'Search website (Flask, Bootstrap)']}
 />
 
-The user picks which media to search, types a query, and opens the best match directly.
+A user chose which media to search, entered a phrase, and opened the recording at the first point where the phrase
+occurred.
 
-<More>
-The user flow, from my design document:
+<More label="User flow and search indexes">
+The user flow in the design document:
 
 <Flow
-  label="The user flow I designed"
+  label="The user flow in the design document"
   steps={['Home: search box and media choices', 'Results with descriptions', 'Content page opens the match', 'Back to results']}
 />
 
-Text, audio and video each have their own search index, so a query can cover one kind of media or all of them.
+Text, audio and video each had their own search index, so a query could cover one kind of media or all of them.
 </More>
 
-## How I worked
+## Contribution
 
-I gathered the requirements with the project's stakeholder and wrote them up. Then I wrote the design document, drew
-wireframes and tested several options before choosing a stack. At the end of the internship I presented the result.
+- Documented the stakeholder's requirements, wrote the design document and drew the wireframes.
+- Developed audio extraction, speech-to-text transcription, transcript storage, indexing and search.
+- Developed the web application in which a user chose the media, searched and opened the matching recording.
+- Evaluated storage, speech and search services before selecting the technology stack.
+- Presented the services tested and the reasons for the design.
 
-<More>
-Options I tried before settling on a stack:
+## Lessons learned
 
-<div class="table-wrap">
-
-| Area | Options tried | Chosen |
-| --- | --- | --- |
-| Storage | Local files, Azure Cosmos DB, Azure Blob Storage | Blob Storage with local files |
-| Services | Azure Media Services, Video Indexer, Speech-to-Text, Cognitive Search, a search engine of my own | Speech-to-Text with Cognitive Search |
-
-</div>
-
-The final presentation walked through how I learned the services, what I tested, and why I settled on this design.
-</More>
-
-## My part
-
-I took the project through every stage: requirements, design, wireframes, code and the final presentation.
-
-The parts I wrote: audio extraction, transcription, uploading transcripts, indexing and search, and the web app that
-opens the matching recording.
+- **Requirements and wireframes first.** Writing the requirements and drawing the wireframes before the code set out
+  what the application had to do.
+- **Test services before choosing.** Trying the candidate services, rather than choosing from their descriptions,
+  grounded the technology choice in how each one performed.
