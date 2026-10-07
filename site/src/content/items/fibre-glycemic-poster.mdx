@@ -1,15 +1,15 @@
 ---
 title: Dietary fibre and blood sugar
 section: education
-start: '2022-04'
+start: '2022-03'
 when: Spring 2022
 context: FDSN 401 Nutrition and Metabolism
 course: FDSN 401
-oneLine: "A research poster on dietary fibre and blood sugar; analysed course-provided crossover trial data and presented glucose and insulin responses."
-summary: A research poster on a controlled clinical trial of whether adding plant fibre to a cereal bar changes the body's blood glucose and insulin response. I analysed the trial data provided by the course and presented the study and its results.
-role: Sole author
-myPart: I analysed the course-provided trial data and designed and wrote the poster.
-skills: [Research posters, Statistics, Technical writing]
+oneLine: "A research poster on dietary fibre and blood sugar; presented course-provided crossover trial data on glucose and insulin responses."
+summary: "Prepared a research poster on a double-blind, randomised crossover trial of whether adding plant fibre to a cereal bar lowers the blood glucose and insulin response. Presented the course-provided data for ten participants, comparing the two bars by area under the curve and paired t-tests."
+role: Poster author
+myPart: Presented the course-provided trial data and designed the poster on the study and its results.
+skills: [Research posters, Data visualisation, Technical writing]
 ---
 import More from '../../components/More.astro';
 import Lines from '../../components/Lines.astro';
@@ -21,19 +21,21 @@ Does adding extracted plant fibre to a cereal bar lower the rise in blood glucos
 
 ## The study
 
-A double-blind, randomised, crossover trial in healthy adults: each person ate the cereal bar both with and without
-added fibre, on separate visits, and their glucose and insulin were measured over the next two hours.
+A double-blind, randomised, crossover trial in ten healthy adults aged 20 to 40: each person ate the cereal bar both
+with and without added fibre, on separate visits, and their glucose and insulin were measured over the next two hours.
 
-<More>
-The trial was run under ethics approval by a research team; the course provided its data to students. The poster
-sets out the background, methods, results and conclusion, with tables of the participants' characteristics and the
-composition of the two bars.
+<More label="Trial design and the two bars">
+The trial was approved by an institutional review board and run by a research team; the course supplied its data and a
+written description of the study. The two bars matched in energy (242 kcal), fat and protein, and differed in fibre:
+none in one bar and 5 g of plant-extracted fibre in the other. Participants fasted before each visit, with blood
+samples taken before eating and at 30, 60 and 120 minutes. The poster set out the background, objective, methods,
+results and conclusion, with tables of the participants' characteristics and the composition of the two bars.
 </More>
 
 ## Results
 
-The bar with added fibre gave a lower glucose and insulin response than the bar without it. Glucose and insulin both
-peaked at 30 minutes, and the peaks were lower with fibre.
+On average, the bar with added fibre gave a lower glucose and insulin response than the bar without it. Both peaked at
+30 minutes, and the 30-minute concentrations were lower with fibre.
 
 <ul class="legend" aria-hidden="true">
   <li><span class="swatch"></span>Bar without fibre</li>
@@ -64,12 +66,12 @@ peaked at 30 minutes, and the peaks were lower with fibre.
   />
 </div>
 
-Over the full two hours, measured as the area under each curve, fibre lowered the glucose response by 11% and the
-insulin response by 27%. In a paired t-test across the ten participants, both differences were significant (glucose
-p = 0.002, insulin p < 0.001).
+Over the full two hours, the total area under each curve was 11% lower for glucose and 27% lower for insulin with
+fibre. In a paired t-test across the ten participants, both differences were significant (glucose p = 0.002, insulin
+p < 0.001). The insulin area was lower with fibre in all ten participants and the glucose area in nine.
 
 <Bars
-  caption="Area under the curve over two hours, as a percentage of the bar without fibre (mean of ten participants)."
+  caption="Total area under the curve over two hours, as a percentage of the bar without fibre (ratio of the group means, ten participants)."
   series={['Bar without fibre', 'Bar with added fibre']}
   digits={0}
   max={100}
@@ -79,9 +81,22 @@ p = 0.002, insulin p < 0.001).
   ]}
 />
 
-The comparison is within each person (a crossover design), which controls for differences between people and makes
-a small trial more informative.
+## Findings and limitations
 
-## My part
+The crossover design compares each person with themselves, which removes differences between people from the result.
+The trial was small and short: ten participants and a two-hour window, with one fibre bar.
 
-I analysed the trial data and designed and wrote the poster, drawing on peer-reviewed studies for the background.
+<More label="Analysis method and caveats">
+The area under each curve was calculated with the trapezoid rule on the four samples per visit, using total
+concentration rather than the rise above baseline. At 120 minutes the mean insulin concentration was higher with fibre
+(18.8 against 12.8 µIU/mL), mostly because of one participant's value on the fibre visit; the area measure, which
+covers the whole two hours, still favoured fibre in every participant. The data were supplied for the course, so the
+results describe this dataset and are not offered as a new finding.
+</More>
+
+## Contribution
+
+- Presented the course-provided trial data, comparing the two bars by total area under the glucose and insulin curves
+  and paired t-tests.
+- Designed the poster and condensed the course's study description into its background, methods, results and
+  conclusion, with participant and composition tables and charts of the results.

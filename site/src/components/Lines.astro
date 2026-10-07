@@ -27,11 +27,11 @@ const py = (v: number) => T + (1 - (v - yMin) / (yMax - yMin)) * (H - T - B);
       </g>
     ))}
   </svg>
-  <table class="sr-only">
+  <div class="sr-only"><table>
     <caption>{title} ({unit})</caption>
     <thead><tr><th scope="col">{xLabel}</th>{series.map((s) => <th scope="col">{s.name}</th>)}</tr></thead>
     <tbody>{x.map((v, j) => <tr><th scope="row">{v}</th>{series.map((s) => <td>{s.values[j]}</td>)}</tr>)}</tbody>
-  </table>
+  </table></div>
 </figure>
 
 <style>
