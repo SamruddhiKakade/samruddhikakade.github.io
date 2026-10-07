@@ -4,15 +4,16 @@ import Card from '../../components/Card.astro';
 import { itemsIn } from '../../data/items';
 const items = await itemsIn('research');
 ---
-<Base title="Research" current="research" description="Samruddhi Kakade's research on how LLM agents fail.">
+<Base title="Research on LLM evaluation" current="research" description="Samruddhi Kakade's independent research on how to evaluate large language models.">
   <h1>Research</h1>
-  <p>
-    My independent research looks at how LLM agents fail. Instead of scoring only whether an agent finishes a
-    task, I read each of its turns: the state it describes, the plan it states and the move it makes, and check
-    each one against the rules. Games make a good test bed for this, because the rules are exact and every move can be checked.
+  <p class="lead">
+    I study how to evaluate large language models. A single score for task success says little about how a model
+    behaves along the way, whether repeated runs agree, or whether the judgements used for scoring can be relied on.
+    My work examines these questions with evaluation methods that can be checked and repeated.
   </p>
   {items.length > 0 && <div class="list">{items.map((item) => <Card item={item} />)}</div>}
 </Base>
 <style>
+  .lead { max-width: var(--measure); }
   .list { display: grid; gap: 20px; margin-top: 24px; }
 </style>

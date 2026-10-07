@@ -6,7 +6,7 @@ import { person, sections } from '../data/site';
 import { publishedItems } from '../data/items';
 
 const all = await publishedItems();
-// "Latest" appears only once a research paper is published on the site (from the arXiv day).
+// "Latest" appears only once a research paper is published on the site (from the day it is public).
 const latest = all.find((i) => i.data.section === 'research');
 // Every menu option, one click from Home (the menu folds away below 1024px).
 const links = [{ label: 'Overview', href: '/overview/' }, ...sections];
