@@ -8,7 +8,7 @@ course: CS 429
 oneLine: "A search engine for Wikipedia pages; implemented a Scrapy crawler, TF-IDF inverted index and ranked query results in Flask."
 summary: "Implemented a small web search engine for a semester project, extending course-provided lab and similarity code. Developed a Scrapy crawler for Wikipedia pages, a TF-IDF inverted index and a ranked results page in Flask."
 role: Individual project
-myPart: I built all three parts on my own, on top of course-provided lab and similarity code.
+myPart: Implemented the crawler, the indexing pipeline and the Flask app, adapting the course's lab code and the professor's similarity code.
 skills: [Python, Scrapy, NLTK, TF-IDF, Information retrieval, Flask]
 areas: [Search, Software]
 ---
@@ -16,60 +16,60 @@ import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 import Bars from '../../components/Bars.astro';
 
-## Problem
+## Context
 
-The course's semester project was to build a working search engine from its three classic parts. A crawler collects
-pages, an indexer turns them into something searchable, and a query processor ranks pages for a user's question.
+The course's semester project was a small search engine with three parts: a crawler that collects pages, an indexer
+that turns them into something searchable, and a query processor that ranks pages for a user's question.
 
-<More>
-The brief came from the professor's project outline (assigned in February 2022, due at the end of April). It asked
-for HTML documents from the web, an inverted index with TF-IDF weights, and the top ten results for a free-text query,
-shown in a web page.
-</More>
-
-## Data
-
-Wikipedia articles collected by my own crawler, one link deep from a single starting article: 20 pages for the tests
-in my report.
-
-<More>
-The crawler (Scrapy) saves each page as HTML under its title, with the depth and page limits set in the code. Real
-Wikipedia pages are long and varied, so I also wrote three small test documents with known content, to check the
-index and the ranking by hand:
-
-<div class="table-wrap">
-
-| Document | What it says |
-| --- | --- |
-| Temp1 | Rose is my favourite flower. Color is red and black. Book is ABC written by DEF. Food is sweet. |
-| Temp2 | Iris is my favourite flower. Color is red and blue. Book is HIJ written by KLM. Food is spicy and sour. |
-| Temp3 | Marigold is my favourite flower. Color is pink and black. Book is NOP written by QRS. Food is sweet and sour. |
-
-</div>
+<More label="The assignment and the data">
+The report states the objective: download documents in HTML, convert them into an index, and return the top ten
+documents for a query. The corpus was Wikipedia articles, collected by a spider from a single seed article. Wikipedia
+pages are long and varied, so three short test documents with known content were used to check the index and the
+ranking by hand.
 </More>
 
 ## Approach
 
+A Scrapy spider saves Wikipedia pages as HTML. An indexing script extracts and tokenises their text and stores, for
+each word, the documents that contain it with TF-IDF weights. A Flask app weights the query in the same way, scores
+only the pages that share a word with it, lists the top ten titles, and opens the page whose title the user enters.
+
 <Flow
   label="The search engine's pipeline"
-  steps={['Crawl pages (Scrapy)', 'Extract text (BeautifulSoup)', 'Tokenise (NLTK)', 'TF-IDF inverted index, saved to disk', 'Weight the query', 'Rank and show the top ten (Flask)']}
+  steps={['Crawl pages (Scrapy)', 'Extract text (BeautifulSoup)', 'Tokenise (NLTK)', 'TF-IDF inverted index, saved as pickle files', 'Weight the query', 'Score and show the top ten (Flask)']}
 />
 
-The index is built once and saved. Each query is tokenised the same way, weighted, and scored only against the pages
-that share a word with it.
-
-<More>
-- The spider downloads pages and follows links up to the set depth.
-- The index builder reads every saved page, lowercases and tokenises it, keeps alphabetic words, counts them per
-  document, and stores each word with the documents it appears in and their weights. Words with a zero weight are left
-  out, which keeps the index small.
-- The web app loads the saved index, scores the query, lists the top ten titles, and opens the chosen page.
+<More label="How each part works">
+- **Crawler.** The spider starts from a seed article, follows its links and saves each page as HTML under its title,
+  with spaces replaced by underscores so that Flask can open the file later. A depth setting and a page limit are set
+  in the source file; the report's test used a depth of 1 and 20 pages.
+- **Indexing.** Each saved page is read, its text extracted with BeautifulSoup, lowercased and tokenised with NLTK, and
+  only alphabetic words are kept. Term frequency is the word's count divided by the document's length, and inverse
+  document frequency is the natural logarithm of the number of documents over the number that contain the word. Each
+  word is stored with its documents and weights, and the index is saved as pickle files.
+- **Search app.** The app rebuilds the index in memory when it starts. A query is tokenised and weighted the same way,
+  and words absent from the index get weight zero. The ten best titles are shown, and the user types a title to open
+  that page.
 </More>
 
-## Calculations
+<More label="Test documents">
+The three test documents were short HTML files. Each began with the line "This is a temporary document for testing",
+then a favourite flower, the flower again as a heading, and a list of favourites.
 
-Each word in each document gets a weight, and a document's score for a query adds up the weights of the words they
-share:
+<div class="table-wrap">
+
+| Document | Flower | Colour | Book | Food | Words |
+| --- | --- | --- | --- | --- | ---: |
+| Temp1 | Rose | red and black | ABC by DEF | sweet | 29 |
+| Temp2 | Iris | red and blue | HIJ by KLM | spicy and sour | 31 |
+| Temp3 | Marigold | pink and black | NOP by QRS | sweet and sour | 31 |
+
+</div>
+</More>
+
+<More label="The scoring calculation">
+Each word in each document gets a weight, and a document's score for a query is meant to add up the weights of the
+words they share, divided by the document's length:
 
 $$
 w_{t,d} = \frac{\text{count}(t,d)}{|d|}\cdot \ln\frac{N}{\text{df}(t)}
@@ -77,88 +77,73 @@ w_{t,d} = \frac{\text{count}(t,d)}{|d|}\cdot \ln\frac{N}{\text{df}(t)}
 \text{score}(q,d) = \frac{1}{|d|}\sum_{t\in q\cap d} w_{t,q}\,w_{t,d}
 $$
 
-where $|d|$ is the number of words in document $d$, $N$ the number of documents, and $\text{df}(t)$ the number of
-documents that contain word $t$.
+Here $|d|$ is the number of words in document $d$, $N$ the number of documents, and $\text{df}(t)$ the number of
+documents that contain word $t$. The query weight $w_{t,q}$ uses the same formula with the query's length. This is a
+length-normalised overlap, not cosine similarity, which divides by the lengths of both weight vectors instead.
 
-<More>
-A worked example on the three test documents, for the query "pink rose":
-
-- "rose" appears only in Temp1 and "pink" only in Temp3, so both have $\text{idf} = \ln(3/1) = 1.099$.
-- Words found in every document, such as "flower", get $\text{idf} = \ln(3/3) = 0$: they cannot tell documents apart.
-- Each query word has weight $\tfrac12 \times 1.099 = 0.549$, so Temp1 scores on "rose", Temp3 on "pink", and Temp2
-  scores nothing. Temp1 ranks first, then Temp3.
-
-For comparison, cosine similarity divides the same sum by the lengths of the two weight vectors instead of by the
-document's word count:
-
-$$
-\cos(q,d) = \frac{\sum_t w_{t,q}\,w_{t,d}}{\lVert w_q\rVert\,\lVert w_d\rVert}
-$$
-
-It compares the direction of the two vectors rather than their raw overlap, so a long document is neither favoured
-nor punished by accident.
+For the query "pink rose", "rose" appears only in Temp1 and "pink" only in Temp3, so both have
+$\text{idf} = \ln(3/1) = 1.099$. In Temp1, "rose" occurs twice in 29 words (weight 0.076); in Temp3, "pink" occurs
+once in 31 words (weight 0.035). Temp1 ranks first. Words found in every document, such as "flower", get an idf of 0,
+so they cannot tell documents apart.
 </More>
 
-## Results
+## Contribution
 
-The engine worked end to end: crawl, index, query and view. On the report's three test queries it ranked two of the
-three correctly.
+- Implemented a Scrapy spider that downloads Wikipedia pages from a seed article within a depth and page limit.
+- Implemented the indexing pipeline, adapting the course's lab code: text extraction, tokenisation, term and inverse
+  document frequencies, and a TF-IDF inverted index saved to disk.
+- Implemented query weighting and top-ten ranking, adapting the professor's similarity code, and a Flask app for
+  searching and opening a result.
+- Wrote three test documents with known content and checked the index and rankings against them.
 
+## Lessons learned
+
+The engine ran end to end: crawl, index, query and view. Of the report's three test queries, two came back in the
+right order. Re-reading the code later showed why the third did not.
+
+- **Check the order, not only that results appear.** For "ABC red Rose sour", Temp1 contains three of the four words,
+  yet the engine ranked Temp2 first. Writing the expected ranking down before a test, and comparing it automatically,
+  would have shown this.
+- **Test each function alone.** The fault was in the scoring step, where a return inside a loop divided only one
+  document's score by its length. A direct test of that function on two documents would have exposed it.
+- **Keep full precision until the final display.** Term frequencies and weights were rounded to three decimals, so a
+  word that occurs once in a page of more than about 2,000 words rounds to zero and drops out of the index.
+
+<More label="Test queries and rankings">
 <div class="table-wrap">
 
-| Query | My 2022 ranking | Ranking by cosine similarity |
-| --- | --- | --- |
-| pink rose | Temp1, Temp3 | Temp1, Temp3 |
-| sweet black marigold | Temp3, Temp1 | Temp3, Temp1 |
-| ABC red Rose sour | Temp2, Temp3, Temp1 | Temp1, Temp2, Temp3 |
+| Query | Ranking from the system | Ranking by cosine similarity, recomputed | Match |
+| --- | --- | --- | --- |
+| pink rose | Temp1, Temp3 | Temp1, Temp3 | Yes |
+| sweet black marigold | Temp3, Temp1 | Temp3, Temp1 | Yes |
+| ABC red Rose sour | Temp2, Temp3, Temp1 | Temp1, Temp2, Temp3 | No |
 
 </div>
 
-The last row is the one my 2022 system got wrong.
-
-<More>
-Cosine scores on the three test documents, re-computed in 2026:
-
 <Bars
-  caption="Cosine similarity of each test document to each query"
+  caption="Cosine similarity of each test document to each query, recomputed from the index weights"
   series={['pink rose', 'sweet black marigold', 'ABC red Rose sour']}
+  digits={2}
   rows={[
-    { label: 'Temp1', values: [0.562, 0.094, 0.822] },
-    { label: 'Temp2', values: [0, 0, 0.062] },
-    { label: 'Temp3', values: [0.258, 0.744, 0.033] },
+    { label: 'Temp1', values: [0.56, 0.10, 0.82] },
+    { label: 'Temp2', values: [0, 0, 0.06] },
+    { label: 'Temp3', values: [0.26, 0.74, 0.03] },
   ]}
 />
-
-The crawler tests downloaded the requested number of pages at 10 and 20 pages. Very short queries matched only one or
-two documents, which is expected on a small corpus.
 </More>
 
-## My part
+<More label="What went wrong in the scoring step">
+The scoring function first adds up the weight products for every document that shares a word with the query. It should
+then divide each sum by that document's length, but the return statement sat inside the loop that does this, so only
+the first document to receive a score was divided and the others kept their raw sums.
 
-- I built all three parts on my own: the Scrapy crawler, the indexing pipeline and the Flask app.
-- I wrote the test documents and ran the tests in the report.
-- The index code built on the course's labs, and the similarity code was provided by the professor.
-
-<More>
-- `my_spider.py`: the crawler.
-- `Index.py`: tokenising, term frequency, inverse document frequency, the inverted index, query weighting and ranking.
-- `Run.py`: builds and saves the index.
-- `app.py`: the search and view pages.
-
-The code stays private because it includes course-provided code.
+For "ABC red Rose sour" the first document to score was Temp1. Its sum of 0.0325 became 0.0011, while Temp2 (0.0026)
+and Temp3 (0.0013) stayed undivided, so Temp1 fell to last place. With every score divided, the order would have been
+Temp1, Temp2, Temp3.
 </More>
 
-## Reflection
-
-Re-reading this project in 2026, with my evaluation work in mind, I found that one of my own test results was wrong
-and I had not noticed.
-
-<More>
-- The query "ABC red Rose sour" put Temp2 first, although Temp1 contains three of its four words. In the scoring
-  step, a `return` sat inside the loop, so only one document's score was divided by its length before ranking.
-- My 2022 report showed this output as a pass, because I had checked that results came back, not that their order
-  was right.
-- What I do now: write the expected ranking down before running a test, compare against it automatically, and test the
-  scoring function on its own before testing the whole pipeline. Checking what a system actually does, step by step,
-  is also at the heart of my current research on LLM agents.
+<More label="Limitations recorded in the report">
+- Two of the 20 downloaded files were empty.
+- A very short query retrieved only one or two documents.
+- A page opens only when its title is typed exactly.
 </More>

@@ -8,42 +8,54 @@ course: CS 487
 oneLine: "A campus communication app; developed the Django backend for registration, login, user search and one-to-one messaging with unread counts."
 summary: "Developed the Django backend for a campus communication web app serving students, faculty and support staff. Implemented registration, login, user search and one-to-one messaging with unread counts, and proposed the technology the team used."
 role: Backend developer, team of 3
-myPart: Wrote the backend, from registration and login to user search and the messaging system, and suggested the technology the team used.
+myPart: Implemented registration with login, user search and one-to-one messaging with unread counts, and suggested the technology the team used.
 skills: [Python, Django, Backend development, Data modelling, Requirements and design, Teamwork]
 areas: [Software]
 ---
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-Students need one place to reach each other, their professors, and support services such as health and wellness or
-campus security.
-
-<More>
-The course brief asked for a "student assist" app. We designed ours for five roles (student, professor, health and
-wellness staff, campus security and administrator). Anonymous messages to health and wellness and to campus security
-were part of the design; the prototype focused on accounts, search and messaging.
-</More>
+The course asked for a prototype "Student Assist" app that delivers at least two opportunities from a list of four.
+The team's design addressed collaboration, through accounts, user search and messaging, and student wellness and
+safety, through anonymous messages to health and wellness staff and campus security. The prototype implemented the
+collaboration features: registration and login, user search and one-to-one messaging.
 
 ## Approach
 
 <Flow
-  label="How the team worked"
-  steps={['Requirements', 'Design report: context model, screens, pseudocode, data models', 'Django prototype']}
+  label="How the team progressed"
+  steps={['Course brief: a "Student Assist" app', 'Design report: context model, screens, pseudocode, data models', 'Django prototype on SQLite']}
 />
 
-We split the work into front end, back end and database, and built a working prototype on Django and SQLite.
+The team divided the work into front end, back end and database, and wrote the design report before the code. The
+implemented chat and message models follow the data models set out in that report.
 
-## My part
-
-I wrote the backend: registration and login, searching for other users, and the messaging system.
-
-<More>
-- **Data model:** a chat between two users, and messages with a sender, a receiver, a body and a date.
-- **Opening a chat:** the app first looks for an existing conversation between the two users, in either direction, before
-  creating a new one.
-- **Unread counts:** they go up for the other person when a message is sent and reset when a chat is opened.
-- Every messaging page requires login, and I wired up the URL routing.
-- I also suggested the technology the team built on.
+<More label="How the messaging backend works">
+- **Accounts.** Registration extends Django's registration form with an email address, and login uses Django's
+  authentication. After registering, a user is sent to the login page.
+- **Data model.** A chat links two users and holds one unread counter for each of them. A message records its chat,
+  sender, receiver, text of up to 1,000 characters and date.
+- **Search.** A user searches by part of a username, and the matches are listed on the new-message page.
+- **Opening a chat.** The app looks for an existing chat between the two users, in either order, before it creates
+  one.
+- **Unread counts.** Sending a message raises the receiver's counter. Opening the chat resets the opener's counter, and
+  the message list shows the count beside each chat.
+- **Access.** Search, the message list and every chat page redirect visitors who are not signed in to the login page.
 </More>
+
+## Contribution
+
+- Implemented user registration and login with Django's authentication, including a registration form with email.
+- Implemented user search by username and the chat flow that reuses an existing conversation between two users.
+- Implemented one-to-one messaging with per-user unread counts shown in the message list.
+- Restricted the messaging pages to signed-in users and defined the URL routes for chats and messages.
+- Took part in the analysis and the design report, and suggested the technology the team used.
+
+## Lessons learned
+
+- **Track each task with an owner and a due date.** The front end and the back end depended on each other, and a
+  written list of who delivers what, and when, lets an end-to-end flow be tested earlier.
+- **Settle the data model first.** The chat and message models were fixed in the design report, and the code followed
+  them without change, which kept the messaging views short and consistent with the design.
