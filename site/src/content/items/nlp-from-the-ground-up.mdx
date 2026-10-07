@@ -5,10 +5,10 @@ start: '2023-10'
 when: Fall 2023
 context: CS 585 Natural Language Processing
 course: CS 585
-oneLine: "Probabilistic text analysis and classification; implemented entropy and KL divergence between corpora, a Naive Bayes clickbait detector and a smoothed bigram sentiment model."
-summary: "Measured entropy and KL divergence between two text corpora and implemented a Naive Bayes clickbait detector. Implemented a smoothed bigram language model that classified sentiment, and designed the comparisons between classifiers."
+oneLine: "Probabilistic text analysis; implemented entropy and KL divergence between corpora and a smoothed bigram sentiment model, and trained a Naive Bayes clickbait detector."
+summary: "Measured entropy and KL divergence between two text corpora and trained a Naive Bayes clickbait detector, compared with a word-rule baseline. Implemented a smoothed bigram language model that classified movie-review phrases by sentiment."
 role: Individual project
-myPart: I wrote the information-theory measures and the language model myself, and designed the classifier comparisons.
+myPart: Implemented entropy, KL divergence and the smoothed bigram language model in Python; trained and tuned the Naive Bayes classifier and compared it with a word-rule baseline.
 skills: [Python, Language models, Naive Bayes, Text classification, Information theory, scikit-learn]
 selected: true
 areas: [Language (NLP), Machine learning]
@@ -16,72 +16,106 @@ areas: [Language (NLP), Machine learning]
 import More from '../../components/More.astro';
 import Bars from '../../components/Bars.astro';
 
-## Problem
+## Context
 
-How different are two collections of text, and how far can simple probabilistic models go at classifying text?
+Three assignments in CS 585 Natural Language Processing (Fall 2023) asked how different two collections of text are,
+and how far simple probabilistic models can classify text. Each used a different dataset:
 
-## Data
-
-- A sentiment corpus of movie-review sentences (SST) and a question-answering corpus (QNLI), for comparing corpora
-  and for sentiment classification.
-- A set of news headlines labelled as clickbait or not.
+- The binary Stanford Sentiment Treebank (SST-2): its training file of 67,349 labelled movie-review phrases, used to
+  compare corpora and, split at random, to classify sentiment.
+- The development set of QNLI: 5,463 Wikipedia sentences, used as the second corpus.
+- 2,388 news headlines labelled as clickbait (814) or not (1,574).
 
 ## Approach
 
-1. **Comparing corpora.** I wrote entropy and KL divergence from scratch, over the word distributions of the two
-   corpora.
-2. **Clickbait detection.** A Naive Bayes classifier on word counts, tuned by grid search, compared with a rule-based
-   classifier built from the words most indicative of clickbait.
-3. **Sentiment from language models.** A bigram language model with add-α smoothing, written in Python. I trained
-   one model per sentiment class and labelled each sentence with the class whose model found it most likely.
+Three analyses, each written in Python:
 
-## Calculations
+1. Word entropy for each corpus, and KL divergence between them in both directions.
+2. A Naive Bayes clickbait classifier on word counts, tuned by grid search, compared with a five-word rule classifier
+   and with labelling every headline clickbait.
+3. A bigram language model with add-α smoothing for sentiment: one model per class, with each phrase assigned to the
+   class whose model, weighted by the class prior, found it more likely.
 
+<More label="Formulae, smoothing and tuning settings">
 $$
 H(P) = -\sum_{w} P(w)\log_2 P(w)
 \qquad
 D_{\mathrm{KL}}(P\,\Vert\,Q) = \sum_{w} P(w)\log_2\frac{P(w)}{Q(w)}
 $$
 
-<More>
-The bigram model estimates the probability of each word given the one before it, with add-α smoothing so unseen
+A word absent from the other corpus was given a probability of 0.0001, since the divergence is otherwise infinite.
+
+The bigram model estimates the probability of each word given the one before it, with add-α smoothing so that unseen
 pairs are not impossible:
 
 $$
 P(w_i \mid w_{i-1}) = \frac{\text{count}(w_{i-1}, w_i) + \alpha}{\text{count}(w_{i-1}) + \alpha\,|V|}
 $$
 
-I chose α on a validation set: 0.001 fit best of the values I tried (0.001, 0.01 and 0.1).
+The value of α was chosen on 100 validation phrases from 0.001, 0.01 and 0.1; 0.001 gave the highest log-likelihood.
+
+The clickbait headlines were split 1,719 for training, 191 for validation and 478 for testing. The grid search covered
+18 combinations of document-frequency limit, smoothing value and word or word-pair features, and the combination with
+the best validation F1 was used on the test set. The rule classifier used the five words with the highest clickbait
+log-probability: believe, won, just, new and thing.
 </More>
 
-## Results
+## Contribution
 
-- The two corpora have similar word entropy, but KL divergence is clearly asymmetric (table below).
-- The bigram language-model classifier labelled 90% of held-out sentences correctly.
-- Naive Bayes found far more of the clickbait than the word rules, at similar precision.
+- Implemented word entropy and KL divergence in Python over the word distributions of two corpora.
+- Trained a Naive Bayes clickbait classifier in scikit-learn, tuned it by grid search on a validation set, derived a
+  five-word rule classifier from its most indicative words and compared both with an always-clickbait baseline.
+- Implemented a bigram language model with add-α smoothing, selected α on a validation set and classified sentiment
+  with one model per class and class priors.
 
-<div class="table-wrap">
+## Findings and limitations
 
-| Corpus | Word entropy (bits) | KL divergence to the other corpus (bits) |
-|---|---|---|
-| Movie reviews (SST) | 10.28 | 0.645 |
-| Questions (QNLI) | 10.42 | 0.531 |
-
-</div>
+The bigram classifier labelled 90 of 100 held-out phrases correctly, against 56 of 100 for always answering positive.
 
 <Bars
-  caption="Clickbait detection on the test set: precision and recall"
+  caption="Sentiment accuracy (%) on 100 held-out SST-2 phrases"
+  series={['Accuracy (%)']}
+  rows={[
+    { label: 'Bigram language models', values: [90] },
+    { label: 'Always positive (majority class)', values: [56] },
+  ]}
+  digits={0}
+  max={100}
+/>
+
+On 478 test headlines, Naive Bayes found 75% of the clickbait at 0.85 precision. The five-word rules reached similar
+precision but found only 7%.
+
+<Bars
+  caption="Clickbait detection on the 478-headline test set: precision and recall"
   series={['Precision', 'Recall']}
   rows={[
-    { label: 'Label everything clickbait', values: [0.36, 1.0] },
-    { label: 'Word rules', values: [0.79, 0.09] },
-    { label: 'Naive Bayes', values: [0.84, 0.68] },
+    { label: 'Label everything clickbait', values: [0.38, 1.0] },
+    { label: 'Word rules', values: [0.80, 0.07] },
+    { label: 'Naive Bayes', values: [0.85, 0.75] },
   ]}
   digits={2}
   max={1}
 />
 
-## My part
+The two corpora have similar word entropy, but the KL divergence differs by direction.
 
-I wrote the entropy, KL divergence and bigram model from scratch, and designed the comparison between the learned
-classifier and the word rules.
+<div class="table-wrap">
+
+| Corpus | Word entropy (bits) | KL divergence to the other corpus (bits) |
+|---|---|---|
+| Movie-review phrases (SST-2 training file) | 10.28 | 0.645 |
+| Wikipedia sentences (QNLI development set) | 10.42 | 0.531 |
+
+</div>
+
+<More label="Limitations of the evaluation">
+- The sentiment test set is 100 phrases, so the 90% carries an uncertainty of roughly 6 percentage points either way.
+- The held-out phrases were drawn at random from the SST-2 training file rather than the official development or test
+  split, and SST-2 phrases overlap with one another, so the 90% is not comparable with published SST-2 results.
+- α was chosen from three values and 0.001 was the smallest, so a smaller value might fit better.
+- The two corpora differ in size (about 599,000 words from SST-2 and 155,000 from QNLI), which affects both entropy and
+  divergence, and the divergence depends on the probability given to missing words.
+- The clickbait result is one train and test split, shuffled without a fixed seed, so a rerun gives slightly different
+  figures.
+</More>

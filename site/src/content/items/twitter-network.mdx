@@ -15,31 +15,29 @@ areas: [Data and networks]
 import More from '../../components/More.astro';
 import Flow from '../../components/Flow.astro';
 
-## Problem
+## Context
 
-Collect real social-network data with our own crawler, and describe the structure of the network it produces.
+The task was to collect a real social network from Twitter with code written for the course, then describe its
+structure using network measures. The network is the follower graph around one public starting account: 245 accounts
+and 244 follower links, gathered two levels out.
 
-## Data
-
-245 accounts and 244 follower links, gathered two levels out from one public starting account.
-
-<More>
-The crawler took up to 50 followers for each account and expanded 12 accounts in all. Account names are real people's
-and are not shown here.
+<More label="Crawl design and data">
+- The crawler took up to 50 followers for each account, so no account can show more than 50 followers in the data.
+- Only some of the starting account's followers were expanded, which gives the shape described below.
+- Each link points from a follower to the account followed.
 </More>
 
 ## Approach
 
 <Flow
   label="From the Twitter API to network measures"
-  steps={['Crawl followers (tweepy)', 'Save to CSV', 'Build a directed edge list', 'Load into Gephi', 'Measure structure and centrality']}
+  steps={['Crawl followers (tweepy)', 'Save to CSV', 'Convert to a directed edge list', 'Load into Gephi', 'Measure structure and centrality']}
 />
 
-The crawler, written with tweepy, pages through each account's followers within the API's rate limits. Its output
-becomes a directed edge list for Gephi.
+The crawler pages through each account's followers with the Twitter API. Its output was converted to a directed edge
+list, loaded into Gephi and measured there, and degree histograms were plotted with pandas and matplotlib.
 
-## Calculations
-
+<More label="PageRank definition and settings">
 PageRank scores an account by the importance of the accounts that follow it:
 
 $$
@@ -47,16 +45,25 @@ PR(v) = \frac{1-d}{N} + d \sum_{u \to v} \frac{PR(u)}{\text{out}(u)}
 $$
 
 with damping factor $d = 0.85$, where $N$ is the number of accounts and $\text{out}(u)$ the number of accounts that
-$u$ follows.
+$u$ follows. Gephi's default convergence setting (epsilon 0.001) was used.
+</More>
 
-## Results
+## Contribution
 
-The network is a hub-and-spoke tree, and PageRank concentrates on the starting account.
+- Wrote a Python crawler with tweepy that collected followers from the Twitter API for a 245-account network.
+- Converted the crawled data to a directed edge list and prepared the Gephi files.
+- Plotted degree histograms with pandas and matplotlib.
+
+## Findings and limitations
+
+The network is a hub-and-spoke tree: PageRank concentrates on the starting account, and every other account is within
+two steps of it.
 
 <div class="table-wrap">
 
 | Measure | Value |
 | --- | ---: |
+| Accounts / follower links | 245 / 244 |
 | Diameter | 2 |
 | Average path length | 1.44 steps |
 | PageRank of the starting account | 0.310 |
@@ -64,12 +71,11 @@ The network is a hub-and-spoke tree, and PageRank concentrates on the starting a
 
 </div>
 
-<More>
-Gephi also gave in-degree, out-degree, eccentricity, closeness and betweenness for every account, and I plotted the
-degree distributions with pandas and matplotlib. A clustering coefficient of 0 is what to expect from a crawl that
-expands outward from one account without following links back.
+<More label="Distribution details and limitations">
+- Of the 245 accounts, 234 have no followers in the data. Four accounts sit at the 50-follower ceiling, so that figure
+  reflects the crawl limit, not popularity.
+- A clustering coefficient of 0 and a diameter of 2 follow from crawling outward from one account without following
+  links back, so they describe the sampling method more than Twitter itself.
+- The crawl stopped at two levels and a follower cap, so the network is a sample around one account and says little
+  about the wider platform.
 </More>
-
-## My part
-
-I wrote the crawler, the edge-list conversion and the Gephi files.
