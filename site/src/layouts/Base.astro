@@ -51,7 +51,7 @@ const nav = [
           jobTitle: 'AI Engineer',
           description: person.description,
           alumniOf: { '@type': 'CollegeOrUniversity', name: person.university },
-          sameAs: [person.github, person.linkedin],
+          sameAs: [person.linkedin],
         })}
       />
     )}
@@ -103,7 +103,6 @@ const nav = [
         <div class="band-foot">
           <ul class="contact">
             <li><a href={`mailto:${person.email}`}>Email</a></li>
-            <li><a href={person.github}>GitHub</a></li>
             <li><a href={person.linkedin}>LinkedIn</a></li>
           </ul>
           <button class="btn theme-toggle" type="button" aria-label="Switch colour theme" aria-pressed="false">Theme</button>

@@ -4,7 +4,6 @@ export const person = {
   role: 'AI Engineer · Independent Researcher',
   location: 'Philadelphia, PA',
   email: 'SamruddhiKakade@outlook.com',
-  github: 'https://github.com/SamruddhiKakade',
   linkedin: 'https://www.linkedin.com/in/samruddhi-kakade-97a6b5237',
   description: 'AI engineer and independent researcher working on how to evaluate large language models.',
   // Home's title in the browser tab and in search results.
