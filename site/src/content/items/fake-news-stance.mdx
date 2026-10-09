@@ -63,14 +63,16 @@ cross-validation. The best of the four was refitted on all labelled pairs and us
 - With a partner, developed the text pipeline (cleaning, tokenising and lemmatising with NLTK, word counts and feature
   scaling), compared four classifiers by five-fold cross-validation and selected the random forest.
 - Co-wrote the project report and presentation slides.
+- Re-evaluated the comparison in October 2026 with the word counts and scaler fitted inside each training fold,
+  measured the size of the original leakage, and added per-class results.
 
 ## Findings and limitations
 
-The random forest reached 0.761 mean cross-validated accuracy, 7.6 percentage points above the 68.5% majority-class
-baseline, and was the most accurate of the four models.
+In the original 2023 procedure, the random forest reached 0.761 mean cross-validated accuracy, 7.6 percentage points
+above the 68.5% majority-class baseline, and was the most accurate of the four models.
 
 <Bars
-  caption="Mean five-fold cross-validated accuracy (%), against the majority-class baseline"
+  caption="Original procedure, 2023: mean five-fold cross-validated accuracy (%), against the majority-class baseline"
   series={['Accuracy (%)']}
   rows={[
     { label: 'Random forest', values: [76.1] },
@@ -83,14 +85,54 @@ baseline, and was the most accurate of the four models.
   max={100}
 />
 
+A re-evaluation in October 2026 fitted the word counts and scaler inside each training fold, on the same fold scheme as
+in 2023 (five unshuffled stratified folds), so that only the preprocessing changed.
+The original accuracies reproduced to within 0.2 points, and the correction changed them by at most 0.25 points, so
+the leakage was negligible. Per-class results showed the larger weakness: the random forest found 6.7% of the
+disagreeing pairs, and the decision tree had the highest macro F1.
+
+<Bars
+  caption="Re-evaluation, October 2026: macro F1 and F1 on the disagreeing pairs (%), five-fold cross-validation on the 2023 folds with the corrected procedure"
+  series={['Macro F1', 'Disagreed F1']}
+  rows={[
+    { label: 'Decision tree', values: [51.0, 23.3] },
+    { label: 'Random forest', values: [48.2, 12.0] },
+    { label: 'Logistic regression', values: [47.9, 18.5] },
+    { label: 'Linear SVM', values: [45.3, 15.1] },
+    { label: 'Majority-class baseline', values: [27.1, 0.0] },
+  ]}
+  digits={1}
+  max={100}
+/>
+
+<More label="Re-evaluation, October 2026: procedure and results">
+- **Original setup:** the word-count vocabulary and the scaler were fitted on all 256,442 labelled pairs, then the four
+  models were compared on five unshuffled stratified folds. The pairs in each test fold had therefore influenced the
+  features.
+- **Corrected procedure:** the same text handling and the same four models with default settings, with the word counts
+  and scaler fitted on the four training folds only, on the same five unshuffled folds, so that only the preprocessing
+  changed. The majority-class baseline was scored on
+  the same folds, with per-class precision, recall and F1.
+- **Corrected accuracy:** random forest 76.1% (SD 0.3), decision tree 70.2% (0.7), logistic regression 67.5% (0.9),
+  linear support vector machine 64.6% (0.7), against the 68.5% baseline. The original procedure, rerun on the same
+  folds, scored 0.05 to 0.25 points higher: this is the measured size of the leakage, smaller than each model's
+  variation across folds.
+- **Disagreeing pairs:** the random forest found 440 of the 6,606 (recall 6.7%, precision 64.2%, F1 12.0%). The
+  decision tree found 21.2% of them, at 26.2% precision and 23.3% F1.
+- **Repeated headlines:** the same headline often appears in several pairs, and 65.3% of test pairs shared a headline
+  with their training folds. Shuffling the folds raises that share to 98.4% and the random forest's accuracy to 85.3%,
+  which suggests repeated headlines affect the scores far more than the preprocessing did.
+- **What changed in the interpretation:** the 2023 accuracies stand as cross-validation estimates. The random forest's
+  lead over the baseline comes from the unrelated pairs, two of the four models score below the baseline, and on the
+  rare disagreeing pairs the decision tree is the strongest of the four.
+</More>
+
 <More label="Variation across folds and limitations">
 - The report gives each accuracy with the standard deviation of the five fold accuracies: random forest 0.002, decision
   tree 0.007, logistic regression 0.008, linear support vector machine 0.006.
-- Only accuracy was reported. Per-class recall and F1 were not computed, so how well the 6,606 disagreeing pairs were
-  found is not known.
-- The word-count vocabulary and the scaler were fitted on all labelled pairs before cross-validation, so the fold scores
-  may be optimistic; the size of the effect was not measured.
+- About two thirds of test pairs shared a headline with their training folds, so the scores may be optimistic for
+  headlines never seen before; that effect has not been measured, and measuring it needs folds split by story.
 - Counting the words of both headlines together ignores which words came from which headline, and no model settings
   were tuned.
-- The unlabelled pairs had no published answers, so the accuracy is a cross-validation estimate, not a test-set score.
+- The unlabelled pairs came without labels, so the accuracy is a cross-validation estimate, not a test-set score.
 </More>
