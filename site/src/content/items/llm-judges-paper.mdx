@@ -1,0 +1,106 @@
+---
+title: "What Do LLM Judges Actually Verify? Matched Controls and Record Gaps for Document Currency"
+section: research
+start: '2026-09'
+when: "Preprint, 31 October 2026"
+context: Independent research
+oneLine: "A test of what language-model judges rely on when they check whether a cited document is still in force; with gaps in the amendment record, every judge caught fewer replaced citations than from the texts alone."
+summary: "Second author of a study of LLM judges that check citations against an amendment record. On 48 replacements from the IETF RFC index and four judges, every judge caught fewer replaced citations when the record had a gap than it did from the documents alone, and labelling the record as unverified or incomplete recovered most of the loss for three of the four."
+role: "Second author, with Unnati Shah (lead author) and Aum Patel"
+myPart: Reviewed the study design, annotated the case study as one of two independent annotators, checked the case study's automatic scorer by hand, and reviewed and edited the paper.
+skills: [LLM evaluation, Annotation, Experiment design, Language models, Technical writing]
+areas: [Language (NLP)]
+links:
+  - label: Preprint (arXiv)
+    url: https://arxiv.org/abs/2611.01311
+selected: true
+---
+import More from '../../components/More.astro';
+
+## Question
+
+Systems that answer questions from contracts, regulations or standards can add a second model, an LLM judge, to check
+each answer before a user sees it. The judge is often given an amendment record saying which document replaced which.
+Such records are rarely complete, and where a record is silent it effectively reports a replaced document as current.
+The paper asks what the judge relies on when the record and the documents disagree.
+
+## Approach
+
+The test starts from any table of replacements. For each replacement it writes one answer that cites the replaced
+document, the fault, and three answers that are correct. It then removes half of the links from the record, presents the
+damaged record in several ways that leave its content unchanged, and counts a fault as caught only when the judge says
+the cited document was replaced.
+
+<More label="Corpus, judges and the matched controls">
+- Corpus: 48 replacements recorded by the RFC Editor of the Internet Engineering Task Force (IETF), chosen because the
+  publisher keeps an exact record.
+- Judges: Gemini 3.1 Pro, GPT-5.5, Claude Opus 4.5 and the open-weight Gemma 4 26B.
+- The three correct answers per replacement: one citing the successor; a date control, citing the replaced document at
+  a date before the replacement existed; and a decoy, citing an older document that a newer one updated without
+  replacing it.
+- Scoring by stated reason: a judge that flags every older citation, or any older document next to a newer one on the
+  same subject, would score well on detection without checking currency. Counting a catch only for the right reason
+  separates the two.
+- The hypotheses, tests and how each outcome would be read were written after a smaller pilot and committed to the
+  project's own repository before the main runs: an internal, timestamped record rather than a public registration.
+</More>
+
+## Contribution
+
+Second author.
+
+- Reviewed the study design.
+- Annotated the appended case study on Indian rooftop-solar rules as one of two independent annotators, with the lead
+  author adjudicating from the annotators' sheets and the source documents. This human check is what showed where the
+  AI-built answer key was wrong, and why the case study is reported as descriptive.
+- Checked the case study's automatic scorer by labelling 50 development replies by hand under the written scoring rule.
+- Reviewed and edited the paper.
+
+## Findings and limitations
+
+With a correct record, the judges caught nearly every replaced citation, as a lookup in the record would. On the 24
+faults whose link was removed, every judge caught more from the texts alone than with the record present, and the drop
+recurred on a second random draw of removed links. Most missed faults were passed without any finding.
+
+<More label="Results by judge and by presentation">
+- Faults caught from the texts alone against with the damaged record: Gemini 3.1 Pro 23 of 24 against 1 of 24, GPT-5.5
+  23 of 24 against 9 of 24, Claude Opus 4.5 17 of 24 against 9 of 24, and Gemma 4 26B 13 of 24 against 0 of 24.
+- Rewording the gap as "no replacement recorded", a true statement, did not restore the lost catches.
+- Presenting the record as an unverified note, or warning that it was incomplete, restored most of the lost catches for
+  Gemini, GPT-5.5 and Claude, significant after correction for the first two, but at most 5 of 13 for Gemma. Where
+  catches returned, so did false alarms on updates.
+- In an exploratory run that offered a reason code for a record that conflicts with the evidence, only Gemini used it
+  often.
+- Given both texts and no record, the judges mostly told replacements from updates, but every update they flagged had a
+  near-identical title.
+</More>
+
+<More label="Limitations">
+- One corpus of technical standards and four judges. The answer is limited to these judges, prompts and documents, not
+  LLM judges in general, and the study cannot say why the judges behaved as they did.
+- The gap result rests on 36 distinct links over two draws of 24, and the hosted judges ran once per prompt.
+- The evidence is titles, dates and abstracts, not full documents, and links were removed at random, while real records
+  fail in patterns.
+- The case study on Indian rooftop-solar rules is descriptive: its answer key did not pass the paper's own quality
+  checks, and nothing in the main results rests on it.
+</More>
+
+## How to cite
+
+> Shah, U., Kakade, S., & Patel, A. (2026). What Do LLM Judges Actually Verify? Matched Controls and Record Gaps for Document Currency. arXiv:2611.01311. https://arxiv.org/abs/2611.01311
+
+<More label="BibTeX">
+
+```bibtex
+@misc{shah2026llmjudges,
+  author        = {Shah, Unnati and Kakade, Samruddhi and Patel, Aum},
+  title         = {What Do {LLM} Judges Actually Verify? Matched Controls and Record Gaps for Document Currency},
+  year          = {2026},
+  eprint        = {2611.01311},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2611.01311}
+}
+```
+
+</More>
