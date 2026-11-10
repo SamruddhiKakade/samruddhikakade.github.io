@@ -23,6 +23,7 @@ const verify = d.links.find((l) => l.label.startsWith('Verify'));
     {code && <p class="small code"><a href={code.url} aria-label={`Code on GitHub: ${d.title}`}>Code on GitHub</a></p>}
     {verify && <p class="small code"><a href={verify.url}>{verify.label}</a></p>}
   </div>
+  {d.page && <p class="more small" aria-hidden="true">Click here for more <span class="arrow">→</span></p>}
 </article>
 
 <style>
@@ -99,5 +100,18 @@ const verify = d.links.find((l) => l.label.startsWith('Verify'));
   }
   .code {
     margin: 10px 0 0;
+  }
+  /* Tells readers the whole card opens the full page (feedback: some read only the cards). */
+  .more {
+    margin: 14px 0 0;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .arrow {
+    display: inline-block;
+    transition: transform 200ms var(--ease);
+  }
+  .card.linked:hover .arrow {
+    transform: translateX(3px);
   }
 </style>
