@@ -2,7 +2,7 @@
 title: "Reading the Board, Playing Another One: Turn-Level Evaluation of Open LLM Agents on Textual Sokoban"
 section: research
 start: '2026-07'
-when: "Preprint, 7 October 2026"
+when: "Preprint, 7 October 2026, updated 12 November 2026"
 context: Independent research
 oneLine: "Turn-level evaluation of open language-model agents on textual Sokoban; induced a failure taxonomy from blind readings and reported its agreement and a null validity test."
 summary: "Evaluated five open language-model agents of 3 to 8B parameters on textual Sokoban turn by turn, over 180 episodes and 1,561 steps. Induced a failure taxonomy from blind reading passes and reported its annotator agreement, human label checks and a null validity test."
@@ -12,9 +12,9 @@ skills: [LLM evaluation, Annotation reliability, Experiment design, Language mod
 areas: [Language (NLP), Games]
 links:
   - label: Preprint (Zenodo)
-    url: https://doi.org/10.5281/zenodo.23220308
+    url: https://doi.org/10.5281/zenodo.23220307
   - label: Supplementary material (Zenodo)
-    url: https://zenodo.org/records/23220308
+    url: https://zenodo.org/records/24152320
 selected: true
 ---
 import More from '../../components/More.astro';
@@ -29,13 +29,12 @@ what it wrote, the action it emitted and the board that resulted.
 <More label="Why the turn, and why Sokoban">
 - Sokoban is a box-pushing puzzle. It is PSPACE-complete in general, one bad push can leave a level unwinnable, and it
   is fully observable. The board is given to the agent as text, so visual perception is out of the loop.
-- The five models are fixed, publicly available open checkpoints of 3 to 8B parameters. They solve no level in any
-  condition, and more than half of the episodes end at six steps, when the harness's stuck detector fires. The study
+- The five models are fixed, publicly available open checkpoints of 3 to 8B parameters. They solve none of the six
+  levels in any condition, and more than half of the episodes end at six steps, when the harness's stuck detector fires. The study
   is therefore of agents at the floor of the task: where in the turn the error enters, and what an evaluation has to
   record to see it.
-- A count of ineffective actions records that the agent pushed into empty floor. A turn-level code records that its
-  thought placed a box in that cell. An outcome-only record could not tell an agent that read the board correctly and
-  then chose an impossible move from one that never read it.
+- An outcome-only record could not tell an agent that read the board correctly and then chose an impossible move from
+  one that never read it. A record of the whole turn can.
 </More>
 
 ## Approach
@@ -53,7 +52,8 @@ induced from three blind reading passes. Control arms, including a pre-registere
 - Models: Qwen2.5-3B-Instruct, Qwen2.5-7B-Instruct, Llama-3.2-3B-Instruct, Llama-3.1-8B-Instruct and
   Mistral-7B-Instruct-v0.3, all at fp16.
 - The corpus is 5 models, 6 levels, 3 replicates and 2 temperatures: 180 episodes and 1,561 steps. Each replicate is a
-  separate execution, and the temperatures are never pooled into one behavioural rate.
+  separate execution, and an execution at one temperature is treated as its own condition when behavioural rates are
+  reported.
 - An episode ends on success or when the board is unchanged for five consecutive steps. Episodes are short: median 6
   steps, and 95 of 180 (52.8%) are exactly 6 steps long, so the findings are mostly about the opening of an episode.
 - The harness is an existing open-source game-agent harness (GamingAgent), run with its full per-step loop of
@@ -61,12 +61,15 @@ induced from three blind reading passes. Control arms, including a pre-registere
   API.
 - In this harness a plain move and a push are separate commands, and a command whose precondition fails does nothing,
   with no fallback from one to the other.
+- The harness prompt says the cell beyond a box must be free but leaves out that the box must be next to the worker.
+  Of 926 push commands checked against the board just before them, 786 (84.9%) had no adjacent box in the chosen
+  direction.
 </More>
 
 <More label="How the taxonomy was induced">
 - Three blind reading passes each read one execution's 60 episodes, so no episode was read twice and the three cover
   all 180. Each pass had ten readers, fresh language-model sessions with no prior context, given one file and a fixed
-  brief with no checklist, rubric or category definitions. The readers were sessions of the same model as annotator
+  brief with no checklist, rubric or category definitions, although the files carried some legacy label strings. The readers were sessions of the same model as annotator
   A, so that annotator is not naive to the taxonomy's framing.
 - Readers described what they saw. Matching a description to a taxonomy item was a separate written step afterwards.
   Where a description fitted an existing item only arguably, a new item was created.
@@ -104,16 +107,21 @@ induced from three blind reading passes. Control arms, including a pre-registere
   they cannot be adjudicated. The paper reports the disagreement with the 316 and does not resolve it.
 </More>
 
-<More label="Controls: harness check, difficulty ladder and prompt arms">
+<More label="Controls: harness check, difficulty ladders and prompt arms">
 - Harness check: a push-optimal solution from a solver sharing no code with the harness, replayed through the repaired
-  harness, solves all six levels over 229 replayed steps. So the harness can record a solve.
-- Difficulty ladder: placements on a single 5 by 5 open room at each optimal push count from 1 to 6, 120 episodes in
+  harness, solves all six levels over 229 replayed steps. So the repaired harness can record a solve. The original
+  configuration would have reset before recording the winning step on five of the six levels, and the corpus logs show
+  no hidden solve: the only box ever docked is the one Level 6 starts with.
+- First difficulty ladder: placements on a single 5 by 5 open room at each optimal push count from 1 to 6, 120 episodes in
   all, 20 per rung. Rungs 1 to 3 are calibration rungs, reported against uniform-random baselines (8 of 20 against
-  41.5%, 5 of 20 against 16.2%, 7 of 20 against 6.1%). At four or more pushes, 0 of 60 episodes solve, and a random
-  agent would also be expected to solve none, so those rungs separate the agents from chance in neither direction.
-- Positive control: a pre-registered test of whether the taxonomy separates solved from unsolved ladder episodes.
+  41.5%, 5 of 20 against 16.2%, 7 of 20 against 6.1%). At four or more pushes, 0 of 60 episodes solve, where a
+  random agent's expected solve rate is under 0.15%.
+- Zero-walk ladder: a second ladder in a 5 by 8 room, with its chance baseline, reading and prediction registered
+  before play. The worker, the box and the dock sit on one line, so no walking is needed.
+- Positive control: a pre-registered test of whether the taxonomy separates solved from unsolved episodes on the first
+  ladder, labelled blind by annotator A only. Zero-walk turns were not labelled with the taxonomy.
 - Two prompt arms, described under Findings and limitations: a pre-registered one changing the prompt's worked
-  example, and one restoring the game's rules text, whose decision rule was fixed after the first model had run, so it
+  example, and one restoring the harness's own rules text, whose decision rule was fixed after the first model had run, so it
   is not pre-registered.
 </More>
 
@@ -123,8 +131,10 @@ Sole author.
 
 - Designed a turn-level evaluation instrument: a ten-family behavioural failure taxonomy induced from three blind
   reading passes, with a contrast set that codes what an agent gets right.
-- Designed the controls: a harness check by push-optimal replay, a difficulty ladder with chance baselines, a
-  pre-registered positive control, a pre-registered worked-example arm and a rules-text arm.
+- Designed the controls: a harness check by push-optimal replay, two difficulty ladders with chance baselines set in
+  advance, a pre-registered positive control, a pre-registered worked-example arm and a rules-text arm.
+- Audited the harness instead of assuming it neutral: its prompt leaves out that a box must be adjacent to be pushed,
+  and its only worked example pairs a thought about walking with a push.
 - Ran 180 episodes of five open models on a self-hosted serving stack and coded every turn with two language-model
   annotators, reporting κ beside PABAK and prevalence.
 - Reported label defensibility from 316 human label-verdicts across three instruments, kept apart from the annotator
@@ -138,15 +148,19 @@ No level was solved in any of the six conditions. Two observations are supported
 
 - **E2, the stronger one:** across the five models, the move a turn's thought describes and the action it emits differ
   in kind, usually a plain move described and a push emitted. Both annotators label this in 111 of 180 episodes
-  (κ = 0.749).
+  (step-level κ = 0.749).
 - **I2, an existence observation:** in the one model that writes a board table into its thought, an accurate table,
-  probably copied from the input, sits beside prose that reasons from a different board. This is 14 episodes on the
+  which may simply reproduce the input, sits beside prose that reasons from a different board. This is 14 episodes on the
   reading passes and 6 to 27 of 180 on the annotations, in one model.
 
 The prompt's only worked example has the shape of E2, and a pre-registered arm that changed it left its effect
 unresolved. The one pre-registered validity test, a positive control, found no separation between solved and unsolved
 episodes, so the taxonomy is a description, not a validated discriminator. The study does not test whether a written
 thought causes the action that follows it.
+
+On a second, pre-registered ladder that removed the walk to and around the box, agents solved 14 of 60 episodes at
+four to six pushes, against none on the first ladder. The two ladders also differ in other ways, so this is consistent
+with walking being an obstacle without isolating it.
 
 <figure class="annotated-turn">
   <div class="table-wrap">
@@ -189,13 +203,17 @@ thought causes the action that follows it.
   that moves a box. A count of ineffective actions cannot see this.
 - E2 runs almost entirely one way: 421 of annotator A's 432 E2 steps and 341 of annotator B's 354 emit a push where the
   thought describes a plain move.
-- Temperature-0 runs did not reproduce. The harness writes the wall-clock time into every reasoning prompt, so the
+- Temperature-0 runs did not always follow the same path. The harness writes the wall-clock time into every reasoning prompt, so the
   inputs were never identical. Of 30 cells, 14 took an identical path in all three executions at temperature 0, and 1
   of 30 at temperature 1. This is one triplet of executions, read as an existence result about this stack, not as a
   divergence rate.
-- Difficulty ladder: 0 of the 60 episodes at four or more optimal pushes were solved, across five models and three
-  families. A random agent would also be expected to solve none there.
-- Rules-text arm: restoring the game's rules text to the prompt solved no level, 0 of 30 episodes against 0 of 30
+- First difficulty ladder: 0 of the 60 episodes at four or more optimal pushes were solved, across five models and
+  three families. In 43 of those 60 episodes the worker reached a position from which a push could move the box, but
+  across 193 such turns the agents moved the box only 11 times. This count is descriptive and was made after the fact.
+- Zero-walk ladder: at four to six pushes it gave 14 of 60 solves (5, 2 and 7 of 20), against none on
+  the first ladder, and every model solved at least one of these boards. The two ladders also differ in starting
+  position and push direction, so the effect of walking alone is not isolated.
+- Rules-text arm: restoring the harness's own rules text to the prompt solved no level, 0 of 30 episodes against 0 of 30
   without it. The treatment prompt is 734 characters longer with no length-matched control, so content is not
   separated from length.
 - Worked-example arm: the prompt's only worked example pairs a thought describing a plain move with a push. Changing
@@ -211,7 +229,7 @@ thought causes the action that follows it.
 </More>
 
 <More label="Limitations in full">
-- The positive control was null. On 291 ladder turns labelled blind, the pre-specified primary item returned 2 of 18
+- The positive control was null. On 291 first-ladder turns labelled blind by annotator A, the pre-specified primary item returned 2 of 18
   solved episodes against 4 of 40 unsolved (one-sided Fisher p = 0.61, where the registered detectable effect needed 6
   of 18), and the secondary item moved opposite to its prediction. With 3 boards and 12.76 of the 20 solves
   chance-expected, this is a null against a weak success regime. E2 is more frequent on solved episodes, 12 of 18
@@ -226,10 +244,9 @@ thought causes the action that follows it.
   account for a share of E2.
 - Scope: six fixed hand-authored levels, one harness, five open models of 3 to 8B and 3 replicates per cell. Episodes
   are short, so failure processes that need a longer horizon, such as plan revision or recovery from a mid-game error,
-  are out of reach by construction.
+  had little opportunity to show.
 - The taxonomy was induced on the same 180 episodes it is applied to, with no held-out set. Counts from the reading
-  passes support presence and breadth, not rates. Only one model writes the board table that I2 requires, so a habit of
-  that checkpoint cannot be told apart from a more general pattern.
+  passes support presence and breadth, not rates. Only one model writes the board table that I2 requires.
 </More>
 
 ## How to cite
@@ -237,7 +254,7 @@ thought causes the action that follows it.
 The preprint is on Zenodo under CC BY 4.0, with the supplementary material (the codebook, the quoted-span traces and
 the annotators' label sheets) on the same record.
 
-> Kakade, S. S. (2026). Reading the Board, Playing Another One: Turn-Level Evaluation of Open LLM Agents on Textual Sokoban (Version v1). Zenodo. https://doi.org/10.5281/zenodo.23220308
+> Kakade, S. S. (2026). Reading the Board, Playing Another One: Turn-Level Evaluation of Open LLM Agents on Textual Sokoban (Version v2). Zenodo. https://doi.org/10.5281/zenodo.24152320
 
 <More label="BibTeX">
 
@@ -246,10 +263,10 @@ the annotators' label sheets) on the same record.
   author    = {Kakade, Samruddhi Sanjaykumar},
   title     = {Reading the Board, Playing Another One: Turn-Level Evaluation of Open LLM Agents on Textual Sokoban},
   year      = {2026},
-  version   = {v1},
+  version   = {v2},
   publisher = {Zenodo},
-  doi       = {10.5281/zenodo.23220308},
-  url       = {https://doi.org/10.5281/zenodo.23220308}
+  doi       = {10.5281/zenodo.24152320},
+  url       = {https://doi.org/10.5281/zenodo.24152320}
 }
 ```
 
