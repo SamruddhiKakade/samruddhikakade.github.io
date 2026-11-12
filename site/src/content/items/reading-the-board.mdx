@@ -22,7 +22,7 @@ import Flow from '../../components/Flow.astro';
 
 ## Question
 
-Aggregate outcomes hide where an interactive agent fails. In this study no agent solved any level, so an outcome-only
+Aggregate outcomes hide where an interactive agent fails. In this study no agent solved any of the six benchmark levels, so an outcome-only
 evaluation would report six identical zeroes. The unit of analysis is therefore the turn: what the agent was shown,
 what it wrote, the action it emitted and the board that resulted.
 
@@ -30,8 +30,8 @@ what it wrote, the action it emitted and the board that resulted.
 - Sokoban is a box-pushing puzzle. It is PSPACE-complete in general, one bad push can leave a level unwinnable, and it
   is fully observable. The board is given to the agent as text, so visual perception is out of the loop.
 - The five models are fixed, publicly available open checkpoints of 3 to 8B parameters. They solve none of the six
-  levels in any condition, and more than half of the episodes end at six steps, when the harness's stuck detector fires. The study
-  is therefore of agents at the floor of the task: where in the turn the error enters, and what an evaluation has to
+  levels in any condition. Every episode ends when the harness's stuck detector fires, more than half of them at six
+  steps, the earliest possible. The corpus is therefore a record of failing play: where in the turn the error enters, and what an evaluation has to
   record to see it.
 - An outcome-only record could not tell an agent that read the board correctly and then chose an impossible move from
   one that never read it. A record of the whole turn can.
@@ -44,8 +44,8 @@ episodes and 1,561 steps over six conditions. Every turn was coded by two langua
 induced from three blind reading passes. Control arms, including a pre-registered positive control, set the limits on what the codes can be taken to show.
 
 <Flow
-  label="One turn as recorded. The reasoning at step N is read against the board shown at step N-1, because the logged observation is the one after the action."
-  steps={['Board shown, as text', 'Reasoning the agent stated', 'Action string it emitted', 'Resulting board', 'Turn coded against the taxonomy']}
+  label="One turn as recorded. The thought at step N is read against the board shown at step N-1, because the logged observation is the one after the action."
+  steps={['Board shown, as text', 'Thought the agent wrote', 'Action string it emitted', 'Resulting board', 'Turn coded against the taxonomy']}
 />
 
 <More label="Models, levels, harness and serving">
@@ -71,7 +71,8 @@ induced from three blind reading passes. Control arms, including a pre-registere
   all 180. Each pass had ten readers, fresh language-model sessions with no prior context, given one file and a fixed
   brief with no checklist, rubric or category definitions, although the files carried some legacy label strings. The readers were sessions of the same model as annotator
   A, so that annotator is not naive to the taxonomy's framing.
-- Readers described what they saw. Matching a description to a taxonomy item was a separate written step afterwards.
+- Readers described what they saw. Matching a description to a taxonomy item was a separate written step afterwards, done by
+  a language-model session under the author's direction.
   Where a description fitted an existing item only arguably, a new item was created.
 - Every step-level finding carries a verbatim span checked mechanically against the thought of the step it comes from. The
   passes produced 1,552 step lines and 2,194 quoted spans.
@@ -92,7 +93,7 @@ induced from three blind reading passes. Control arms, including a pre-registere
   never pooled with the A and B figure.
 - A test of whether the annotators' materials revealed the study's expected result found that the first version of the
   second annotator's copy did: seven of eight fresh readers could state the direction. The prose that conveyed it was
-  removed before the materials were sent to annotator B; annotator A had labelled from the unrevised copy.
+  removed before the materials were sent to annotator B; annotator A labelled from the unrevised copy.
 </More>
 
 <More label="Human label checks">
@@ -100,7 +101,8 @@ induced from three blind reading passes. Control arms, including a pre-registere
   labels were defensible under the frozen codebook. Three instruments returned 316 label-verdicts: two pre-specified
   draws of 40 turns and one purposive probe. They differ in checker, draw and independence, so they are never pooled
   into a rate.
-- Of the 225 labels that both annotators applied, 3 were judged wrong and 15 unclear. Each of the two checkers had run
+- Of the 225 labels that both annotators applied, 3 were judged wrong and 15 unclear. Of the 91 labels that only one
+  annotator applied, 17 were judged wrong. Each of the two checkers had run
   one of the annotators, so neither is independent of the pipeline.
 - A fourth instrument, checked by a person who ran neither annotator, is reported apart: 182 label-verdicts, of which
   155 were confirmed, 25 marked wrong and 2 unclear. Reasons are missing for 25 of the 27 that were not confirmed, so
@@ -114,8 +116,8 @@ induced from three blind reading passes. Control arms, including a pre-registere
   no hidden solve: the only box ever docked is the one Level 6 starts with.
 - First difficulty ladder: placements on a single 5 by 5 open room at each optimal push count from 1 to 6, 120 episodes in
   all, 20 per rung. Rungs 1 to 3 are calibration rungs, reported against uniform-random baselines (8 of 20 against
-  41.5%, 5 of 20 against 16.2%, 7 of 20 against 6.1%). At four or more pushes, 0 of 60 episodes solve, where a
-  random agent's expected solve rate is under 0.15%.
+  41.5%, 5 of 20 against 16.2%, 7 of 20 against 6.1%). At four or more pushes, 0 of 60 episodes solve (three boards,
+  20 runs each), where a random agent's expected solve rate is under 0.15%.
 - Zero-walk ladder: a second ladder in a 5 by 8 room, with its chance baseline, reading and prediction registered
   before play. The worker, the box and the dock sit on one line, so no walking is needed.
 - Positive control: a pre-registered test of whether the taxonomy separates solved from unsolved episodes on the first
@@ -146,12 +148,12 @@ Sole author.
 
 No level was solved in any of the six conditions. Two observations are supported, at different strengths.
 
-- **E2, the stronger one:** across the five models, the move a turn's thought describes and the action it emits differ
+- E2, the stronger one: across the five models, the move a turn's thought describes and the action it emits differ
   in kind, usually a plain move described and a push emitted. Both annotators label this in 111 of 180 episodes
   (step-level κ = 0.749).
-- **I2, an existence observation:** in the one model that writes a board table into its thought, an accurate table,
-  which may simply reproduce the input, sits beside prose that reasons from a different board. This is 14 episodes on the
-  reading passes and 6 to 27 of 180 on the annotations, in one model.
+- I2, an existence observation: in the one model that writes a board table into its thought, an accurate table,
+  which may simply reproduce the input, sits beside prose that reasons from a different board. The readers found it in 14
+  episodes, all in that model. On the annotations it is 6 of 180 episodes labelled by both annotators and 27 by either.
 
 The prompt's only worked example has the shape of E2, and a pre-registered arm that changed it left its effect
 unresolved. The one pre-registered validity test, a positive control, found no separation between solved and unsolved
@@ -197,7 +199,7 @@ with walking being an obstacle without isolating it.
 </figure>
 
 <More label="Further results">
-- Every unrecoverable state comes from a successful push. Failed actions are no-ops, so a solver's check of the logged
+- Every unrecoverable state comes from a successful push. Failed actions are no-ops. A solver's check of the logged
   boards finds 12 of the 180 episodes that reach an unrecoverable state, two in each condition, across all five models
   and both temperatures, and each is created by a push that moved a box. In 4 of the 12 it is the episode's only push
   that moves a box. A count of ineffective actions cannot see this.
@@ -210,14 +212,17 @@ with walking being an obstacle without isolating it.
 - First difficulty ladder: 0 of the 60 episodes at four or more optimal pushes were solved, across five models and
   three families. In 43 of those 60 episodes the worker reached a position from which a push could move the box, but
   across 193 such turns the agents moved the box only 11 times. This count is descriptive and was made after the fact.
-- Zero-walk ladder: at four to six pushes it gave 14 of 60 solves (5, 2 and 7 of 20), against none on
-  the first ladder, and every model solved at least one of these boards. The two ladders also differ in starting
-  position and push direction, so the effect of walking alone is not isolated.
+- Zero-walk ladder: at four to six pushes it gave 14 of 60 solves (three boards, 5, 2 and 7 of 20), against none on
+  the first ladder, and every model solved at least one of these boards. The registered reading needed three or more
+  solves against 0.66 expected by chance, and the registered prediction of two or fewer was wrong. Yet in 60 of the
+  120 zero-walk episodes the agents never pushed toward the dock. The two ladders also differ in starting position and
+  push direction, so the effect of walking alone is not isolated, and no test is made between them.
 - Rules-text arm: restoring the harness's own rules text to the prompt solved no level, 0 of 30 episodes against 0 of 30
   without it. The treatment prompt is 734 characters longer with no length-matched control, so content is not
   separated from length.
 - Worked-example arm: the prompt's only worked example pairs a thought describing a plain move with a push. Changing
-  only that thought to one describing its push gave forward E2 (a plain move described, a push emitted) on 126 of 386
+  only that thought to one describing its push, at temperature 1 and labelled by a newer version of annotator A's
+  model, gave forward E2 (a plain move described, a push emitted) on 126 of 386
   push steps (32.6%) with the original example and 104 of 339 (30.7%) with the consistent one, a ratio of 0.940 (95%
   CI 0.644 to 1.321). The interval meets neither pre-registered decisive range, so no direction is claimed, and as
   registered it allows the example's inconsistency to account for up to 35.6% of forward E2. Both prompts still carry
@@ -230,7 +235,7 @@ with walking being an obstacle without isolating it.
 
 <More label="Limitations in full">
 - The positive control was null. On 291 first-ladder turns labelled blind by annotator A, the pre-specified primary item returned 2 of 18
-  solved episodes against 4 of 40 unsolved (one-sided Fisher p = 0.61, where the registered detectable effect needed 6
+  solved episodes (two one-step wins left no turn to assess) against 4 of 40 unsolved (one-sided Fisher p = 0.61, where the registered detectable effect needed 6
   of 18), and the secondary item moved opposite to its prediction. With 3 boards and 12.76 of the 20 solves
   chance-expected, this is a null against a weak success regime. E2 is more frequent on solved episodes, 12 of 18
   against 17 of 40, but no test was registered for that, and E2 is not shown to mark failing play.
